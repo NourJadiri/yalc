@@ -1,3 +1,20 @@
+## Pattern
+Breadth-first search
+
+## Key idea
+Riding one bus any distance costs one, so make each bus a node, not each stop; BFS layer `k` is every bus reachable after `k` boardings.
+
+## Steps
+1. Return `0` straight away if `source == target`.
+2. Map each stop to the list of buses that serve it.
+3. Queue every bus at `source` and mark them boarded: that is layer 1, so the count starts at `1`.
+4. Layer by layer, pop each bus and walk its stops; if a stop is `target`, return the count.
+5. For each stop, queue the buses there that aren't boarded yet, then pop the stop from the map so it is scanned once.
+6. After each layer add `1` to the count; if the queue empties first, return `-1`.
+
+## Cost
+`O(N)` time · `O(N)` space, where `N` is the total length of all routes
+
 ## Approach
 
 The cost is the number of buses you board, not the distance you travel: once you're on a bus, every stop on its route costs the same. So the natural graph has **buses as nodes**, with an edge between two buses that share a stop, because you can change there. The answer is the shortest path in that graph from any bus serving `source` to any bus serving `target`, counted in buses, so the starting buses count as 1. The edges are unweighted and there are several starting points, so this is a multi-source BFS.

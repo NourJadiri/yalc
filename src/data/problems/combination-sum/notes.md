@@ -1,3 +1,20 @@
+## Pattern
+Backtracking
+
+## Key idea
+Build each combination in a single non-decreasing order, by choosing only from index `start` onward, so none appears twice and nothing needs de-duplicating.
+
+## Steps
+1. Sort `candidates`, so a too-big candidate means every later one is too big as well.
+2. In `backtrack(start, remaining)`, record a copy of `path` when `remaining == 0`.
+3. Loop `i` from `start`, never earlier, so each combination is built once, in non-decreasing order.
+4. `break` at the first `candidates[i]` bigger than `remaining`.
+5. Otherwise append it, recurse with the same `i` and `remaining - c` so it can repeat, then pop it.
+6. Start with `backtrack(0, target)`: nothing chosen yet, the whole `target` still to make.
+
+## Cost
+Exponential time · `O(target / min)` space, where `min` is the smallest candidate
+
 ## Approach
 
 A combination is a multiset, so the trick is to generate each multiset in exactly **one** order, non-decreasing, and never think about duplicates again.

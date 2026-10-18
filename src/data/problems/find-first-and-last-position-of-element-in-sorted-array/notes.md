@@ -1,3 +1,18 @@
+## Pattern
+Binary search
+
+## Key idea
+Search for boundaries, not values: the first index with `nums[i] >= x` is the run's start for `target`, and one past its end for `target + 1`.
+
+## Steps
+1. Write `lower(x)`: binary search for the first index whose value is `>= x`, keeping the answer inside `[lo, hi]` with `hi = len(nums)`.
+2. Loop while `lo < hi`: if `nums[mid] < x`, set `lo = mid + 1`; otherwise set `hi = mid`.
+3. Take `first = lower(target)`; if it is past the end or `nums[first] != target`, return `[-1, -1]`.
+4. The run ends just before the first value `>= target + 1`, so return `[first, lower(target + 1) - 1]`.
+
+## Cost
+`O(log n)` time · `O(1)` space
+
 ## Approach
 
 An ordinary binary search stops at the first copy of `target` it lands on, which could be anywhere inside the run. We want the run's two ends, so search for **boundaries**, not values.

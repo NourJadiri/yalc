@@ -1,3 +1,19 @@
+## Pattern
+Design (hash map + array)
+
+## Key idea
+A list lets `getRandom` roll an index, a dictionary finds any value's index, and because order doesn't matter, `remove` fills the hole with the last element.
+
+## Steps
+1. Keep a list `vals` of the members, in any order, and a dictionary `pos` from each member to its index in `vals`.
+2. `insert`: if `val` is already in `pos`, return `False`; otherwise record its index in `pos` and append it to `vals`.
+3. `remove`: pop `val` from `pos`, keeping its index `i`; if it wasn't there, return `False`.
+4. Fill the hole with the last element: pop it off `vals`, and unless it was `val` itself, store it at index `i` and set `pos[last] = i`.
+5. `getRandom`: return `random.choice(vals)`; every member fills exactly one slot, so each is equally likely.
+
+## Cost
+`O(1)` time per operation (on average) · `O(n)` space
+
 ## Approach
 
 Each requirement rules out one obvious structure. `getRandom` in `O(1)` needs the members laid out at positions `0..k-1`, so that one random index picks one member — a list. Finding a value in `O(1)`, to answer `insert`'s "already there?" and to delete it, needs hashing — a dictionary. So keep both, and keep them in step: `vals` is a list of the members in no particular order, and `pos[v]` is the index where `v` sits in `vals`.

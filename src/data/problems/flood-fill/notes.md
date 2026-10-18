@@ -1,3 +1,19 @@
+## Pattern
+Depth-first search
+
+## Key idea
+The region is whatever a graph search reaches through same-coloured neighbours, and painting a pixel doubles as the visited mark, since it no longer matches the old colour.
+
+## Steps
+1. Save the clicked pixel's colour as `start`.
+2. If `start == color`, return the image as it is: repainting couldn't mark anything visited, so the search would never end.
+3. Write `fill(r, c)` so it returns at once when `(r, c)` is off the grid or isn't `start`-coloured.
+4. Otherwise paint `(r, c)` with `color`, which also marks it visited, then call `fill` on its four neighbours.
+5. Call `fill(sr, sc)` and return the image.
+
+## Cost
+`O(m · n)` time · `O(m · n)` space (the recursion stack, worst case)
+
 ## Approach
 
 **The pattern: search the grid as if it were a graph.** Each pixel is a node, joined to the pixels directly above, below, left and right of it — its *4-neighbours*. A lot of grid problems ("fill this area", "count the islands", "can you walk from here to there?") are the same question underneath: *which cells can I reach from this one, moving only through cells that pass some test?* For flood fill the test is "has the clicked pixel's original colour".

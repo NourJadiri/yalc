@@ -1,3 +1,19 @@
+## Pattern
+Backtracking (depth-first search)
+
+## Key idea
+A cell is only "used" on the current path, so mark it while exploring from it and unmark it afterwards, letting other paths reuse it.
+
+## Steps
+1. Prune: return `False` if the board has too few of some letter `word` needs; reverse `word` so its rarer end comes first.
+2. In `dfs(r, c, i)`, return `False` if the cell isn't `word[i]`, and `True` if `i` is the last index.
+3. Borrow the cell by overwriting it with `"#"`, then try the four neighbours with `i + 1`, stopping at the first success.
+4. Give the cell back by writing `word[i]` in again, whether or not a path was found, and return the result.
+5. Start `dfs(r, c, 0)` from every cell and return whether any succeeds.
+
+## Cost
+`O(m · n · 3^L)` time · `O(L)` space, for a word of length `L`
+
 ## Approach
 
 This is backtracking on a grid: a depth-first search over paths, where each step either matches the next letter or gives up immediately.

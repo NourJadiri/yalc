@@ -1,3 +1,19 @@
+## Pattern
+Two pointers (expand around centres)
+
+## Key idea
+A palindrome is symmetric about its centre, a character or a gap, so grow outwards from each of the `2n - 1` centres while the two ends match.
+
+## Steps
+1. Write `expand(lo, hi)`: grow outwards while both ends are in range and equal, then return the bounds `(lo + 1, hi)` (the loop overshoots by one).
+2. Start with `best = (0, 1)`, the first character.
+3. For each index `i`, expand around the character at `i` (odd length) and around the gap after it (even length).
+4. Whenever a result is longer than `best`, replace `best` with it.
+5. Return `s[best[0]:best[1]]`.
+
+## Cost
+`O(n^2)` time · `O(1)` extra space
+
 ## Approach
 
 **Expand around centres.** Every palindrome is symmetric about its middle, and the middle is either a character (odd length, `"aba"`) or the gap between two equal neighbours (even length, `"abba"`). A string of length `n` has `2n - 1` such centres. From each one, grow outwards while the two ends match. As soon as they differ, or you run off either end of the string, that centre's palindrome is as long as it gets: any longer palindrome with the same centre would contain the mismatched pair. The longest of the `2n - 1` is the answer.

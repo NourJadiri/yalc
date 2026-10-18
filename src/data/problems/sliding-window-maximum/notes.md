@@ -1,3 +1,19 @@
+## Pattern
+Monotonic queue
+
+## Key idea
+An older value no bigger than a newer one can never be the maximum, so keep indices in a decreasing deque and read the maximum off its front.
+
+## Steps
+1. Keep a deque `dq` of indices whose values strictly decrease from front to back, and a list `out` for the answers.
+2. For each `i, x`, pop the front if its index is `<= i - k`: it has slid out of the window.
+3. While the value at the back is `<= x`, pop it: a newer, at-least-as-big value means it can never be a maximum again.
+4. Push `i` at the back.
+5. Once `i >= k - 1` the window is full: append `nums[dq[0]]`, the value at the front.
+
+## Cost
+`O(n)` time · `O(k)` space for the deque (plus the output)
+
 ## Approach
 
 Use a **monotonic deque**: a deque of indices into `nums` with two properties.

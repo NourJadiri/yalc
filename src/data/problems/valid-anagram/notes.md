@@ -1,3 +1,18 @@
+## Pattern
+Hash map
+
+## Key idea
+Two strings are anagrams exactly when every letter appears the same number of times in both, so compare counts, not order.
+
+## Steps
+1. If the lengths differ, return `False` straight away.
+2. Walk `s` and count each letter in a dictionary.
+3. Walk `t` and spend those counts: if a letter's count is already `0`, return `False`; otherwise subtract one.
+4. If `t` gets all the way through, return `True`.
+
+## Cost
+`O(n)` time · `O(1)` space (at most 26 letters)
+
 ## Approach
 
 **The pattern: count, then compare counts.** Two strings are anagrams exactly when every letter appears the same number of times in both. Order plays no part, so throw the order away and keep only the counts: if the counts match, the strings are anagrams; if any count differs, they aren't.

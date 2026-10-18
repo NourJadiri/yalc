@@ -1,3 +1,17 @@
+## Pattern
+Recursion
+
+## Key idea
+A tree is a root over two smaller trees, so its depth is `1` plus the deeper subtree's depth; an empty tree has depth `0`.
+
+## Steps
+1. If `root` is `None`, return `0`: an empty tree has no nodes.
+2. Trust the recursion: `maxDepth(root.left)` and `maxDepth(root.right)` give the two subtrees' depths.
+3. Add this node's own level to the deeper of the two: return `1 + max(left, right)`.
+
+## Cost
+`O(n)` time · `O(h)` space, where `h` is the height of the tree
+
 ## Approach
 
 The idea that makes tree problems manageable: **a tree is a root with two smaller trees hanging under it.** The left child is the root of a whole tree of its own (the left subtree), and so is the right child. So a function that solves the problem for "a tree" can solve it by calling itself on those two smaller trees.

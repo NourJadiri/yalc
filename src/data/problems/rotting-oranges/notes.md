@@ -1,3 +1,18 @@
+## Pattern
+Multi-source BFS
+
+## Key idea
+Rot spreads one ring per minute, exactly like BFS layers, so start the BFS from every rotten orange at once and each layer is one minute.
+
+## Steps
+1. Scan the grid once: queue every rotten orange (`2`) and count the fresh ones (`1`).
+2. Loop while oranges are queued and some are still fresh; each pass adds one minute and handles exactly the `len(queue)` oranges queued so far.
+3. Pop each orange and rot its fresh neighbours: set them to `2` as you queue them, and decrement `fresh`.
+4. Return `minutes` if `fresh == 0`, otherwise `-1`.
+
+## Cost
+`O(m · n)` time · `O(m · n)` space (the queue, worst case)
+
 ## Approach
 
 Treat the crate as a graph: oranges are nodes, and neighbouring oranges are joined by edges. Rot spreads exactly the way a breadth-first search explores. After one minute it has reached everything at distance 1 from a rotten orange, after two minutes everything at distance 2, and so on. So the answer is the largest distance from any fresh orange to its *nearest* rotten orange.

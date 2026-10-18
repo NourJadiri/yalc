@@ -1,3 +1,18 @@
+## Pattern
+Breadth-first search
+
+## Key idea
+At the moment a level starts, the queue holds exactly that level's nodes, so reading `len(queue)` once tells you where the level ends.
+
+## Steps
+1. Put the root in a `deque` and keep a list for the averages.
+2. Each round, read `count = len(queue)` first: those nodes are exactly one level.
+3. Pop `count` nodes, adding their values to a total and queueing their children for the next round.
+4. Append `total / count` as that level's average; use `/`, not `//`.
+
+## Cost
+`O(n)` time · `O(w)` space, where `w` is the size of the widest level
+
 ## Approach
 
 **"Level" means breadth-first search.** The recursion from the earlier tree problems is depth-first: it dives to the bottom of one branch before it touches the next, so the nodes of one level get visited at scattered moments. Breadth-first search (BFS) visits nodes in order of their distance from the root — all of level 1, then all of level 2, and so on — which is exactly the grouping this problem wants.

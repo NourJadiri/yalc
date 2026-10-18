@@ -1,3 +1,18 @@
+## Pattern
+Simulation
+
+## Key idea
+The carry stops at the first digit from the right that isn't `9`; if there's none, the answer is a `1` followed by zeros.
+
+## Steps
+1. Walk the digits from the last to the first, as you would on paper.
+2. If `digits[i] < 9`, add one to it and return: this digit absorbs the carry.
+3. Otherwise it is a `9`: set it to `0`, which passes the carry to the next digit on the left.
+4. If the loop ends, every digit was `9`: return `[1] + digits`.
+
+## Cost
+`O(n)` time · `O(1)` extra space (a new `n + 1` list only when every digit is `9`)
+
 ## Approach
 
 **The pattern: paper arithmetic, digit by digit, with a carry.** When a number is stored as a list (or a string, or a linked list) of digits, you do arithmetic the way you learned on paper: start at the least significant digit, here the right end, and pass a carry to the left.

@@ -1,3 +1,17 @@
+## Pattern
+Fast and slow pointers
+
+## Key idea
+`fast` moves twice as far as `slow`, so when `fast` runs off the end, `slow` has covered half the list and sits on the middle.
+
+## Steps
+1. Start `slow` and `fast` both at `head`.
+2. While `fast and fast.next` (test `fast` first), move `slow` one node and `fast` two.
+3. Return `slow`: `fast` has covered the whole list, so `slow` is halfway.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **The obvious way first.** Walk the list once to count its `n` nodes, then start again from the head and take `n // 2` steps. That's two passes, `O(n)` time and `O(1)` space. It's a perfectly good answer, and worth saying out loud in an interview before you improve on it.

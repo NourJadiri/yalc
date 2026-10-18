@@ -1,3 +1,17 @@
+## Pattern
+Recursion
+
+## Key idea
+The root's two subtrees must be mirror images, so compare them in lockstep, pairing across the fold: `a.left` with `b.right`, and `a.right` with `b.left`.
+
+## Steps
+1. Write `mirrored(a, b)`, empty cases first: two `None`s mirror (`True`); a node facing a `None` doesn't (`False`).
+2. Otherwise require equal values, then recurse across the fold: `a.left` with `b.right`, and `a.right` with `b.left`.
+3. Return `mirrored(root.left, root.right)`: the root sits on the fold, so only its two subtrees can break symmetry.
+
+## Cost
+`O(n)` time · `O(h)` space, where `h` is the height of the tree
+
 ## Approach
 
 The root can't break symmetry by itself — it sits on the fold line. What matters is whether the root's left subtree is the mirror image of its right subtree. That's a question about two trees at once, so write a helper, `mirrored(a, b)`, that answers it for any two trees, and call it on `root.left` and `root.right`.

@@ -1,3 +1,20 @@
+## Pattern
+Stack
+
+## Key idea
+Innermost groups finish first, so at each `[` set the text so far and the count aside on a stack, and resume from them at the matching `]`.
+
+## Steps
+1. Keep a `stack` of saved depths, plus `cur` (the text pieces at this depth) and `num` (the count being read).
+2. Scan `s` once. A digit extends the count: `num = num * 10 + int(ch)`.
+3. On `[`, push `(cur, num)` onto the stack, then start `cur` and `num` fresh.
+4. On `]`, pop `(prev, k)`, append `cur` repeated `k` times to `prev`, and make `prev` the new `cur`.
+5. Any other character is a letter: append it to `cur`.
+6. Join `cur` and return it: the stack is empty by then.
+
+## Cost
+`O(n + m)` time for output length `m` (worst case `O(m · depth)`) · `O(m + depth)` space
+
 ## Approach
 
 **A stack of frames.** Nesting is the whole difficulty: when a `[` opens, the text built so far has to wait until the matching `]` closes, and then the inner result is repeated and glued onto it. "Put it aside, finish the inner part, come back" — innermost first — is a stack.

@@ -1,3 +1,17 @@
+## Pattern
+Linked list pointers
+
+## Key idea
+You can only walk a singly linked list forwards, so reverse its second half in place and compare the two halves from the outside in.
+
+## Steps
+1. Find the middle with fast and slow pointers: when `fast` runs out, `slow` is at the start of the second half.
+2. Reverse the second half in place, starting from `slow`, so it can be read from the end inwards.
+3. Walk `left` from `head` and `right` from the reversed half together; return `False` at the first mismatch, and `True` once `right` runs out.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **First, the easy way.** Walk the list and copy each value into a Python list, then check `values == values[::-1]`. That's `O(n)` time and `O(n)` space, and in an interview it's the answer to give first. The follow-up question is almost always: can you do it with `O(1)` extra space?

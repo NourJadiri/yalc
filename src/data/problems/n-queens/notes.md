@@ -1,3 +1,19 @@
+## Pattern
+Backtracking
+
+## Key idea
+One queen per row means only columns need choosing, and three sets (columns, `r - c`, `r + c`) answer whether a square is attacked in `O(1)`.
+
+## Steps
+1. Track each row's queen in `queens` (`queens[r]` is its column) and three sets of attacked lines: `cols`, `diag` (`r - c`) and `anti` (`r + c`).
+2. In `place(r)`, when `r == n` every row has a queen: draw the board from `queens` and record it.
+3. Otherwise try each column `c` of row `r`, and skip it if `c in cols`, `r - c in diag` or `r + c in anti`.
+4. Place the queen and add its three marks, call `place(r + 1)`, then take the queen and the marks back off.
+5. Start the search at the top row with `place(0)`.
+
+## Cost
+`O(n!)` time (an upper bound; pruning beats it) · `O(n)` extra space
+
 ## Approach
 
 Two queens in the same row attack each other, so a solution has exactly one queen per row. Place them row by row; in row `r` the choices are the columns.

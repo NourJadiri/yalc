@@ -1,3 +1,19 @@
+## Pattern
+Quickselect
+
+## Key idea
+Sorted ascending, the `k`-th largest sits at index `n - k`: partition around a pivot and keep only the side containing that index.
+
+## Steps
+1. Aim for index `target = len(nums) - k` of the ascending order, searching `[lo, hi]`, the whole list to begin with.
+2. Pick a random pivot value from `nums[lo..hi]`, since a fixed pivot goes quadratic on sorted input.
+3. Partition `nums[lo..hi]` three ways: values less than, equal to, and greater than the pivot.
+4. If `target` is left of the equal block, set `hi = lt - 1`; if right of it, set `lo = gt + 1`; then loop again.
+5. If `target` is inside the equal block, the pivot is the answer: return it.
+
+## Cost
+Expected `O(n)` time (`O(n^2)` worst case) · `O(1)` space
+
 ## Approach
 
 In ascending order, the `k`-th largest value sits at index `n - k`. Quickselect finds the value that belongs at that index without sorting anything else. It's quicksort that only recurses into one side.
