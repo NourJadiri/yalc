@@ -1,3 +1,17 @@
+## Pattern
+Two pointers
+
+## Key idea
+The shorter wall caps the water, and every other container using it is narrower and no taller, so that wall can be discarded for good.
+
+## Steps
+1. Put one pointer at each end of `height`, and start `best` at `0`.
+2. While `i < j`, update `best` with the shorter wall's height times `j - i`, then move that wall's pointer inward.
+3. Return `best`.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 Start with the widest container, the two end walls, and narrow it one wall at a time, always discarding the **shorter** of the two current walls. The answer is the largest area seen along the way.

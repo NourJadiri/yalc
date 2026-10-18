@@ -1,3 +1,19 @@
+## Pattern
+Breadth-first search
+
+## Key idea
+Everything reachable from `source` can be found by searching outward, and a `seen` set marked when a machine is queued keeps loops from trapping the search.
+
+## Steps
+1. Build an adjacency list, adding each cable `[u, v]` to both `graph[u]` and `graph[v]`.
+2. Put `source` in a `seen` set and in a queue.
+3. Take the machine at the front of the queue; if it is `destination`, return `True`.
+4. Queue each unseen neighbour, adding it to `seen` at the moment you queue it.
+5. If the queue runs empty first, return `False`.
+
+## Cost
+`O(n + E)` time for `E` cables · `O(n + E)` space
+
 ## Approach
 
 **The pattern: graph reachability with BFS or DFS.** "Can I get from here to there?" is the most basic graph question, and the answer always takes the same two steps: store the graph so you can look up a node's neighbours quickly, then search outward from the start until you either find the target or run out of places to go.

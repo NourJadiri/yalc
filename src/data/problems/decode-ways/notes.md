@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+Group decodings by their last letter, written with one digit or two: `ways(i)` is built from `ways(i - 1)` and `ways(i - 2)` alone.
+
+## Steps
+1. Start `prev1 = 1` (the empty prefix has one decoding) and `prev2 = 0`: the last two `ways` values.
+2. For each digit, set `cur = prev1`, or `0` if the digit is `"0"` (a lone `0` is no letter).
+3. If the last two digits read `10` to `26`, add `prev2` to `cur`.
+4. Slide forward with `prev2, prev1 = prev1, cur`; after the last digit, `prev1` is the answer.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 Group the decodings by their **last letter**. That letter was written with either the last digit or the last two digits, nothing else. The two groups don't overlap, and together they cover every decoding. Remove the last letter and what's left is a decoding of a shorter prefix.

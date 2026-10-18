@@ -1,3 +1,18 @@
+## Pattern
+Heap (priority queue)
+
+## Key idea
+Each round needs the two heaviest stones and the leftover can land anywhere, so keep the pile in a heap (negated, since `heapq` is a min-heap).
+
+## Steps
+1. Negate every weight into a list (`heapq` is a min-heap), then `heapify` it.
+2. While two or more stones remain, pop the heaviest `y` and the next heaviest `x`, negating each back.
+3. If `y > x`, push the leftover `y - x` back, negated.
+4. Return the last stone's weight, or `0` if none is left.
+
+## Cost
+`O(n log n)` time · `O(n)` space
+
 ## Approach
 
 **Simulate — with the right container.** The rules spell out exactly what happens, so the only real question is how to carry them out efficiently. Each round needs the two heaviest stones, and may put one new stone back. Re-sorting a list after every round works, but each sort costs `O(n log n)`.

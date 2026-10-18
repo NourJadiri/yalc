@@ -1,3 +1,19 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+Each column of distance costs one point, so sweeping a running maximum in from each side, losing one per step, replaces the scan over the previous row.
+
+## Steps
+1. Let `best[c]` be the top score ending in column `c`; start it as a copy of the first row.
+2. For each next row, sweep left to right, carrying the best value from the left and losing one point per column (`from_left`).
+3. Sweep right to left the same way, into `from_right`.
+4. Set the new `best[c]` to `row[c] + max(from_left[c], from_right[c])`.
+5. After the last row, return `max(best)`.
+
+## Cost
+`O(m · n)` time for `m` rows and `n` columns · `O(n)` space
+
 ## Approach
 
 **Subproblem.** `best[r][c]` = the highest score for rows `0..r` whose pick in row `r` is column `c`.

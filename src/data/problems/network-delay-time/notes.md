@@ -1,3 +1,19 @@
+## Pattern
+Dijkstra's algorithm
+
+## Key idea
+Arrival times are shortest-path distances from `k`, and with non-negative delays the smallest time in the heap can't be beaten, so each node settles once.
+
+## Steps
+1. Build an adjacency list: `graph[u]` holds `(v, w)` for each link.
+2. Start a min-heap of `(time, node)` with `(0, k)`, and an empty `arrival` dict for settled nodes.
+3. Pop the smallest entry; if its node is already in `arrival`, it is stale, so skip it.
+4. Otherwise settle the node at that time, then push `(t + w, v)` for each neighbour not yet settled.
+5. Return the largest arrival time, or `-1` if fewer than `n` nodes were settled.
+
+## Cost
+`O(E log E)` time for `E` links · `O(V + E)` space for `V` nodes
+
 ## Approach
 
 The signal reaches each node along its fastest route, so a node's arrival time is its **shortest-path distance** from `k`. The answer is the largest of those distances: the last node to hear the signal decides. With non-negative delays, that's exactly what **Dijkstra** computes.

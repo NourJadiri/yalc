@@ -1,3 +1,17 @@
+## Pattern
+Prefix sums (with binary search)
+
+## Key idea
+Lay the weights end to end so index `i` owns exactly `w[i]` of the `sum(w)` integers; a uniform roll then picks `i` with probability `w[i] / sum(w)`.
+
+## Steps
+1. In the constructor, store the running totals of `w` with `accumulate`; index `i` owns `prefix[i - 1] + 1 .. prefix[i]`.
+2. In `pickIndex`, roll a uniform integer `target` from `1` to `prefix[-1]`.
+3. Return the first index whose running total is at least `target`, found with `bisect_left`.
+
+## Cost
+`O(n)` time to build and `O(log n)` per pick · `O(n)` space
+
 ## Approach
 
 Turn weights into lengths. Put the weights end to end on a number line: index `0` owns the integers `1..w[0]`, index `1` owns the next `w[1]` integers, and so on up to `sum(w)`. Roll one integer uniformly from `1..sum(w)`; the index that owns it is your pick. Index `i` owns exactly `w[i]` of the `sum(w)` equally likely rolls, so it comes back with probability `w[i] / sum(w)` — the weighting is exact, not approximate.

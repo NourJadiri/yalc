@@ -1,3 +1,17 @@
+## Pattern
+Recursion
+
+## Key idea
+Two trees are the same exactly when the roots match and both pairs of subtrees are the same, which is this same question on smaller trees.
+
+## Steps
+1. If both nodes are `None`, the trees are the same: return `True`.
+2. If exactly one is `None`, the shapes differ: return `False`.
+3. Otherwise both are real nodes: return `True` only if the values match and the left pair and the right pair are both the same.
+
+## Cost
+`O(n)` time · `O(h)` space, where `h` is the tree height
+
 ## Approach
 
 The tree recursion from Maximum Depth and Invert Binary Tree, now walking two trees in lockstep. Say what a call answers: `isSameTree(p, q)` tells you whether the tree starting at `p` and the tree starting at `q` are identical.

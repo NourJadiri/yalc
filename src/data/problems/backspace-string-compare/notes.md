@@ -1,3 +1,19 @@
+## Pattern
+Two pointers
+
+## Key idea
+Read from the end: each `#` comes before the letters it deletes, so a counter of owed backspaces says which letters to skip, with no stack.
+
+## Steps
+1. Write a helper that scans left from an index and returns the index of the next surviving letter, or `-1`.
+2. Loop left with a counter `skip`: a `#` adds one; a letter with `skip > 0` is deleted and uses one up; any other letter survives.
+3. Start `i` and `j` at the ends of `s` and `t`; each round, jump both to their next surviving letters.
+4. If either ran out, return whether both did; if the two letters differ, return `False`.
+5. Otherwise step both pointers left and repeat.
+
+## Cost
+`O(n + m)` time for lengths `n` and `m` · `O(1)` space
+
 ## Approach
 
 **Start simple: a stack.** Build each box's final text the way the keyboard would. Start with an empty list and go through the keys. A letter gets appended, and a `#` pops the last letter off if there is one. Then compare the two results. This is the stack pattern: backspace always removes the most recently typed letter that's still there. It costs `O(n + m)` time and space, and it's the answer to give first in an interview.

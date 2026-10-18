@@ -1,3 +1,19 @@
+## Pattern
+Two pointers
+
+## Key idea
+The first character that counts must match the last one that counts, and so on inward, so two pointers need no cleaned copy.
+
+## Steps
+1. Put `i` at the start of `s` and `j` at the end.
+2. While `i < j`, skip one character that isn't a letter or digit: `i += 1` if `s[i]` is one, otherwise `j -= 1` if `s[j]` is.
+3. Otherwise, if the two characters differ ignoring case, return `False`.
+4. Otherwise they match: step both pointers inward.
+5. When the pointers meet, every pair matched: return `True`.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **Say the simple version first.** Build a cleaned list of the characters that count — `[c.lower() for c in s if c.isalnum()]` — and check whether it equals its own reverse. In Python, `isalnum()` asks "is this a letter or a digit?" and `lower()` takes care of case. It's correct and `O(n)`, but the cleaned copy costs `O(n)` extra memory.

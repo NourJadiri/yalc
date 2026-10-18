@@ -1,3 +1,17 @@
+## Pattern
+Intervals (sort and sweep)
+
+## Key idea
+Because the list is sorted and disjoint, the new interval overlaps one contiguous run: everything before it ends too early and everything after starts too late.
+
+## Steps
+1. Copy each interval that ends before `start`, unchanged.
+2. Fold in each interval that starts at or before `end` (touching counts), taking the smaller start and larger end; then append the merged interval.
+3. Copy every remaining interval unchanged; they all start after the merged one ends.
+
+## Cost
+`O(n)` time · `O(n)` space for the output
+
 ## Approach
 
 The list is already sorted and disjoint, so the new interval touches one contiguous run of it: everything before that run ends too early to reach it, everything after starts too late. One left-to-right pass handles the three regions in order:

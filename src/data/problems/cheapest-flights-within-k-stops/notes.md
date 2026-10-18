@@ -1,3 +1,20 @@
+## Pattern
+Dijkstra's algorithm
+
+## Key idea
+The cheapest arrival at a city may have used up its flights, so cost alone can't rank arrivals: make the state `(city, flights taken)`, not just the city.
+
+## Steps
+1. Build an adjacency list: `graph[u]` holds `(v, price)` for each flight.
+2. Start Dijkstra over states: a min-heap of `(cost, city, flights taken)` seeded with `(0, src, 0)`.
+3. Pop the cheapest state; if its city is `dst`, return its cost.
+4. Skip the state if its city was already expanded with no more flights (tracked in `fewest[city]`), or it has used all `k + 1` flights.
+5. Otherwise record `fewest[city] = used` and push each onward flight with `cost + price` and one more flight used.
+6. If the heap empties without reaching `dst`, return `-1`.
+
+## Cost
+`O(k · E log(k · E))` time for `E` flights · `O(k · E)` space
+
 ## Approach
 
 Without the stop limit this would be plain shortest paths, and Dijkstra would do. The limit changes what "the best way to reach a city" means. A cheap arrival isn't automatically best, because the number of flights already used matters too. In Example 1, city `1` is cheapest via `0 → 2 → 1` (cost `2`, two flights), but with `k = 1` that leaves no flight to continue to `3`. The pricier direct `0 → 1` (cost `5`, one flight) can still go on. Neither arrival dominates the other, so the search state has to be **(city, flights taken)**, not just the city.

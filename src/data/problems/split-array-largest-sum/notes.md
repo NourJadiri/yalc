@@ -1,3 +1,18 @@
+## Pattern
+Binary search on the answer
+
+## Key idea
+A cap is easy to check with one greedy pass, and feasibility flips from no to yes once as the cap grows, so binary search the cap itself.
+
+## Steps
+1. Write `pieces_needed(cap)`: greedily fill the current piece, starting a new one when the next number would pass `cap`, and count the pieces.
+2. Search between the largest number and the total: `lo, hi = max(nums), sum(nums)`.
+3. While `lo < hi`, test the midpoint `cap`: if `pieces_needed(cap) <= k` set `hi = cap`, otherwise `lo = cap + 1`.
+4. Return `lo`, the smallest cap that works.
+
+## Cost
+`O(n log S)` time for `S = sum(nums)` · `O(1)` space
+
 ## Approach
 
 **Flip the question.** Finding the best cut directly is hard, but checking a proposed cost is easy. Given a cap `c`, can `nums` be cut into at most `k` pieces whose sums are all `<= c`?

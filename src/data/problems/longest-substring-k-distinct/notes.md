@@ -1,3 +1,18 @@
+## Pattern
+Sliding window
+
+## Key idea
+A window with more than `k` distinct characters stays over budget when extended, so `left` never moves back and each right end gets its longest valid window.
+
+## Steps
+1. Keep a dictionary `counts` of each character's occurrences in the window `s[left..right]`, with `left` and `best` at `0`.
+2. For each `right`, add `s[right]` to `counts`.
+3. While `len(counts) > k`, remove `s[left]` (delete its key at zero) and advance `left`.
+4. Record `right - left + 1` in `best` if it is larger, and return `best` at the end.
+
+## Cost
+`O(n)` time · `O(k)` space
+
 ## Approach
 
 Variable-size sliding window. Keep a window `s[left..right]` and a dictionary `counts` of how often each character occurs inside it, with one rule: a character whose count drops to zero is deleted, so `len(counts)` is always the number of distinct characters in the window.

@@ -1,3 +1,19 @@
+## Pattern
+Backtracking
+
+## Key idea
+Build left to right, adding `(` while fewer than `n` are used and `)` only while an unmatched `(` exists, so every finished string is balanced.
+
+## Steps
+1. Write `backtrack(opened, closed)` to extend one shared `path`, with an `out` list for finished strings.
+2. When `closed == n`, the string is complete: record `"".join(path)` and return.
+3. If `opened < n`, append `(`, recurse, then pop it.
+4. If `closed < opened`, append `)`, recurse, then pop it.
+5. Start with `backtrack(0, 0)` and return `out`.
+
+## Cost
+`O(4^n / sqrt(n))` time · `O(n)` extra space
+
 ## Approach
 
 Build the string one character at a time, and only ever make a move that can still end in a balanced string. Two counters say which moves those are.

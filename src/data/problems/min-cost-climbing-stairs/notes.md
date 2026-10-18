@@ -1,3 +1,17 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+The cheapest way to arrive at position `i` extends the cheapest way into `i - 1` or `i - 2` plus that step's toll, so greedy isn't needed.
+
+## Steps
+1. Start `two_back, one_back = 0, 0`: the cheapest tolls to arrive at positions `0` and `1`, since either step is a free start.
+2. For each position `i` up to `n`, take the cheaper of `one_back + cost[i - 1]` and `two_back + cost[i - 2]`, then slide the pair forward.
+3. Return `one_back`: the cheapest toll to arrive at position `n`, the top.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **Why greedy fails.** The obvious plan — always step to the cheaper of the next two steps — makes a choice that looks good *now* without asking what it costs *later*. In Example 2, `[1,3,4,6]`, the greedy climber leaves step 0 for step 1 (toll 3) rather than step 2 (toll 4); but from step 1 they still have to pay for step 2 or step 3, and end up at 8. Jumping straight to step 2 is dearer for one move and cheaper overall: 5. When the best move now depends on what comes after, reach for dynamic programming.

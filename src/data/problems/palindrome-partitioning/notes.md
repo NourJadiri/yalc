@@ -1,3 +1,18 @@
+## Pattern
+Backtracking
+
+## Key idea
+Each partition is one sequence of "where does the next piece end?" choices; only palindromic pieces are legal, so pruning on that loses no answer.
+
+## Steps
+1. Fill a table `pal[i][j]` (is `s[i..j]` a palindrome?), with `i` from right to left so `pal[i + 1][j - 1]` is ready.
+2. Keep a shared `path`; in `backtrack(start)`, when `start == n`, record a copy `path[:]` and return.
+3. For each `end` where `s[start..end]` is a palindrome, append that piece, recurse from `end + 1`, then pop it.
+4. Start with `backtrack(0)` and return `out`.
+
+## Cost
+`O(n · 2^n)` time · `O(n^2)` space for the table
+
 ## Approach
 
 A partition is a sequence of decisions: where does the next piece end? From position `start`, the piece `s[start..end]` is a legal choice only if it is a palindrome, and that test is the pruning.

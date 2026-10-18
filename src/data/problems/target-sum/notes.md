@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming (subset sum)
+
+## Key idea
+If the plus-signed numbers sum to `P`, then `P - (total - P) = target`, so count the subsets that sum to `(total + target) / 2`.
+
+## Steps
+1. The plus-signed numbers must sum to `goal = (total + target) / 2`; return `0` unless that is a whole number from `0` to `total`.
+2. Let `ways[s]` be the number of subsets so far that sum to `s`, starting from `[1] + [0] * goal` for the empty subset.
+3. For each `x`, add `ways[s - x]` into `ways[s]` for `s` from `goal` down to `x`; downward, so each number is used at most once.
+4. Return `ways[goal]`, the number of subsets that sum to `goal`.
+
+## Cost
+`O(n · total)` time for `total = sum(nums)` · `O(total)` space
+
 ## Approach
 
 **Direct DP over running totals.** Assign signs left to right. After the first `i` numbers, all the future cares about is the running total so far.
