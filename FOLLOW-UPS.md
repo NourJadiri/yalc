@@ -248,6 +248,26 @@ because "a random Google-tagged medium" is the point. With the bank in place, a 
 could draw an unsolved Medium from it and open the workspace with the 25:00 clock
 counting down instead of the stopwatch counting up — the pieces all exist.
 
+**Hints don't count against a solve.** Taking hints, or skipping straight to the
+solution, changes nothing about XP, ticks or Bana's one-shot face: a Submit after "Skip to
+the solution" still ticks the problem and can still read as a one-shot. Counting it would
+need a rule ("solved with two hints") and a place for it in the store.
+
+**The ladder lasts as long as the workspace.** Hints taken reset when the problem closes,
+and the pitfall checklist's ticks when you leave the Solution tab. Keeping the hints per
+problem would let a returning reader pick up where they were.
+
+**The stuck nudge is per sitting.** It counts the workspace clock from when the problem
+opened, so closing and reopening starts the twenty minutes over. Its card sits under
+Bana's window if that window is dragged into the bottom-left corner.
+
+**After the ladder's last rung, focus falls back to the workspace.** "Show the solution"
+switches tabs, the ladder unmounts and keyboard focus returns to the dialog itself;
+moving it to the Solution tab's first heading would be kinder to keyboard users.
+
+**Bana's line numbers point into the code she was sent.** "line 7" is line 7 of her
+snapshot; edit above it before clicking and the jump lands on what is line 7 now.
+
 ## Sharper edges
 
 **Streaks use the device's local calendar day.**

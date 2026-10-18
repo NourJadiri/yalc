@@ -18,14 +18,20 @@ that run in the browser on real CPython (Pyodide). No LeetCode account needed.
 - **Dojo**: 15 algorithm templates, blurred until you've written them from memory.
 - **Me**: stats, the rank ladder, badges, export/import and cloud sync.
 - **Workspace**: Run the examples, Submit the full hidden suite; passing it ticks the
-  problem. Drafts are saved per problem.
+  problem. Drafts are saved per problem. When you're stuck, a hint ladder gives one piece
+  at a time (the technique, the key idea, the steps) before the solution, and after 20
+  minutes without a pass a small card offers the next hint. The Solution tab opens on a
+  short version: the trick, numbered steps that match the `# 1.`, `# 2.` comments in the
+  reference code, the cost and a checklist of pitfalls, with the full walkthrough folded
+  below.
 - **Bana** (optional): `⌘K` / `Ctrl+K` in the workspace opens a small chat with
   Claude that already knows the problem, your code and your last run. Three modes, picked
   in its header: Normal, Tough love (roasts your code, then shows you exactly where it's
   wrong) and Goth catgirl (who texts you, her face changing with her mood), each with its
-  own look. Following up is a tap, not typing: four quick replies sit under her latest
-  answer, and when she says "line 7" it is a button that takes you to that line of your
-  code.
+  own look. Her answers lead with the answer in bold, take one bug at a time and end with
+  one next step. Following up is a tap, not typing: four quick replies sit under her
+  latest answer, and when she says "line 7" it is a button that takes you to that line of
+  your code.
 
 Progress is stored in `localStorage`. Cloud sync and the assistant are optional; without
 them the app is fully local. It loads nothing from other origins: no web fonts, no
