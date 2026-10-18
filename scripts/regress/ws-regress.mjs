@@ -373,6 +373,12 @@ const caseChips = (page) =>
   );
 
 /* The numbers CodeMirror's gutter shows (it also keeps a hidden element sized for the widest number). */
+/* The Worker numbers the code it sends the model as the editor numbers its lines. */
+const numbered = (code) => {
+  const lines = code.trimEnd().split("\n");
+  return lines.map((l, i) => String(i + 1).padStart(String(lines.length).length) + "| " + l).join("\n");
+};
+
 const gutterNumbers = (page) =>
   page.locator(`${sel.code} .cm-lineNumbers .cm-gutterElement`).evaluateAll((els) =>
     els.filter((e) => getComputedStyle(e).visibility !== "hidden" && /^\d+$/.test(e.textContent)).map((e) => e.textContent)
@@ -993,7 +999,12 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
       const content = last?.body?.messages?.at(-1)?.content ?? "";
       await s.expect("the model got the API key from the Worker's secrets", () => last?.apiKey, "sk-ant-test");
       await s.expect("the model got the problem in the system prompt", () => JSON.stringify(last?.body?.system ?? ""), (v) => v.includes(`<problem title=\\"${TITLE}\\"`) && v.includes("A directed graph has"));
-      await s.expect("the model got the code, the last run and the question, in that order", () => content, (c) => c.startsWith("My code now:\n\n```python\n" + STARTER.trimEnd() + "\n```\n\n## Last run: Wrong Answer\n\n0 / 3 cases passed\n\nOn an example:") && c.endsWith("\n\nMy question: Why does my code fail?"));
+      await s.expect("the model got the code, the last run and the question, in that order", () => content, (c) => c.startsWith("My code now:\n\n```python\n" + numbered(STARTER) + "\n```\n\n## Last run: Wrong Answer\n\n0 / 3 cases passed\n\nOn an example:") && c.endsWith("\n\nMy question: Why does my code fail?"));
+      await s.expect("…its code lines numbered as the editor numbers them", () => content.split("\n").slice(3, 6), ["1| class Solution:", "2|     def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:", "3|         pass"]);
+      await s.expect("the brief asks for the answer first, one bug at a time, line numbers and one next step", () => JSON.stringify(last?.body?.system ?? ""), (v) =>
+        ["Open with the answer itself, in bold", "One thing at a time.", "written \\\"line 7\\\" or \\\"lines 7-9\\\"", "end with one concrete next step"].every((x) => v.includes(x)));
+      await s.expect("…and says what each quick reply means", () => JSON.stringify(last?.body?.system ?? ""), (v) =>
+        ["\\\"Next hint\\\": the next small step", "\\\"Shorter\\\": your last answer again", "\\\"Show me the fix\\\": the corrected code", "\\\"Why?\\\": the reason"].every((x) => v.includes(x)));
       await s.expect("exactly one request reached the model so far", () => reqs.length - mock0, 1);
     }
     await s.shot(page, "assistant-open-desktop-light");
