@@ -1,12 +1,13 @@
 import type { RefObject } from "react";
 import Answer from "./Answer";
 import EmptyChat from "./EmptyChat";
-import type { Msg } from "./lib/messages";
+import { textOf, type Msg } from "./lib/messages";
 import { ONE_SHOT_MOOD } from "../../../shared/assistantContract";
 import { faceOf, type PersonaLook } from "./lib/personas";
 import type { Trouble } from "./lib/trouble";
 import ChatNote from "./ChatNote";
 import Question from "./Question";
+import QuickReplies from "./QuickReplies";
 import TroubleNotice from "./TroubleNotice";
 import TypingDots from "./TypingDots";
 import "./MessageLog.css";
@@ -20,6 +21,8 @@ interface Props {
   full: boolean;
   trouble: Trouble | null;
   onAsk: (question: string) => void;
+  /** A "line 7" in an answer was clicked. */
+  onLine: (from: number, to: number) => void;
   onRetry: () => void;
   onNewChat: () => void;
   look: PersonaLook;
@@ -27,7 +30,11 @@ interface Props {
   cheer: boolean;
 }
 
-export default function MessageLog({ logRef, onScroll, messages, waiting, busy, full, trouble, onAsk, onRetry, onNewChat, look, cheer }: Props) {
+export default function MessageLog({ logRef, onScroll, messages, waiting, busy, full, trouble, onAsk, onLine, onRetry, onNewChat, look, cheer }: Props) {
+  const last = messages[messages.length - 1];
+  /* Under her latest answer, once it is whole and nothing else is waiting to be said. */
+  const followUps = last?.role === "assistant" && !!textOf(last) && !busy && !full && !trouble;
+
   return (
     <div className="asst-log" ref={logRef} onScroll={onScroll}>
       {messages.length === 0 &&
@@ -36,10 +43,11 @@ export default function MessageLog({ logRef, onScroll, messages, waiting, busy, 
         ) : (
           <EmptyChat intro={look.intro} avatar={look.avatar} onAsk={onAsk} />
         ))}
-      {messages.map((m) => (m.role === "user" ? <Question key={m.id} message={m} /> : <Answer key={m.id} message={m} look={look} />))}
+      {messages.map((m) => (m.role === "user" ? <Question key={m.id} message={m} /> : <Answer key={m.id} message={m} look={look} onLine={onLine} />))}
       {waiting && <TypingDots avatar={look.avatar} />}
       {trouble && trouble.kind !== "locked" && <TroubleNotice trouble={trouble} onRetry={onRetry} onNewChat={onNewChat} />}
       {full && !busy && <ChatNote>This chat is full. Start a new one to keep going.</ChatNote>}
+      {followUps && <QuickReplies chat={!!look.avatar} onAsk={onAsk} />}
     </div>
   );
 }

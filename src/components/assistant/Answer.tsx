@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type MouseEvent } from "react";
 import type { PersonaLook } from "./lib/personas";
 import { faceOf } from "./lib/personas";
 import { textOf, type Msg } from "./lib/messages";
@@ -7,15 +7,32 @@ import Avatar from "./Avatar";
 import ChatNote from "./ChatNote";
 import "./Answer.css";
 
-export default function Answer({ message, look }: { message: Msg; look: PersonaLook }) {
+interface Props {
+  message: Msg;
+  look: PersonaLook;
+  /** A "line 7" in the answer was clicked. */
+  onLine: (from: number, to: number) => void;
+}
+
+export default function Answer({ message, look, onLine }: Props) {
   const text = textOf(message);
   const html = useMemo(() => renderAnswer(text), [text]);
   const stop = message.metadata?.stop;
   /* Still thinking: the typing dots stand in for it. */
   if (!text && stop !== "max_tokens" && stop !== "refusal") return null;
+
+  /* One listener on the container, because the buttons come and go with the markup. */
+  const onClick = (e: MouseEvent<HTMLDivElement>) => {
+    const chip = e.target instanceof Element ? e.target.closest<HTMLElement>("button.asst-line") : null;
+    if (!chip) return;
+    const from = Number(chip.dataset.from);
+    const to = Number(chip.dataset.to);
+    if (Number.isInteger(from) && Number.isInteger(to)) onLine(from, to);
+  };
+
   const body = (
     <>
-      {text && <div className="md" dangerouslySetInnerHTML={{ __html: html }} />}
+      {text && <div className="md" dangerouslySetInnerHTML={{ __html: html }} onClick={onClick} />}
       {stop === "max_tokens" && <ChatNote>Cut off at the length limit. Ask it to go on.</ChatNote>}
       {stop === "refusal" && <ChatNote>Bana declined to answer that one.</ChatNote>}
     </>

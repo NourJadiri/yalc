@@ -29,12 +29,14 @@ interface Props {
   /** The problem was just one-shot. */
   oneShot: boolean;
   wide: boolean;
+  /** A "line 7" in an answer was clicked: show it in the editor. */
+  onLine: (from: number, to: number) => void;
 }
 
 /* Memoised: every prop is stable while you type in the editor, so typing never re-renders the chat. */
 export default memo(Assistant);
 
-function Assistant({ open, summon, onClose, context, oneShot, wide }: Props) {
+function Assistant({ open, summon, onClose, context, oneShot, wide, onLine }: Props) {
   const panel = useRef<HTMLElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
   const passwordField = useRef<HTMLInputElement>(null);
@@ -52,6 +54,9 @@ function Assistant({ open, summon, onClose, context, oneShot, wide }: Props) {
 
   const ask = (text: string) => {
     if (!chat.ask(text)) return;
+    /* A starter or a quick reply is gone once used. Keyboard focus left on it would fall to the page, where Esc leaves the problem. */
+    const used = document.activeElement;
+    if (used?.matches(":focus-visible") && log.ref.current?.contains(used)) composer.current?.focus();
     log.pin();
     setDraft("");
   };
@@ -105,6 +110,7 @@ function Assistant({ open, summon, onClose, context, oneShot, wide }: Props) {
             full={chat.full}
             trouble={chat.trouble}
             onAsk={ask}
+            onLine={onLine}
             onRetry={retry}
             onNewChat={newChat}
             look={look}

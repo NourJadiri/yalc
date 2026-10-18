@@ -1680,6 +1680,243 @@ scenario("19-one-shot", "Bana's one-shot face: only for a first submission that 
   finish(s);
 }, { serial: true }); // reads the mock Anthropic log
 
+/* 20 ----------------------------------------------------------------- */
+scenario("20-follow-ups", "Bana's follow-ups: quick replies under her latest answer, and line numbers in answers that jump to the editor", async (s) => {
+  const store = { "onsite-express-assistant-v1": JSON.stringify({ password: "pw-test" }) };
+  const REPLIES = ["Next hint", "Shorter", "Show me the fix", "Why?"];
+  /* What the LINES answer points at: the text she wrote, and the lines it stands for. */
+  const POINTS = [["line 3", "3", "3"], ["lines 2-4", "2", "4"]];
+  const LONG = Array.from({ length: 80 }, (_, i) => `# row ${i + 1}`).join("\n");
+  const quick = (panel) => panel.getByRole("group", { name: "Quick replies" });
+  const pills = (panel) => quick(panel).getByRole("button").allTextContents();
+  const asked = () => mockRequests()?.at(-1)?.body?.messages?.at(-1)?.content;
+  const requests = () => mockRequests()?.length ?? 0;
+  const ask = async (panel, text) => {
+    const q = panel.getByLabel("Your question");
+    await q.fill(text);
+    await q.press("Enter");
+  };
+  /* New chat, then wait for her greeting: the chat empties a moment after the click (the SDK throttles what it hands React), and a question sent in that moment is refused as the old chat's. */
+  const newChat = async (page, panel) => {
+    await press(page, panel.getByRole("button", { name: "New chat" }));
+    await panel.locator(".asst-empty").waitFor();
+  };
+  /* Her n-th answer is in and its stream is over: Send is back, and it only shows then. */
+  const answered = async (panel, n) => {
+    await panel.locator(".asst-a").nth(n - 1).waitFor({ timeout: 20_000 });
+    await panel.getByRole("button", { name: "Send" }).waitFor({ timeout: 10_000 });
+  };
+  const buttonsIn = (md) => md.locator("button.asst-line").evaluateAll((els) => els.map((b) => [b.textContent, b.dataset.from, b.dataset.to]));
+  /* The editor's own marks: the line the cursor is on, whether focus is in it, and that nothing is selected. */
+  const cursorOf = (page) =>
+    page.evaluate((code) => {
+      const ed = document.querySelector(code);
+      return {
+        line: [...ed.querySelectorAll(".cm-lineNumbers .cm-activeLineGutter")].map((e) => e.textContent),
+        inEditor: !!document.activeElement?.closest(`${code} .cm-editor`),
+        bare: getSelection().isCollapsed && ed.querySelectorAll(".cm-selectionBackground").length === 0,
+      };
+    }, sel.code);
+  const flashed = (page) => page.locator(`${sel.code} .cm-jumpline`);
+  const gone = (s, page, what) => s.expect(what, () => flashed(page).count(), 0, { timeout: 4000 });
+
+  // Normal, on a desktop
+  {
+    const { ctx, page } = await newPage(s, { storage: store });
+    try {
+      await openWorkspace(s, page);
+      const panel = page.locator(sel.panel);
+      await page.locator(sel.ask).click();
+      await panel.waitFor({ state: "visible" });
+      const turns = () => panel.locator(".asst-q p").allTextContents();
+
+      await s.expect("an empty chat offers the starters and no quick replies", async () => ({ starters: await panel.locator(".asst-starters button").count(), quick: await quick(panel).count() }), { starters: 3, quick: 0 });
+
+      // none while an answer streams, four once it has stopped
+      await ask(panel, "SLOW please");
+      await s.expect("a slow answer starts streaming", () => panel.locator(".asst-a").innerText(), /^chunk 0/, { timeout: 15_000 });
+      await s.expect("…while it streams there are no quick replies", async () => ({ quick: await quick(panel).count(), stop: await panel.getByRole("button", { name: "Stop" }).count() }), { quick: 0, stop: 1 });
+      await panel.getByRole("button", { name: "Stop" }).click();
+      await s.expect("…stopped, what she said so far has the four quick replies", () => pills(panel), REPLIES);
+      await s.expect("…a group labelled 'Quick replies', after her answer and not inside it", () => panel.evaluate((p) => {
+        const g = p.querySelector('[role=group][aria-label="Quick replies"]');
+        return { before: g?.previousElementSibling?.className, inside: !!g?.closest(".asst-a"), last: g === p.querySelector(".asst-log")?.lastElementChild };
+      }), { before: "asst-a", inside: false, last: true });
+
+      // a click sends the label and nothing else
+      const first = requests();
+      await quick(panel).getByRole("button", { name: "Shorter" }).click();
+      await answered(panel, 2);
+      await s.expect("a click on 'Shorter' asks it, as a question of its own", turns, ["SLOW please", "Shorter"]);
+      if (MOCK_LOG) await s.expect("…the model was asked exactly 'Shorter': the code hadn't changed, so nothing rode along", () => ({ question: asked(), requests: requests() - first }), { question: "Shorter", requests: 1 });
+      await s.expect("…and the quick replies are back, once, under the newest answer", async () => ({ groups: await quick(panel).count(), pills: await pills(panel) }), { groups: 1, pills: REPLIES });
+
+      // from the keyboard: Shift+Tab out of the composer reaches the last one, Enter asks it
+      await panel.getByLabel("Your question").focus();
+      await page.keyboard.press("Shift+Tab");
+      await s.expect("Shift+Tab from the composer lands on the last quick reply", () => page.evaluate(() => document.activeElement?.textContent), "Why?");
+      await page.keyboard.press("Enter");
+      await s.expect("…Enter asks 'Why?', and focus goes back to the composer instead of falling to the page", async () => ({ turns: await turns(), focus: await page.evaluate(() => document.activeElement?.getAttribute("aria-label")) }), { turns: ["SLOW please", "Shorter", "Why?"], focus: "Your question" }, { timeout: 5000 });
+      await answered(panel, 3);
+
+      // the code rides along, as it does from the composer
+      await page.locator(sel.editorContent).click({ position: { x: 60, y: 12 } });
+      await page.keyboard.press("Control+End");
+      await page.keyboard.type("# edited");
+      await quick(panel).getByRole("button", { name: "Next hint" }).click();
+      await answered(panel, 4);
+      await s.expect("a quick reply sent after an edit is tagged '+ code'", () => panel.locator(".asst-q").last().evaluate((q) => ({ text: q.querySelector("p").textContent, tags: [...q.querySelectorAll(".asst-tags span")].map((t) => t.textContent) })), { text: "Next hint", tags: ["+ code"] });
+      if (MOCK_LOG) await s.expect("…and the model got the code first, then the question 'Next hint'", () => asked(), (c) => c.startsWith("My code now:") && c.includes("# edited") && c.endsWith("My question: Next hint"));
+
+      // a question that fails leaves an alert, and no quick replies above it
+      await ask(panel, "AUTHFAIL please");
+      await s.expect("a failing question shows the alert and no quick replies", async () => ({ trouble: await panel.locator(".asst-trouble").count(), quick: await quick(panel).count() }), { trouble: 1, quick: 0 }, { timeout: 20_000 });
+
+      // a chat that is full (40 messages) is not offered another question
+      await newChat(page, panel);
+      await ask(panel, "Why?");
+      for (let n = 1; n < 20; n++) {
+        await answered(panel, n);
+        await quick(panel).getByRole("button", { name: "Why?" }).click();
+      }
+      await answered(panel, 20);
+      await s.expect("a full chat shows its note and no quick replies", async () => ({ notes: await panel.locator(".asst-note").allTextContents(), quick: await quick(panel).count() }), { notes: ["This chat is full. Start a new one to keep going."], quick: 0 });
+
+      // line numbers in an answer
+      await newChat(page, panel);
+      await ask(panel, "LINES please");
+      await answered(panel, 1);
+      const md = panel.locator(".asst-a .md").last();
+      await s.expect("'line 3' and 'lines 2-4' are buttons that keep her words and know their lines", () => buttonsIn(md), POINTS);
+      await s.expect("…and the 'line 5' in inline code and the 'line 6' in the fence stay text", async () => ({ inCode: await md.locator("code button, pre button").count(), code: await md.locator("code").allTextContents() }), { inCode: 0, code: ["line 5", "# line 6"] });
+      await s.shot(page, "follow-ups-desktop-light");
+      await dark(page);
+      await s.shot(page, "follow-ups-desktop-dark");
+      await page.emulateMedia({ colorScheme: "light" });
+      await panel.getByRole("button", { name: "Tough love" }).click();
+      await s.shot(page, "follow-ups-tough-desktop-light");
+      await panel.getByRole("button", { name: "Normal" }).click();
+
+      // a click on one: the cursor goes to the start of that line, the editor takes focus, the lines flash
+      const lines = (await codeOf(page)).split("\n");
+      await md.getByRole("button", { name: "lines 2-4", exact: true }).click();
+      await s.expect("clicking 'lines 2-4' flashes lines 2 to 4, in a band you can see whatever the motion setting", () => flashed(page).evaluateAll((els) => ({ lines: els.map((e) => e.textContent), painted: els.every((e) => getComputedStyle(e).backgroundColor !== "rgba(0, 0, 0, 0)") })), { lines: lines.slice(1, 4), painted: true });
+      await s.expect("…puts the cursor on line 2, in the editor, with nothing selected", () => cursorOf(page), { line: ["2"], inEditor: true, bare: true });
+      await s.expect("…while the window stays open", () => panel.isVisible(), true);
+      await gone(s, page, "…and the band is gone again after a couple of seconds");
+      await page.keyboard.type("# ");
+      await s.expect("typing then goes in front of line 2 and replaces nothing", async () => (await codeOf(page)).split("\n"), [lines[0], "# " + lines[1], lines[2], lines[3]]);
+
+      // every spelling, and the ones that stay text
+      await ask(panel, "LINEFORMS please");
+      await answered(panel, 2);
+      const forms = panel.locator(".asst-a .md").last();
+      await s.expect("'Line 4', 'LINES 2–3', 'lines 5 to 6', 'lines 7 and 8', 'line 40' and a bold 'lines 12-13' are buttons", () => buttonsIn(forms), [["Line 4", "4", "4"], ["LINES 2–3", "2", "3"], ["lines 5 to 6", "5", "6"], ["lines 7 and 8", "7", "8"], ["line 40", "40", "40"], ["lines 12-13", "12", "13"]]);
+      await s.expect("…and a link's words, 'outline 10', 'line 11x' and 'line 0' stay text", async () => ({ inLink: await forms.locator("a button").count(), link: await forms.locator("a").allTextContents(), text: (await forms.innerText()).includes("outline 10, line 11x and line 0") }), { inLink: 0, link: ["line 9"], text: true });
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await forms.getByRole("button", { name: "line 40", exact: true }).click();
+      await s.expect("a line past the end of the code lands on the last line, and flashes it alone", async () => ({ flashed: await flashed(page).count(), cursor: await cursorOf(page) }), { flashed: 1, cursor: { line: ["4"], inEditor: true, bare: true } });
+      await s.expect("…with motion allowed the band fades, over 1.5 s", () => flashed(page).first().evaluate((e) => [getComputedStyle(e).animationName, getComputedStyle(e).animationDuration]), ["cm-jumpline-fade", "1.5s"]);
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await gone(s, page, "…(that band goes too)");
+
+      // in a long file the line is scrolled to the middle
+      const where = () => page.evaluate((code) => {
+        const view = document.querySelector(`${code} .cm-scroller`).getBoundingClientRect();
+        const line = [...document.querySelectorAll(`${code} .cm-line`)].find((l) => l.textContent === "# row 40");
+        if (!line) return { inside: false, off: null };
+        const r = line.getBoundingClientRect();
+        return { inside: r.top >= view.top && r.bottom <= view.bottom, off: Math.round((r.top + r.bottom - view.top - view.bottom) / 2) };
+      }, sel.code);
+      await page.locator(sel.editorContent).click({ position: { x: 60, y: 12 } });
+      await page.keyboard.press("Control+a");
+      await page.keyboard.insertText(LONG);
+      await s.expect("(setup) in an 80-line file, line 40 is out of sight", async () => (await where()).inside, false);
+      await forms.getByRole("button", { name: "line 40", exact: true }).click();
+      await s.expect("clicking 'line 40' scrolls it into view, in the middle of the editor", where, (w) => w.inside && Math.abs(w.off) < 25);
+      await s.expect("…and the cursor is on it", async () => (await cursorOf(page)).line, ["40"]);
+
+      // Goth catgirl: the same, out of her JSON and in her messenger layout
+      await newChat(page, panel);
+      await panel.getByRole("button", { name: "Goth catgirl" }).click();
+      await ask(panel, "LINES please");
+      await answered(panel, 1);
+      const bubble = panel.locator(".asst-a").first().locator(".asst-bubble .md");
+      await s.expect("in Goth catgirl, out of her JSON, the same two buttons are in her bubble", () => buttonsIn(bubble), POINTS);
+      await s.expect("…and her 'line 5' and 'line 6' in code stay text", async () => ({ inCode: await bubble.locator("code button, pre button").count(), code: await bubble.locator("code").allTextContents() }), { inCode: 0, code: ["line 5", "# line 6"] });
+      await s.expect("…her quick replies are four round chips in her violet, lined up under her bubble", () => panel.evaluate((p) => {
+        const group = p.querySelector('[role=group][aria-label="Quick replies"]');
+        const chip = group.querySelector("button");
+        const box = chip.getBoundingClientRect();
+        const style = getComputedStyle(chip);
+        return {
+          pills: [...group.querySelectorAll("button")].map((b) => b.textContent),
+          chat: group.classList.contains("chat"),
+          round: parseFloat(style.borderTopLeftRadius) >= box.height / 2,
+          violet: style.color === "rgb(199, 125, 255)",
+          aligned: Math.abs(box.left - p.querySelector(".asst-a .asst-bubble").getBoundingClientRect().left) <= 1,
+        };
+      }), { pills: REPLIES, chat: true, round: true, violet: true, aligned: true });
+      await s.shot(page, "follow-ups-catgirl-desktop-light");
+      const second = requests();
+      await quick(panel).getByRole("button", { name: "Shorter" }).click();
+      await answered(panel, 2);
+      if (MOCK_LOG) await s.expect("…a click on 'Shorter' asks her exactly that, and the Worker still asks for her JSON", () => ({ question: asked(), format: mockRequests()?.at(-1)?.body?.output_config?.format?.type, requests: requests() - second }), { question: "Shorter", format: "json_schema", requests: 1 });
+      await s.expect("…and the quick replies are back under her newest bubble", async () => ({ groups: await quick(panel).count(), pills: await pills(panel) }), { groups: 1, pills: REPLIES });
+      await quick(panel).getByRole("button", { name: "Show me the fix" }).click();
+      await answered(panel, 3);
+      if (MOCK_LOG) await s.expect("…and 'Show me the fix' goes out as written too", () => asked(), "Show me the fix");
+      await bubble.getByRole("button", { name: "line 3", exact: true }).click();
+      await s.expect("a line button in her bubble jumps to the editor too", () => cursorOf(page), { line: ["3"], inEditor: true, bare: true });
+    } finally {
+      await ctx.close();
+    }
+  }
+
+  // a phone: the sheet steps aside for the editor
+  {
+    const { ctx, page } = await newPage(s, { phone: true, storage: store });
+    try {
+      await openWorkspace(s, page, { check: false });
+      const panel = page.locator(sel.panel);
+      const tabs = () => page.locator(".seg [role=tab]").evaluateAll((els) => els.map((e) => e.textContent.trim() + ":" + e.getAttribute("aria-selected")));
+      const fits = () => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+      await page.locator(sel.ask).tap();
+      await panel.waitFor({ state: "visible" });
+      await ask(panel, "LINES please");
+      await answered(panel, 1);
+      await s.expect("on a phone the sheet has the quick replies under her answer, and nothing scrolls sideways", async () => ({ pills: await pills(panel), fits: await fits() }), { pills: REPLIES, fits: true });
+      await s.shot(page, "phone-follow-ups-light");
+      await dark(page);
+      await s.shot(page, "phone-follow-ups-dark");
+      await page.emulateMedia({ colorScheme: "light" });
+
+      await s.expect("(setup) the Problem tab is under the sheet, and no band is up", async () => ({ tabs: await tabs(), flashed: await flashed(page).count() }), { tabs: ["Problem:true", "Code:false", "Tests:false"], flashed: 0 });
+      await panel.locator(".asst-a .md").getByRole("button", { name: "lines 2-4", exact: true }).tap();
+      await s.expect("tapping 'lines 2-4' hides the sheet and brings up the Code tab", async () => ({ sheet: await panel.isHidden(), tabs: await tabs(), code: await page.locator(sel.code).isVisible() }), { sheet: true, tabs: ["Problem:false", "Code:true", "Tests:false"], code: true }, { timeout: 3000 });
+      await s.expect("…with the cursor on line 2 of the editor, focused, and lines 2 to 4 flashing", async () => ({ flashed: await flashed(page).count(), cursor: await cursorOf(page) }), { flashed: 3, cursor: { line: ["2"], inEditor: true, bare: true } }, { timeout: 3000 });
+      await gone(s, page, "…and the band goes");
+      await page.locator(sel.ask).tap();
+      await panel.waitFor({ state: "visible" });
+      await panel.locator(".asst-a .md").getByRole("button", { name: "line 3", exact: true }).tap();
+      await s.expect("with the Code tab already up, 'line 3' still hides the sheet and lands on line 3", async () => ({ sheet: await panel.isHidden(), tabs: await tabs(), line: (await cursorOf(page)).line }), { sheet: true, tabs: ["Problem:false", "Code:true", "Tests:false"], line: ["3"] }, { timeout: 3000 });
+
+      // her messenger layout, in the sheet
+      await page.locator(sel.ask).tap();
+      await panel.waitFor({ state: "visible" });
+      await newChat(page, panel);
+      await panel.getByRole("button", { name: "Goth catgirl" }).tap();
+      await ask(panel, "LINES please");
+      await answered(panel, 1);
+      await s.expect("in Goth catgirl the sheet's quick replies wrap under her bubble without scrolling sideways", async () => ({ pills: await pills(panel), fits: await fits() }), { pills: REPLIES, fits: true });
+      await s.shot(page, "phone-follow-ups-catgirl-light");
+    } finally {
+      await ctx.close();
+    }
+  }
+  finish(s);
+}, { serial: true }); // reads the mock Anthropic log
+
 /* ------------------------------ driver ------------------------------ */
 
 runSuite({

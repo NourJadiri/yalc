@@ -3,6 +3,12 @@
 //   "AUTHFAIL" in the question -> 401 authentication_error
 //   "SLOW" in the question     -> 40 deltas, 250 ms apart (to test client hang-ups)
 //   "MARKDOWN" in the question -> a markdown answer (fence, list, links, raw html, image) in small deltas
+//   "LINES" in the question    -> an answer that points at lines ("line 3", "lines 2-4"), with a "line 5" in
+//                                 inline code and a "line 6" in a fence, which must stay text
+//   "LINEFORMS" in the question -> the other spellings of a line reference ("Line 4", "LINES 2–3", "lines 5 to 6",
+//                                 "lines 7 and 8", "line 40") and some that must stay text (in a link, inside
+//                                 a word, before a letter, line 0)
+//                                 Both come out of the plain-text path and the JSON path (below) alike.
 //   a JSON output format asked -> {"mood", "answer"} JSON in 4-character deltas, so keys and escapes split
 //                                 across them: the mood after "MOOD:" in the question (as written, so
 //                                 casing can be tested) or "smug"; with "ESCAPES", an answer full of escapes
@@ -55,19 +61,34 @@ http
         "- then [the docs](https://docs.python.org/3/) and [bad](javascript:alert(1))\n\n",
         "<script>alert(1)</script> ![pic](https://example.com/x.png)\n",
       ];
+      // Answers about lines: the same text whether it goes out as plain text or inside the JSON.
+      const LINE_ANSWERS = [
+        ["LINEFORMS", [
+          "Line 4, LINES 2–3, lines 5 to 6, lines 7 and 8, line 40.\n\n",
+          "Not these: [line 9](https://docs.python.org/3/), outline 10, line 11x and line 0.\n\n",
+          "A bold one: **lines 12-13**.",
+        ].join("")],
+        ["LINES", [
+          "Look at line 3, then lines 2-4. The `line 5` in code and the fence below stay text:\n\n",
+          "```python\n# line 6\n```\n",
+        ].join("")],
+      ];
+      const lineAnswer = LINE_ANSWERS.find(([trigger]) => question.includes(trigger))?.[1];
       const json = () => {
         const mood = /MOOD:(\w+)/.exec(question)?.[1] ?? "smug";
         const answer = question.includes("ESCAPES") ? 'Watch the quotes: "a\\b"\nthen 😺 nya~' : "Use a hash map.";
-        const text = JSON.stringify({ mood, answer }).replace(/[\u0080-\uffff]/g, (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
+        const text = JSON.stringify({ mood, answer: lineAnswer ?? answer }).replace(/[\u0080-\uffff]/g, (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
         return text.match(/[\s\S]{1,4}/g);
       };
       const deltas = body.output_config?.format?.type === "json_schema"
         ? json()
-        : question.includes("MARKDOWN")
-          ? MARKDOWN
-          : question.includes("SLOW")
-            ? Array.from({ length: 40 }, (_, i) => `chunk ${i} `)
-            : ["Use a ", "hash map."];
+        : lineAnswer
+          ? lineAnswer.match(/[\s\S]{1,6}/g)
+          : question.includes("MARKDOWN")
+            ? MARKDOWN
+            : question.includes("SLOW")
+              ? Array.from({ length: 40 }, (_, i) => `chunk ${i} `)
+              : ["Use a ", "hash map."];
       for (const text of deltas) {
         if (closed) { log({ at: Date.now(), event: "stopped-early" }); return; }
         sse(res, "content_block_delta", { type: "content_block_delta", index: 1, delta: { type: "text_delta", text } });

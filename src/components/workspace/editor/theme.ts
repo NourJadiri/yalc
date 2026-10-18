@@ -1,4 +1,7 @@
 import { EditorView } from "@codemirror/view";
+import { JUMP_FLASH_MS } from "./jumpLine";
+
+const JUMP_BAND = "color-mix(in srgb, var(--accent) 30%, transparent)";
 
 /* Everything reads the app's CSS variables, so light, dark and the accents need no branches here. */
 export const theme = EditorView.theme({
@@ -21,6 +24,9 @@ export const theme = EditorView.theme({
   },
   ".cm-cursor, .cm-dropCursor": { borderLeftColor: "var(--ink)", borderLeftWidth: "2px" },
   ".cm-errline": { backgroundColor: "var(--ed-err)" },
+  /* With animations off (the OS setting) the band stays as it is until jumpLine takes it away. */
+  ".cm-jumpline": { backgroundColor: JUMP_BAND, animation: `cm-jumpline-fade ${JUMP_FLASH_MS}ms ease-out forwards` },
+  "@keyframes cm-jumpline-fade": { from: { backgroundColor: JUMP_BAND }, to: { backgroundColor: "transparent" } },
   ".cm-matchingBracket": {
     backgroundColor: "color-mix(in srgb, var(--accent) 18%, transparent)",
     outline: "1px solid color-mix(in srgb, var(--accent) 45%, transparent)",

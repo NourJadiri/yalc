@@ -23,7 +23,9 @@ that run in the browser on real CPython (Pyodide). No LeetCode account needed.
   Claude that already knows the problem, your code and your last run. Three modes, picked
   in its header: Normal, Tough love (roasts your code, then shows you exactly where it's
   wrong) and Goth catgirl (who texts you, her face changing with her mood), each with its
-  own look.
+  own look. Following up is a tap, not typing: four quick replies sit under her latest
+  answer, and when she says "line 7" it is a button that takes you to that line of your
+  code.
 
 Progress is stored in `localStorage`. Cloud sync and the assistant are optional; without
 them the app is fully local. It loads nothing from other origins: no web fonts, no

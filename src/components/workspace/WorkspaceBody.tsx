@@ -5,7 +5,7 @@ import { useMedia } from "../../hooks/useMedia";
 import { useApp } from "../../state/AppState";
 import { useAssistantWindow } from "../assistant/hooks/useAssistantWindow";
 import ConsolePane from "./console/ConsolePane";
-import type { EditorSnapshot } from "./editor/Editor";
+import type { EditorHandle, EditorSnapshot } from "./editor/Editor";
 import EditorPane from "./editor/EditorPane";
 import HeaderActions from "./header/HeaderActions";
 import ProblemMeta from "./header/ProblemMeta";
@@ -13,6 +13,7 @@ import WorkspaceHeader from "./header/WorkspaceHeader";
 import { useCaseDrafts } from "./hooks/useCaseDrafts";
 import { useClaudeHandoff } from "./hooks/useClaudeHandoff";
 import { useDraft } from "./hooks/useDraft";
+import { useLineJump } from "./hooks/useLineJump";
 import { useRunSession } from "./hooks/useRunSession";
 import { useClock } from "./hooks/useStopwatch";
 import { useOneShot } from "./hooks/useOneShot";
@@ -46,6 +47,8 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
   const [revealed, setRevealed] = useState(false);
   /* Crossing 900px swaps layouts and remounts the panes; what must survive that lives here. */
   const editorSnapshot = useRef<EditorSnapshot | null>(null);
+  /* The editor fills it while it is mounted; Bana's line numbers move its cursor through it. */
+  const editorHandle = useRef<EditorHandle | null>(null);
   const clock = useClock();
 
   const session = useRunSession({
@@ -61,6 +64,7 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
   });
   const oneShot = useOneShot(pid, session.run, accepted);
   const assistantWindow = useAssistantWindow();
+  const goToLine = useLineJump({ editor: editorHandle, wide, hideAssistant: assistantWindow.hide, onTab: setMobileTab });
   const claude = useClaudeHandoff({ content, code: draft.code, run: session.run });
   useWorkspaceShortcuts({
     start: session.start,
@@ -96,6 +100,7 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
       onFontStep={prefs.stepFont}
       onReset={draft.reset}
       snapshot={editorSnapshot}
+      handle={editorHandle}
     />
   );
   const consolePane = (
@@ -119,6 +124,7 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
       context={claude.readContext}
       oneShot={oneShot}
       wide={wide}
+      onLine={goToLine}
     />
   );
 

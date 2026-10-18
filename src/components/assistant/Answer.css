@@ -5,6 +5,20 @@
 .asst-a .md a { text-decoration: underline; text-underline-offset: 2px; }
 .asst-a .md h1, .asst-a .md h2, .asst-a .md h3, .asst-a .md h4 { font-size: 13.5px; margin: 12px 0 6px; }
 
+/* A "line 7" she names: a chip in the sentence that takes you to that line. The text leans toward the ink so it holds its contrast on its own tint, in every mode and theme. */
+.asst-a .md .asst-line {
+  position: relative; display: inline-block; padding: 0 5px; border-radius: 6px; white-space: nowrap;
+  line-height: 1.35; font-weight: 600; color: color-mix(in srgb, var(--accent) 70%, var(--ink));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  transition: background-color .15s ease;
+}
+/* A bigger target for a thumb, as base.css does for the other small controls. */
+.asst-a .md .asst-line::after { content: ""; position: absolute; inset: -5px -3px; }
+.asst-a .md .asst-line:active { background: color-mix(in srgb, var(--accent) 24%, transparent); }
+@media (hover: hover) {
+  .asst-a .md .asst-line:hover { background: color-mix(in srgb, var(--accent) 24%, transparent); }
+}
+
 /* The editor's palette, by class (src/lib/highlightRules.ts). */
 .asst .hl-kw { color: var(--hl-kw); }
 .asst .hl-str { color: var(--hl-str); }

@@ -4,12 +4,18 @@ import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { editorExtensions } from "./extensions";
 import { setErrorLine } from "./errorLine";
+import { jumpToLine } from "./jumpLine";
 import { fontTheme } from "./theme";
 import "./Editor.css";
 
 export interface EditorSnapshot {
   docKey: string;
   state: unknown;
+}
+
+export interface EditorHandle {
+  /** The cursor to the start of line `from` (counted from 1), centred and focused; lines `from` to `to` flash. */
+  goToLine(from: number, to?: number): void;
 }
 
 export interface EditorProps {
@@ -28,6 +34,8 @@ export interface EditorProps {
   label: string;
   /** Outlives the editor: a rebuild for the same document resumes from it, undo history included. */
   snapshot?: RefObject<EditorSnapshot | null>;
+  /** Set while the view exists (a rebuild sets it again), so whoever holds the ref can move the cursor. */
+  handle?: RefObject<EditorHandle | null>;
 }
 
 export default function Editor({
@@ -42,6 +50,7 @@ export default function Editor({
   readOnly = false,
   label,
   snapshot,
+  handle,
 }: EditorProps) {
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView | null>(null);
@@ -59,8 +68,10 @@ export default function Editor({
       : EditorState.create({ doc: value, extensions });
     const v = new EditorView({ state, parent: el });
     view.current = v;
+    if (handle) handle.current = { goToLine: (from, to) => jumpToLine(v, from, to) };
     return () => {
       if (snapshot) snapshot.current = { docKey, state: v.state.toJSON({ history: historyField }) };
+      if (handle) handle.current = null;
       v.destroy();
       view.current = null;
     };

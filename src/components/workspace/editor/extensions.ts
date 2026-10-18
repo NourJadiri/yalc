@@ -24,6 +24,7 @@ import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { python } from "@codemirror/lang-python";
 import { errorLine } from "./errorLine";
 import { highlight } from "./highlight";
+import { jumpLine } from "./jumpLine";
 import { fontTheme, theme } from "./theme";
 
 export interface EditorCallbacks {
@@ -69,6 +70,8 @@ export function editorExtensions({ callbacks, font, fontSize, label, readOnly }:
     theme,
     font.of(fontTheme(fontSize)),
     errorLine,
+    /* Bana's line numbers point into the code you write, not into a reference solution. */
+    readOnly ? [] : jumpLine,
     keymap.of([
       ...closeBracketsKeymap,
       ...defaultKeymap,

@@ -14,6 +14,8 @@ interface LazyAssistantProps {
   /** The problem was just one-shot: Bana's catgirl mode has a face for that. */
   oneShot: boolean;
   wide: boolean;
+  /** A line number in an answer was clicked. */
+  onLine: (from: number, to: number) => void;
 }
 
 export default function LazyAssistant({ loaded, ...props }: LazyAssistantProps) {
