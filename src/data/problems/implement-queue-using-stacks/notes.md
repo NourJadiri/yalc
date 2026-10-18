@@ -1,3 +1,19 @@
+## Pattern
+Design (two stacks)
+
+## Key idea
+Pouring one stack into another reverses the order, so the oldest item lands on top; pour only when `outbox` is empty, or newer items jump the queue.
+
+## Steps
+1. Keep two stacks: `inbox` takes every push (its top is the newest); `outbox` serves the front (its top is the oldest).
+2. On `push(x)`, append `x` to `inbox`.
+3. On `pop()`, call `peek()` so the front item is on top of `outbox`, then pop it.
+4. On `peek()`, pour all of `inbox` into `outbox`, but only if `outbox` is empty; then return its top.
+5. On `empty()`, return `True` only when both stacks are empty.
+
+## Cost
+`O(1)` amortised time per operation · `O(n)` space for `n` items
+
 ## Approach
 
 **Two opposite orders.** A stack is last in, first out: the plate you put down last is the first one you pick up. A queue is first in, first out: whoever joined the line first is served first. These orders are exact opposites, and that's what makes the trick work. Pour one stack into another, one item at a time, and the order flips. The item that was at the bottom, which is the oldest, ends up on top.

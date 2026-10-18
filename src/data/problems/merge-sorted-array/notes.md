@@ -1,3 +1,18 @@
+## Pattern
+Two pointers
+
+## Key idea
+Merging from the front would overwrite `nums1` values you still need; the free room is at the back, so fill from the back with the larger remaining value.
+
+## Steps
+1. Start three pointers at the back: `i` on the last real value of `nums1`, `j` on the last of `nums2`, and `write` on the last slot.
+2. Loop while `nums2` still has values (`j >= 0`); once it runs out, the rest of `nums1` is already in place.
+3. Copy the larger of `nums1[i]` and `nums2[j]` into `nums1[write]`, and step back the pointer it came from; take `nums2[j]` once `i < 0`.
+4. Move `write` one slot left, ready for the next value.
+
+## Cost
+`O(m + n)` time · `O(1)` space
+
 ## Approach
 
 **The pattern: merging two sorted lists with two pointers.** This is the merge step of merge sort. Keep one pointer in each list, compare the two values they point at, take whichever should come next, and advance only that pointer. Every comparison places one value for good, so the whole merge is a single pass.

@@ -1,3 +1,18 @@
+## Pattern
+Recursion
+
+## Key idea
+A copy can start at any node, so run `isSameTree` from every node of `root`; it must also reject a candidate with extra nodes below.
+
+## Steps
+1. If `root` is empty, return `False`: an empty tree holds no copy of anything.
+2. Return `True` if `subRoot` matches starting right here (`isSameTree`) or inside the left or right subtree (`isSubtree`); `or` stops at the first hit.
+3. In `isSameTree`, both trees must run out at the same place: two empty trees match, exactly one empty does not.
+4. Otherwise the two values must be equal and both pairs of children must match, checked recursively.
+
+## Cost
+`O(m · n)` time for `m` nodes in `root` and `n` in `subRoot` · `O(h)` space (height of `root`)
+
 ## Approach
 
 **Reuse what you already have.** Same Tree answers "are these two trees identical?". A copy of `subRoot` inside `root` is a place where Same Tree, started at some node of `root`, says yes. So the job is to try Same Tree from every node of `root` — and the tidy way to visit every node is the tree recursion you've used all along.

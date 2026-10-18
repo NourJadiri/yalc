@@ -1,3 +1,17 @@
+## Pattern
+Dynamic programming (memoised DFS)
+
+## Key idea
+Steps go strictly uphill, so a path never revisits a cell: the longest path from each cell is a fixed number, and caching it solves each cell once.
+
+## Steps
+1. Define `longest(r, c)`, the longest increasing path starting at `(r, c)`: at least `1` (the cell alone), with `@cache` so each cell is solved once.
+2. Step onto each in-grid neighbour with a strictly larger value, keeping the best of `1 + longest(x, y)`.
+3. Return the largest `longest(r, c)` over every starting cell.
+
+## Cost
+`O(m · n)` time · `O(m · n)` space for the cache and recursion
+
 ## Approach
 
 From each cell, the best increasing path either stops right there, or takes one step to a strictly larger neighbour and continues with *that* neighbour's best path. So let `longest(r, c)` mean "the longest increasing path that starts at `(r, c)`". Then:

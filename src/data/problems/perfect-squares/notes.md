@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+Whichever square `s` ends a best sum for `i`, the rest must be a best sum for `i - s`, so try every square as the last one.
+
+## Steps
+1. List the perfect squares up to `n`.
+2. Let `fewest[i]` be the fewest squares that sum to `i`: start every entry at `i` (all ones) as an upper bound, so `fewest[0] = 0`.
+3. For each `i` from `2` up to `n`, try every square `s <= i` as the last one: `fewest[i] = min(fewest[i], fewest[i - s] + 1)`.
+4. Return `fewest[n]`.
+
+## Cost
+`O(n · √n)` time · `O(n)` space
+
 ## Approach
 
 This is an unbounded knapsack that minimises. The items are the squares `1, 4, 9, …` up to `n`, each usable any number of times, and you want to hit `n` exactly with as few items as possible.

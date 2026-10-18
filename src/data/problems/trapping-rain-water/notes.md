@@ -1,3 +1,18 @@
+## Pattern
+Two pointers
+
+## Key idea
+A bar's level is the lower of its two side maxima; at the lower end the far side is at least as tall, so that end's running max decides.
+
+## Steps
+1. Put `left` and `right` at the two ends, set `left_max`, `right_max` and `water` to `0`, and loop while `left < right`.
+2. Compare the two end bars and work on the lower one (`left` if `height[left] < height[right]`, else `right`).
+3. Update that side's running max, add the gap `max - height` to `water`, and move that pointer one step inward.
+4. Return `water`.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **The level over one bar.** Water above bar `i` rises until it would spill. It is held by the tallest bar on its left and the tallest bar on its right, and it spills over the lower of those two. So the level is `min(maxLeft(i), maxRight(i))` — both maxima including bar `i` itself — and the water there is that level minus `height[i]`. Sum that over every bar. The whole question is how cheaply you can know both maxima.

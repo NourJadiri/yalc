@@ -1,3 +1,18 @@
+## Pattern
+Topological sort (Kahn's algorithm)
+
+## Key idea
+All courses can be finished exactly when the graph has no cycle, and a course on a cycle never reaches zero unmet prerequisites, so it is never taken.
+
+## Steps
+1. For each pair `[a, b]`, add `a` to `unlocks[b]` and count one more unmet prerequisite in `waiting[a]`.
+2. Queue every course whose `waiting` count is `0`: it can be taken right now.
+3. Pop a course and count it as taken; decrement `waiting` for each course it unlocks, and queue any that reach `0`.
+4. Return whether `taken` equals `numCourses`; a course never taken sits on a cycle, or waits on one.
+
+## Cost
+`O(V + E)` time for `V` courses and `E` pairs · `O(V + E)` space
+
 ## Approach
 
 Model the courses as a directed graph: each pair `[a, b]` is an edge `b -> a` ("finishing `b` unlocks `a`"). A valid order is a **topological order** of that graph, and one exists exactly when the graph has **no cycle**. Courses on a cycle each wait on another one in the loop, so none of them can ever go first.

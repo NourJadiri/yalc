@@ -1,3 +1,18 @@
+## Pattern
+Binary search
+
+## Key idea
+The answers run all `False`, then all `True`, so one call at the middle rules out half the range; the loop ends with `lo` on the first `True`.
+
+## Steps
+1. Search every version: start with `lo = 1` and `hi = n`.
+2. While `lo <= hi`, test `mid = (lo + hi) // 2`, keeping the invariant: all versions before `lo` are good, all after `hi` are bad.
+3. If `mid` is bad, everything from it on is bad: set `hi = mid - 1`. If it is good, set `lo = mid + 1`.
+4. Return `lo`: when the loop ends, `lo == hi + 1`, so everything before `lo` is good and `lo` is bad.
+
+## Cost
+`O(log n)` time and calls to `isBadVersion` · `O(1)` space
+
 ## Approach
 
 **A boundary in a line of yes/no answers.** Line the versions up and write the answer to `isBadVersion` under each one: `False, False, False, True, True, True`. Every version after a bad one is bad, so all the `False`s come first and all the `True`s come after. There's exactly one place where the answers switch, and the first `True` is the boundary you're looking for.

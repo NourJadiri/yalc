@@ -1,3 +1,19 @@
+## Pattern
+Backtracking (depth-first search)
+
+## Key idea
+One shared path list grows on the way down and shrinks on the way back; a path ends only at a node with no children, never at `None`.
+
+## Steps
+1. Keep `paths` for the answers and one shared `path` list holding the values from the root to the current node.
+2. In `dfs`, push the node's value onto `path` as a string.
+3. If the node has no left and no right child, it is a leaf: record `"->".join(path)`.
+4. Otherwise recurse into each child that exists.
+5. Pop the value on the way back up, so the parent sees `path` as it was.
+
+## Cost
+`O(n · h)` time for height `h` · `O(h)` space besides the output
+
 ## Approach
 
 Depth-first search with a path that grows on the way down and shrinks on the way back up: the backtracking skeleton applied to a tree.

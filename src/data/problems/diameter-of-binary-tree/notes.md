@@ -1,3 +1,19 @@
+## Pattern
+Depth-first search
+
+## Key idea
+Every path bends at one highest node, where its length is the left height plus the right height; return the height, but record that sum on the side.
+
+## Steps
+1. Keep `best` outside the recursion: the longest bent path seen so far, starting at `0`.
+2. Define `height(node)`: a missing node has height `0`; otherwise recurse into both children to get `left` and `right`.
+3. Update `best` with `left + right`, the edges of the longest path that bends at this node.
+4. Return `1 + max(left, right)`, the height that the parent can extend.
+5. Call `height(root)`, then return `best`.
+
+## Cost
+`O(n)` time · `O(h)` space for tree height `h`
+
 ## Approach
 
 **Look at where a path bends.** Every path in a tree has exactly one highest node: the path climbs up to it and then heads back down (either half may be empty). So the longest path overall is the best, over all nodes, of "the longest path whose highest node is this one".

@@ -1,3 +1,19 @@
+## Pattern
+Binary search on the answer
+
+## Key idea
+The total hours never increase as the speed grows, so the speeds that work form one range `[answer, max(piles)]`; binary search for where that range starts.
+
+## Steps
+1. Search speeds from `lo = 1` to `hi = max(piles)`; at `max(piles)` every pile takes one hour, so it always works.
+2. While `lo < hi`, try the middle speed `k = (lo + hi) // 2`.
+3. Count the hours at speed `k`: the sum of `ceil(p / k)` over the piles, computed in integers as `(p + k - 1) // k`.
+4. If `hours <= h`, `k` works and the answer is `k` or slower: set `hi = k`. Otherwise `k` is too slow: set `lo = k + 1`.
+5. Return `lo`; once `lo == hi`, it is the slowest speed that works.
+
+## Cost
+`O(n log m)` time for `m = max(piles)` · `O(1)` space
+
 ## Approach
 
 This is **binary search on the answer**. Fix a speed `k`. A pile of `p` bananas takes `ceil(p / k)` hours: some full hours eating `k` at a time, plus one more hour for any remainder. So the total time at speed `k` is

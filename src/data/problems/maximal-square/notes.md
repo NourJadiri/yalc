@@ -1,3 +1,19 @@
+## Pattern
+Dynamic programming (2D grid)
+
+## Key idea
+Anchor each square at its bottom-right corner: on a `"1"`, its side is 1 plus the smallest side among the squares ending above, left and up-left.
+
+## Steps
+1. Keep `prev`, the largest square side ending at each cell of the row above, with a zero border at index `0`; `best` starts at `0`.
+2. For each row, start a fresh `cur` of zeros and walk its cells left to right.
+3. On a `"1"`, set `cur[j] = 1 + min(prev[j], cur[j - 1], prev[j - 1])` (above, left, up-left), and update `best`.
+4. When the row is done, it becomes `prev`.
+5. Return `best * best`: the area, not the side.
+
+## Cost
+`O(m · n)` time · `O(n)` space (two rows)
+
 ## Approach
 
 Checking squares directly is expensive: `O(m · n)` corners, up to 300 sizes at each, and every check reads up to `size^2` cells. The DP reuses work by anchoring each square at its **bottom-right** corner.

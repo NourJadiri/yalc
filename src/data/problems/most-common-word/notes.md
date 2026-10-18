@@ -1,3 +1,18 @@
+## Pattern
+Hash map (counting)
+
+## Key idea
+Turn every non-letter into a space and lowercase the rest, so a plain `split()` yields the words and the counter never sees punctuation or case.
+
+## Steps
+1. Rebuild the paragraph with each letter lowercased and every other character replaced by a space.
+2. Put `banned` into a set, so each "is it banned?" check is `O(1)`.
+3. Split the cleaned text into words and count those not in the set with a `Counter`.
+4. Return the word with the highest count: `most_common(1)`.
+
+## Cost
+`O(P + B)` time · `O(P + B)` space, for paragraph length `P` and `B` banned characters
+
 ## Approach
 
 **The pattern: normalise, split, count.** Text problems get much easier when you first turn the messy input into a clean, uniform shape, and only then apply the obvious algorithm.

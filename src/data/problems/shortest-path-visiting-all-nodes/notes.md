@@ -1,3 +1,19 @@
+## Pattern
+Breadth-first search
+
+## Key idea
+A walk's future depends only on where it stands and which nodes are still unvisited, so BFS over `(mask, node)` states finds the shortest walk.
+
+## Steps
+1. Let `full = (1 << n) - 1` be the goal: the mask with every node's bit set.
+2. A state is `(mask, node)`. Seed every one-node state `(1 << i, i)` and mark it seen, since the walk may start anywhere.
+3. Go layer by layer, counting `steps`; return `steps` when a state's `mask` equals `full`.
+4. From a state, step to each neighbour `nb`: the new state is `(mask | 1 << nb, nb)`; queue it if unseen, marking it seen.
+5. When the layer is done, it becomes the next frontier and `steps` goes up by one.
+
+## Cost
+`O(2^n · n^2)` time · `O(2^n · n)` space
+
 ## Approach
 
 "Shortest" in an unweighted graph says BFS, but over *what*? A node alone isn't enough. Standing at node `3` having seen `{0, 1, 3}` is a different situation from standing there having seen everything. So the state has to carry what's been visited: **`(mask, node)`**, where bit `i` of `mask` records whether node `i` has been visited. There are `n * 2^n` states, at most 49,152 for `n = 12`, which is small enough to search completely.

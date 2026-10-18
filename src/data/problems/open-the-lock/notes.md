@@ -1,3 +1,19 @@
+## Pattern
+Breadth-first search
+
+## Key idea
+Codes are nodes and every move costs the same, so BFS finds the fewest moves; dead ends act like already-visited codes, so they go straight into `seen`.
+
+## Steps
+1. Seed `seen` with the dead ends. If `"0000"` is one, return `-1`; otherwise mark it seen, queue it, and start `moves` at `0`.
+2. Process the queue one layer at a time (one layer = one more move); return `moves` when a popped code is `target`.
+3. Turn each of the four wheels up and down, wrapping with `% 10`, to build the code's eight neighbours.
+4. Skip neighbours already in `seen`; mark each new one seen as you queue it.
+5. After the layer, add one to `moves`; if the queue empties without reaching `target`, return `-1`.
+
+## Cost
+`O(10^4 · 8)` time, from 10^4 codes with 8 neighbours each · `O(10^4)` space
+
 ## Approach
 
 Model the lock as a graph. Each of the 10,000 codes is a node, and two codes are joined when one move turns one into the other. Every code has exactly eight neighbours: four wheels, each turned up or down, with `(d + 1) % 10` and `(d - 1) % 10` handling the wrap-around. Every move costs the same, so the fewest moves is a shortest path in an unweighted graph, and that's BFS.

@@ -1,3 +1,18 @@
+## Pattern
+Union-find
+
+## Key idea
+A person is a connected component of accounts, and an email seen for a second time is an edge back to the account that first held it.
+
+## Steps
+1. Give every account its own union-find set: a `parent` list over account indices, and a `find` with path halving.
+2. For each email, if `owner` already has it, union this account with the owner's; otherwise record this account as the owner.
+3. Group the distinct emails (the keys of `owner`) by the root of their account.
+4. For each group, put the name first, then its emails in sorted order.
+
+## Cost
+`O(N log N)` time for `N` total emails · `O(N)` space
+
 ## Approach
 
 Treat each account as a node, and draw an edge between two accounts whenever they share an email. A person is then a **connected component**, and the task is to list every component's emails. Checking every pair of accounts for overlap would build that graph in `O(n^2)` set intersections, but there's no need to. An email seen for a second time *is* an edge, back to the account that had it first.

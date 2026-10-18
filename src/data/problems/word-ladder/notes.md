@@ -1,3 +1,20 @@
+## Pattern
+Breadth-first search
+
+## Key idea
+Words are nodes and one-letter changes are edges, so BFS layer by layer gives the shortest ladder; wildcard buckets (`c*ld`) find neighbours without comparing every pair of words.
+
+## Steps
+1. Put `wordList` in a set; if `endWord` isn't in it, return `0`, since no ladder can end there.
+2. Bucket every word under each of its wildcard patterns, one per position: `cold` goes into `*old`, `c*ld`, `co*d` and `col*`.
+3. Start the search at `beginWord`: mark it seen, queue it, and set `length = 1`, the words in the ladder so far.
+4. Take the queue one layer at a time; return `length` when a popped word is `endWord`.
+5. For each position of the popped word, pop that pattern's bucket and queue its unseen words, marking them seen.
+6. After each layer, add one to `length`; if the queue empties first, return `0`.
+
+## Cost
+`O(N · L^2)` time · `O(N · L^2)` space, for `N` words of length `L`
+
 ## Approach
 
 Treat each word as a node, with an edge between any two words that differ in exactly one position. A ladder is a path, its length counts the words on it, and every edge costs the same. So the shortest ladder is a BFS from `beginWord`, processed one layer at a time. When `endWord` comes off the queue, the layer number is the answer. If the queue empties first, there's no ladder.

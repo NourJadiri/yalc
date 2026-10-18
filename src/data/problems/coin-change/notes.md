@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+Whichever coin `c` is paid last, the rest must be an optimal way to pay `a - c`, so `dp[a]` is the best `1 + dp[a - c]`.
+
+## Steps
+1. Let `dp[a]` be the fewest coins that make exactly `a`: `dp[0] = 0`, every other entry starts at `amount + 1`, meaning "can't be made".
+2. For each `a` from `1` up to `amount`, try every coin `c` with `c <= a` as the last coin paid.
+3. Keep the smaller of `dp[a]` and `dp[a - c] + 1`.
+4. Return `dp[amount]`, or `-1` if it is still `amount + 1`.
+
+## Cost
+`O(amount · k)` time for `k` coins · `O(amount)` space
+
 ## Approach
 
 Greedy is the instinct — a cashier pays with the largest coin that fits — and it's right for everyday currencies. It breaks as soon as the denominations are irregular: with `[1, 6, 10]` and 12, taking the 10 forces two 1s (three coins) while two 6s need only two. It can even miss that an answer exists: with `[5, 7]` and 10 it takes the 7, and the remaining 3 can't be paid. So every choice has to be considered — without paying exponentially for it.
