@@ -1,3 +1,18 @@
+## Pattern
+Binary search
+
+## Key idea
+Sorted order means comparing `target` with the middle element discards half the range; keep the promise that `target`, if present, lies in `nums[lo..hi]`, both ends included.
+
+## Steps
+1. Set `lo = 0` and `hi = len(nums) - 1`: the whole list, both ends included.
+2. While `lo <= hi`, take `mid = (lo + hi) // 2`; if `nums[mid] == target`, return `mid`.
+3. If `nums[mid]` is too small, move `lo` to `mid + 1`; otherwise move `hi` to `mid - 1`. Both skip `mid`, which is already checked.
+4. If the range empties (`lo > hi`), return `-1`: the target was never there.
+
+## Cost
+`O(log n)` time · `O(1)` space
+
 ## Approach
 
 **The pattern: binary search.** Think about looking up a word in a paper dictionary. You don't start reading at page one. You open it somewhere near the middle, see whether your word comes before or after that page, and ignore the half it can't be in. Each look halves what's left, so even a 1,000-page dictionary takes only about 10 looks.

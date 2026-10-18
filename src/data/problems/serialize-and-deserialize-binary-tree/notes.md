@@ -1,3 +1,19 @@
+## Pattern
+Depth-first search (preorder)
+
+## Key idea
+Preorder with a `#` for every missing child makes each subtree one unbroken block of tokens, so each recursive `read()` consumes exactly its own subtree.
+
+## Steps
+1. In `serialize`, walk the tree in preorder (node, left, right), appending `str(node.val)`, or `#` for a missing child.
+2. Join the tokens with commas into one string, so `-12` stays one value.
+3. In `deserialize`, split the string on commas and read the tokens through one shared iterator.
+4. In `read()`, take the next token; `#` means an empty subtree, so return `None`.
+5. Otherwise build a node from the token, then set its left child to `read()` and its right child to `read()`, in that order.
+
+## Cost
+`O(n)` time in each direction · `O(n)` space for the string
+
 ## Approach
 
 The values are easy to write down; the shape is the hard part. So write the shape down explicitly: list the nodes in preorder (node, then left subtree, then right subtree), write a marker `#` for every missing child, and join the tokens with commas.

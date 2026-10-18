@@ -1,3 +1,18 @@
+## Pattern
+Design (circular buffer)
+
+## Key idea
+Only the last 300 seconds matter, so reuse 300 buckets at index `t % 300`; each remembers its second, which tells stale data from current.
+
+## Steps
+1. Make two arrays of 300 slots: `time[i]` says which second bucket `i` holds, `hits[i]` how many hits it had.
+2. In `record(t)`, take bucket `i = t % 300`; if `time[i] != t` it is stale, so set `time[i] = t` and `hits[i] = 0`.
+3. Add one to `hits[i]`.
+4. In `count(t)`, sum `hits[i]` over the buckets whose second is within 300 of `t` (`t - time[i] < 300`).
+
+## Cost
+`O(1)` time per `record`, `O(300)` per `count` · `O(300)` space
+
 ## Approach
 
 Start with the deque: append every timestamp on `record`; on `count(t)`, pop from the front while the oldest stamp is `<= t - 300`, then return the length. Every event is pushed and popped once, so it's `O(1)` amortised — but it stores every event inside the window, which under heavy traffic is a lot of memory.

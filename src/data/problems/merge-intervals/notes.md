@@ -1,3 +1,18 @@
+## Pattern
+Intervals (sort and sweep)
+
+## Key idea
+Sorted by start, an interval can only overlap the last merged block, so one comparison with that block's end decides: extend it or start a new block.
+
+## Steps
+1. Keep a list `merged` of blocks and go through the intervals sorted by start.
+2. For each interval, compare its `start` with the end of the last block in `merged`.
+3. If `start <= merged[-1][1]` (touching counts), extend that block to `max(merged[-1][1], end)`.
+4. Otherwise, or if `merged` is empty, append `[start, end]` as a new block.
+
+## Cost
+`O(n log n)` time · `O(n)` space
+
 ## Approach
 
 **Sort by start, then sweep.** Once the intervals are sorted by start, the interval in hand can only overlap the *last* merged block. Every earlier block ended before the last one began (otherwise they would already have been merged), and the current interval starts no earlier than the last block did, so it can't reach back past it.

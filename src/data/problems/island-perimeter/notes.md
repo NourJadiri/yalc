@@ -1,3 +1,17 @@
+## Pattern
+Local counting on a grid
+
+## Key idea
+Every unit of coastline is one side of one land cell, so no search is needed: count the sides facing water or the map's edge.
+
+## Steps
+1. Start `perimeter = 0` and visit every cell, skipping the water.
+2. For each land cell, look at the cell across each of its four sides.
+3. Add `1` to `perimeter` whenever that cell is water or off the map.
+
+## Cost
+`O(rows · cols)` time · `O(1)` space
+
 ## Approach
 
 **The pattern: local counting on a grid.** Some grid questions need a search (BFS or DFS) because the answer depends on how cells connect to each other. This one doesn't: the perimeter is a sum of small, local facts. Every unit of coastline is one side of one land cell — a side with land on one side and water, or the end of the map, on the other. So visit every cell, and for each land cell look at its four neighbours:

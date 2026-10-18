@@ -1,3 +1,17 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+`i >> 1` is `i` with its last bit dropped, a smaller number you have already counted; add that dropped bit back with `i & 1`.
+
+## Steps
+1. Make a list `ans` of `n + 1` zeros; `ans[0] = 0` is the base case.
+2. Walk `i` upward from `1` to `n`, so every smaller answer is already filled in.
+3. Set `ans[i] = ans[i >> 1] + (i & 1)`: the answer for `i` without its last bit, plus that bit.
+
+## Cost
+`O(n)` time · `O(1)` space beyond the output
+
 ## Approach
 
 **The pattern: DP over numbers.** You need an answer for *every* number from `0` to `n`, and each number's bits look a lot like the bits of some smaller number. That's the DP signal again: if `ans[i]` can be written in terms of `ans` at a smaller index, one left-to-right pass fills the whole list, because the smaller answer is always ready by the time you need it.

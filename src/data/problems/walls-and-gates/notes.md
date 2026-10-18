@@ -1,3 +1,17 @@
+## Pattern
+Multi-source BFS
+
+## Key idea
+Search outward from every exit at once: rings grow in order of distance, so the first one to touch an open cell comes from its nearest exit.
+
+## Steps
+1. Put every exit, every cell holding `0`, in the queue at once.
+2. Pop a cell from the queue and look at its four neighbours.
+3. If a neighbour is on the grid and still `2147483647` (not visited), set it to the popped cell's value plus one and queue it.
+
+## Cost
+`O(m · n)` time · `O(m · n)` space
+
 ## Approach
 
 Multi-source BFS. Asking "how far is the nearest exit?" from every open cell is one search per cell. Turn it around: start the search from all the exits at once. Put every exit in the queue at distance `0`, then run an ordinary BFS. The queue holds the cells in rings — every distance-`d` cell is dequeued before any distance-`d + 1` cell — so the first ring that touches an open cell comes from its nearest exit, whichever exit that is.

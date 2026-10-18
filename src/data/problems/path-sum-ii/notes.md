@@ -1,3 +1,19 @@
+## Pattern
+Backtracking (depth-first search)
+
+## Key idea
+Share one `path` while recursing: add a node on the way down, remove it on the way back, and test `remaining == 0` only at a leaf.
+
+## Steps
+1. Keep one shared list `path`; in `dfs(node, remaining)`, append `node.val` to it and subtract it from `remaining`.
+2. At a leaf (no children), if `remaining == 0`, record a copy of the path: `path[:]`.
+3. At any other node, recurse into each child that exists, with no early exit when `remaining` drops below zero: later negative values can bring the sum back.
+4. Pop `node.val` off `path` before returning, so siblings start from the same prefix.
+5. Call `dfs(root, targetSum)` unless the tree is empty.
+
+## Cost
+`O(n + k · h)` time for `k` matches in a tree of height `h` · `O(h)` space
+
 ## Approach
 
 Backtracking over the tree, carrying two things down: the values on the current path, and how much of `targetSum` is still missing.

@@ -1,3 +1,18 @@
+## Pattern
+Prefix sums (hash map)
+
+## Key idea
+A subarray ending here sums to `k` exactly when an earlier prefix equals `prefix - k`, so a map counting earlier prefixes answers each position in `O(1)`.
+
+## Steps
+1. Make `seen`, a map from prefix sum to how many times it has occurred, seeded with `{0: 1}` for the empty prefix.
+2. Start `prefix` and `count` at `0`, then walk the list adding each number to `prefix`.
+3. Add `seen.get(prefix - k, 0)` to `count`: each earlier prefix equal to `prefix - k` marks a subarray ending here that sums to `k`.
+4. Only then add the current `prefix` to `seen`; storing it first would count an empty subarray when `k = 0`.
+
+## Cost
+`O(n)` time · `O(n)` space
+
 ## Approach
 
 **Prefix sums turn subarrays into pairs.** Let `prefix[t]` be the sum of the first `t` numbers, with `prefix[0] = 0`. Then `nums[i..j]` sums to `prefix[j+1] - prefix[i]`, and "a subarray summing to `k`" becomes "an earlier prefix and a later prefix that differ by exactly `k`".

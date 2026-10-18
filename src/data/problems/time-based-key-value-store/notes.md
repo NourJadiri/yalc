@@ -1,3 +1,19 @@
+## Pattern
+Binary search
+
+## Key idea
+Because `set` timestamps only increase, appending keeps each key's timestamp list sorted, so `get` is a binary search for the newest timestamp at or before the query.
+
+## Steps
+1. Keep two dicts of lists, `times[key]` and `values[key]`, side by side.
+2. In `set`, append the timestamp and the value to that key's lists; they stay sorted because timestamps only increase.
+3. In `get`, return `""` if the key has no history.
+4. Set `i = bisect_right(times, timestamp)`, the number of timestamps `<= timestamp`.
+5. Return `values[key][i - 1]`, the newest version at or before `timestamp`, or `""` if `i` is `0`.
+
+## Cost
+`O(1)` time per `set`, `O(log m)` per `get` for `m` versions of the key · `O(n)` space
+
 ## Approach
 
 A dictionary from key to that key's history, where the history is two parallel lists: the timestamps of its `set` calls and the values they stored. The guarantee that `set` timestamps strictly increase is the whole design: appending to the end of a key's list keeps it sorted, so no balanced tree or re-sorting is ever needed.

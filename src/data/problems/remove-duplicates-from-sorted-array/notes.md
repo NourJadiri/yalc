@@ -1,3 +1,18 @@
+## Pattern
+Two pointers
+
+## Key idea
+In a sorted list copies sit side by side, so a value is new exactly when it differs from the last one kept.
+
+## Steps
+1. Start `write = 1`: `nums[0]` is always kept, and `write` is the slot for the next new value.
+2. For each `read` from `1` on, compare `nums[read]` with `nums[write - 1]`, the last value kept.
+3. If they differ, copy `nums[read]` into `nums[write]` and add one to `write`.
+4. Return `write`: the number of values kept, which is `k`.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **The pattern: a read pointer and a write pointer, helped by sorted order.** As in Move Zeroes, one index (`read`) looks at every element and another (`write`) marks where the next keeper goes. The only question is what makes an element worth keeping, and sorting makes that question cheap: in a sorted list, all copies of a value sit side by side. So a value is new exactly when it differs from the last value you kept.

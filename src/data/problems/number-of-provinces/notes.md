@@ -1,3 +1,19 @@
+## Pattern
+Union-find
+
+## Key idea
+Every city starts as its own province; a road between cities with different roots merges two provinces, so the count drops by one only then.
+
+## Steps
+1. Make every city its own group: `parent = list(range(n))`.
+2. Write `find(x)`: follow `parent` pointers up to the root, hopping to the grandparent on the way (path halving).
+3. Start `provinces = n`, one per city.
+4. For each road `(i, j)` with `i < j`, find the roots of both cities.
+5. If the roots differ, hang one root under the other and subtract `1` from `provinces`.
+
+## Cost
+`O(n^2)` time · `O(n)` space
+
 ## Approach
 
 Read the matrix as a graph — a city is a node, a `1` is an edge — and a province is a **connected component**. The answer is the number of components.

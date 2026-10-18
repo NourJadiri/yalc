@@ -1,3 +1,18 @@
+## Pattern
+Vertical scanning
+
+## Key idea
+Read the strings column by column: the common prefix ends at the first column where some string has run out or differs from the first.
+
+## Steps
+1. Take the first string as the guide.
+2. For each column `i` of the guide, with letter `ch`, check every other string `s`.
+3. If `s` has run out (`i == len(s)`) or has a different letter (`s[i] != ch`), return `first[:i]`; test the length first.
+4. If no column ever fails, return the whole first string.
+
+## Cost
+`O(S)` time for `S` total characters · `O(1)` space
+
 ## Approach
 
 **The pattern: vertical scanning.** Write the strings one above the other and read down the columns:

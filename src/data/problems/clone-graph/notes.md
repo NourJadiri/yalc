@@ -1,3 +1,19 @@
+## Pattern
+Depth-first search
+
+## Key idea
+Store each node's copy in a map before cloning its neighbours: a cycle that leads back to the node then finds its copy instead of making another.
+
+## Steps
+1. Keep a dict `copies` from each original node to its copy.
+2. In `clone(original)`, if the node is already in `copies`, return that copy.
+3. Otherwise make the copy and store it in `copies` before looking at any neighbour.
+4. Append `clone(nb)` for each neighbour, in order, to the copy's `neighbors`.
+5. Start from the given node, or return `None` if there is none.
+
+## Cost
+`O(V + E)` time for `V` nodes and `E` edges · `O(V)` space
+
 ## Approach
 
 Copying a tree is easy: copy the node, then recurse into its children. A graph adds two complications. **Cycles**: follow neighbours from node `1` and you can come back to node `1`. **Shared nodes**: two nodes can point at the same neighbour. A naive copy either loops forever or makes a second copy of a node it already copied.

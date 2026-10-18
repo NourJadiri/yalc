@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming (2D grid)
+
+## Key idea
+Every route enters `(r, c)` from above or from the left, so the cheapest cost into it is `grid[r][c]` plus the smaller of those two costs.
+
+## Steps
+1. Keep one row `best` of `n` costs (cheapest cost into each column of the current row), starting as `[0, inf, inf, …]`.
+2. For each row, add its first cell to `best[0]`: the left column has only one way in.
+3. For each other column `c`, set `best[c] = row[c] + min(best[c], best[c - 1])`: the cheaper of coming from above or from the left.
+4. After the last row, return `best[-1]`, the cost into the bottom-right cell.
+
+## Cost
+`O(m · n)` time · `O(n)` space
+
 ## Approach
 
 Moves only go right or down, so the cells form a DAG that a row-by-row sweep visits in dependency order — exactly what a table needs.

@@ -1,3 +1,17 @@
+## Pattern
+Multi-source BFS
+
+## Key idea
+Search outward from every `0` at once: cells leave the queue in order of distance, so a cell's first visit gives its shortest distance.
+
+## Steps
+1. Make a `dist` grid filled with `-1` (not reached yet); it doubles as the visited set.
+2. Set every `0` cell to distance `0` and put them all in the queue.
+3. Pop a cell; give each neighbour still at `-1` the popped distance plus one, and queue it.
+
+## Cost
+`O(m · n)` time · `O(m · n)` space
+
 ## Approach
 
 For a single cell, this is "shortest path to the nearest 0", and a BFS from that cell answers it. But one BFS costs `O(m·n)`, and running one from every `1` costs `O((m·n)^2)`. The trick is to search the other way: from all the zeros at once.

@@ -1,3 +1,18 @@
+## Pattern
+Prefix sums
+
+## Key idea
+Everything adds up to `total`, so the right side is `total - left - nums[i]`: a running left sum is enough to test every index.
+
+## Steps
+1. Add up the whole list once to get `total`.
+2. Start `left = 0`, the sum of everything before the current index.
+3. At each index `i`, if `left == total - left - nums[i]`, return `i`; the first hit is the leftmost pivot.
+4. Otherwise add `nums[i]` to `left` and move on; if the sweep ends with no hit, return `-1`.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 The direct approach adds up both sides again at every index: `O(n)` work per index, `O(n^2)` overall. The trick is to never add up the same numbers twice.

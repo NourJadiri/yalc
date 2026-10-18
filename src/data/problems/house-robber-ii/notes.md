@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+Any valid plan leaves house `0` or house `n - 1` alone, so the answer is the better of two straight-street problems: `nums[:-1]` and `nums[1:]`.
+
+## Steps
+1. Write `rob_line(houses)` for a straight street: track `take` and `skip`, the best totals with the previous house robbed or left alone, both starting at `0`.
+2. For each house worth `cash`, set `take, skip = skip + cash, max(take, skip)`: rob it only if the previous house was skipped.
+3. If there is only one house, return `nums[0]`: it has no neighbours, and both streets below would be empty.
+4. Return the better of `rob_line(nums[:-1])` and `rob_line(nums[1:])`: each street leaves out one house of the wrap-around pair.
+
+## Cost
+`O(n)` time · `O(1)` space, plus `O(n)` for the two slices
+
 ## Approach
 
 Start from the straight street (House Robber I), then deal with the one thing the circle adds.

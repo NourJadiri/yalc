@@ -1,3 +1,20 @@
+## Pattern
+Design (hash map + linked list)
+
+## Key idea
+The map finds a key's node in `O(1)`; the doubly linked list keeps recency order, so moving a node to the front or evicting the back is `O(1)` too.
+
+## Steps
+1. Keep a dict `entries` from key to node and a doubly linked list between sentinels `head` and `tail`: `head.next` is the most recently used, `tail.prev` the least.
+2. Write `_unlink(e)` and `_push_front(e)`: unlink any node in `O(1)`, and insert a node right after `head`.
+3. In `get`, return `-1` if the key is missing; otherwise move its node to the front (a read is a use) and return its value.
+4. In `put`, if the key exists, update its value and move its node to the front; nothing is evicted.
+5. Otherwise, if the cache is full, evict `tail.prev`: unlink it and delete its key from `entries`.
+6. Create the new node, record it in `entries`, and push it to the front.
+
+## Cost
+`O(1)` average time per operation · `O(capacity)` space
+
 ## Approach
 
 **Two structures, each covering the other's weakness.** A hash map finds any key in `O(1)` but knows nothing about order. A doubly linked list keeps an order and can unlink any node in `O(1)` — once you're holding the node — but finding a node means walking the list. Put them together: the map goes from key to list node, and the list holds the nodes in recency order, most recent at the front.
