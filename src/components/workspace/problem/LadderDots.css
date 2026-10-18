@@ -1,0 +1,6 @@
+.ws-dots { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; }
+.ws-dots i {
+  width: 7px; height: 7px; border-radius: 50%; box-sizing: border-box;
+  border: 1.5px solid color-mix(in srgb, var(--ink2) 55%, var(--line)); transition: background-color .2s ease, border-color .2s ease;
+}
+.ws-dots i.on { background: var(--accent); border-color: var(--accent); }

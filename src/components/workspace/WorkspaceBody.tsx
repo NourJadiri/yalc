@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { ProblemContent } from "../../data/problems";
 import type { ProblemRef } from "../../data/tracks";
 import { useMedia } from "../../hooks/useMedia";
@@ -15,14 +15,19 @@ import { useClaudeHandoff } from "./hooks/useClaudeHandoff";
 import { useDraft } from "./hooks/useDraft";
 import { useLineJump } from "./hooks/useLineJump";
 import { useRunSession } from "./hooks/useRunSession";
+import { useScrollIntoView } from "./hooks/useScrollIntoView";
 import { useClock } from "./hooks/useStopwatch";
+import { useStuckNudge } from "./hooks/useStuckNudge";
 import { useOneShot } from "./hooks/useOneShot";
 import { useWorkspacePrefs } from "./hooks/useWorkspacePrefs";
 import { useWorkspaceShortcuts } from "./hooks/useWorkspaceShortcuts";
 import DesktopLayout from "./layout/DesktopLayout";
 import MobileLayout, { type MobileTab } from "./layout/MobileLayout";
+import { HINTS, nextRung } from "./lib/ladder";
+import { parseNotes } from "./lib/notes";
 import LazyAssistant from "./LazyAssistant";
 import ProblemPane from "./problem/ProblemPane";
+import StuckNudge from "./problem/StuckNudge";
 
 interface WorkspaceBodyProps {
   problemRef: ProblemRef;
@@ -45,11 +50,17 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
   const [consoleTab, setConsoleTab] = useState<"cases" | "result">("cases");
   const [mobileTab, setMobileTab] = useState<MobileTab>("problem");
   const [revealed, setRevealed] = useState(false);
+  const [hints, setHints] = useState(0);
   /* Crossing 900px swaps layouts and remounts the panes; what must survive that lives here. */
   const editorSnapshot = useRef<EditorSnapshot | null>(null);
   /* The editor fills it while it is mounted; Bana's line numbers move its cursor through it. */
   const editorHandle = useRef<EditorHandle | null>(null);
   const clock = useClock();
+  const open = accepted || revealed;
+  const notes = useMemo(() => parseNotes(content.notes), [content.notes]);
+  const ladder = useRef<HTMLDivElement>(null);
+  const showLadder = useScrollIntoView(ladder);
+  const nudge = useStuckNudge({ clock, active: notes !== null && !open, hints });
 
   const session = useRunSession({
     pid,
@@ -76,14 +87,33 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
   const runCases = () => session.start("run");
   const submit = () => session.start("submit");
 
+  /* The ladder's button and the nudge's: the next hint, then the solution; once that is open, just its tab. */
+  const climb = () => {
+    if (!open && hints < HINTS) {
+      setHints(hints + 1);
+    } else {
+      setRevealed(true);
+      setProblemTab("solution");
+    }
+  };
+  const takeNudge = () => {
+    climb();
+    if (hints < HINTS) setProblemTab("desc");
+    if (!wide) setMobileTab("problem");
+    showLadder();
+  };
+
   const problemPane = (
     <ProblemPane
       content={content}
+      notes={notes}
       tab={problemTab}
       onTab={setProblemTab}
-      accepted={accepted}
-      revealed={revealed}
+      open={open}
       onReveal={() => setRevealed(true)}
+      hints={hints}
+      onClimb={climb}
+      ladderRef={ladder}
       fontSize={prefs.font}
     />
   );
@@ -170,6 +200,9 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
           editor={editorPane}
           tests={consolePane}
         />
+      )}
+      {nudge.minutes !== null && (
+        <StuckNudge minutes={nudge.minutes} action={nextRung(hints)} onTake={takeNudge} onLater={nudge.postpone} />
       )}
       {assistant}
     </>

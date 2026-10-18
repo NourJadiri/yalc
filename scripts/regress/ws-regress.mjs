@@ -1,8 +1,9 @@
 // ws-regress.mjs <base-url> <out-dir>
 //
-// Behaviour + pixel regression suite for the workspace (problem pane, editor,
-// console, Python runner, stopwatch, splits, assistant). One fresh browser
-// context per scenario; every scenario records assertions and screenshots.
+// Behaviour + pixel regression suite for the workspace (problem pane with its
+// hint ladder, editor, console, Python runner, stopwatch and stuck nudge,
+// splits, assistant). One fresh browser context per scenario; every scenario
+// records assertions and screenshots.
 //
 //   <out-dir>/results.json     { scenario: { assertions: [{name, ok, detail?}], screenshots: [...], ... } }
 //   <out-dir>/NN-*.png         the screenshots (deterministic: see shot())
@@ -37,6 +38,28 @@ const CASE2 = "[[1,2],[],[1]]";
 const CASE3 = "[[1],[],[1]]";
 const EXPECTED1 = "[[0,1,4],[0,2,1,4],[0,2,4],[0,3,4]]";
 const N_TESTS = 23; // spec.json: every test, hidden ones included
+
+/* The short version at the top of this problem's notes.md, as the page shows it (inline code without its backticks). */
+const NOTES = {
+  pattern: "Backtracking (depth-first search)",
+  idea: "Carry one path list down the recursion: add a neighbour, explore, then take it back off, so every branch starts from the same prefix.",
+  steps: [
+    "Start the path at [0]; the target is the last node, n - 1.",
+    "On reaching the target, record a copy of the path (path[:]).",
+    "Otherwise, for each neighbour: append it, recurse, then pop it.",
+    "Keep no visited set: the graph has no cycles, and paths may share nodes.",
+  ],
+  cost: "O(2^n · n) time, the size of the output · O(n) space",
+  pitfalls: [
+    "A visited set carried over from graph search: it silently drops every path that reuses a node an earlier path took.",
+    "Appending path instead of path[:].",
+    "Recording at nodes with no outgoing edges instead of at n - 1. A dead end isn't the target, and the target is allowed to have edges out.",
+  ],
+};
+// What the ladder shows for each hint: its label, then its lines (the steps come with the cost line).
+const HINT1 = ["The technique", NOTES.pattern];
+const HINT2 = ["The key idea", NOTES.idea];
+const HINT3 = ["The steps", ...NOTES.steps, NOTES.cost];
 
 const CORRECT = `class Solution:
     def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
@@ -230,14 +253,18 @@ const sel = {
   problem: 'section[aria-label="Problem"]',
   panel: '[aria-label="Bana"]',
   dialog: `[role=dialog][aria-label="${TITLE}"]`,
+  ladder: ".ws-ladder",
+  rung: ".ws-ladder .btn",
+  nudge: ".ws-nudge",
 };
 
 const runnerPhase = (page) => page.locator(".ws-runner").getAttribute("class").then((c) => c.replace("ws-runner", "").trim());
 const waitReady = (page) => page.locator(".ws-runner.ready").waitFor({ state: "attached", timeout: 90_000 });
 
 /* Open the workspace from the Line tab. Returns once the editor is up and
-   Python has loaded. */
-async function openWorkspace(s, page, { check = true } = {}) {
+   Python has loaded (`ready: false` doesn't wait for it: for a scenario that runs no code and wants
+   the stopwatch to have counted as little as possible). */
+async function openWorkspace(s, page, { check = true, ready = true } = {}) {
   await page.goto(BASE);
   await press(page, page.getByRole("navigation", { name: "Sections" }).getByRole("button", { name: "Line" }));
   const btn = page.locator(sel.openBtn).first();
@@ -246,7 +273,7 @@ async function openWorkspace(s, page, { check = true } = {}) {
   await press(page, btn);
   await page.locator(sel.dialog).waitFor();
   await page.locator(sel.editorContent).first().waitFor({ state: "attached" });
-  await waitReady(page);
+  if (ready) await waitReady(page);
 }
 
 async function codeOf(page, where = sel.code) {
@@ -388,6 +415,46 @@ const caseNames = async (page) => (await caseChips(page)).map((c) => c.text);
 const consoleTab = (page) =>
   page.locator(`${sel.tests} [role=tab][aria-selected=true]`).first().textContent().then((t) => t.trim());
 
+/* Text with its whitespace collapsed: one element's, or each one's. */
+const textOf = (loc) => loc.evaluate((el) => el.textContent.replace(/\s+/g, " ").trim());
+const textsOf = (loc) => loc.evaluateAll((els) => els.map((el) => el.textContent.replace(/\s+/g, " ").trim()));
+
+const problemTab = (page) =>
+  page.locator(`${sel.problem} .tablist [role=tab][aria-selected=true]`).textContent().then((t) => t.trim());
+
+/* The hint ladder as a reader sees it: the hints out so far (a label, then the lines under it), the dots, the button. */
+const hintsOf = (page) =>
+  page.locator(`${sel.ladder} .ws-hint`).evaluateAll((els) =>
+    els.map((h) => [
+      h.querySelector(".ws-hint-label").textContent,
+      ...[...h.querySelectorAll(".ws-hint-pattern, .md p, .md li")].map((e) => e.textContent.replace(/\s+/g, " ").trim()),
+    ])
+  );
+const dotsOf = (page) =>
+  page.locator(`${sel.ladder} .ws-dots`).evaluate((el) => ({
+    on: [...el.querySelectorAll("i")].map((i) => i.classList.contains("on")),
+    label: el.getAttribute("aria-label"),
+  }));
+const rungOf = (page) => page.locator(sel.rung).innerText();
+
+/* Whether an element lies wholly inside the problem pane's scrolling body. */
+const inView = (page, loc) =>
+  loc.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    const b = el.closest(".ws-problem-body").getBoundingClientRect();
+    return r.top >= b.top - 1 && r.bottom <= b.bottom + 1;
+  });
+
+/* A colour token (--accent, --ink2…) resolved to the rgb() a computed style reports. */
+const tokenColor = (page, token) =>
+  page.evaluate((t) => {
+    const probe = document.body.appendChild(document.createElement("i"));
+    probe.style.color = `var(${t})`;
+    const c = getComputedStyle(probe).color;
+    probe.remove();
+    return c;
+  }, token);
+
 async function dark(page) {
   await page.emulateMedia({ colorScheme: "dark" });
 }
@@ -441,8 +508,13 @@ scenario("01-open", "open the workspace from the Line tab", async (s) => {
       ["Description:true", "Solution:false"]);
     await s.expect("topic chips", () => page.locator(".ws-topic").allTextContents(), ["graph", "dfs", "backtracking"]);
     await s.expect("statement sections", () => page.locator(".ws-sec .ws-problem-heading").allTextContents(), ["The task", "Examples", "Constraints"]);
-    await s.expect("two disclosures, both closed", () => page.locator("details.ws-hintbox").evaluateAll((els) => els.map((e) => e.querySelector("summary").textContent.trim() + ":" + e.open)),
-      ["Hint — what to aim for:false", "Follow-ups an interviewer might ask:false"]);
+    await s.expect("one disclosure, closed: the follow-ups (the hint ladder took the Aim for box's place)", () => page.locator("details.ws-hintbox").evaluateAll((els) => els.map((e) => e.querySelector("summary").textContent.trim() + ":" + e.open)),
+      ["Follow-ups an interviewer might ask:false"]);
+    await s.expect("the statement's sections are followed by the hint ladder, then the follow-ups", () => page.locator(".ws-problem-body").evaluate((el) => [...el.children].map((c) => c.className)),
+      ["ws-topics", "ws-sec", "ws-sec", "ws-sec", "ws-ladder", "ws-hintbox"]);
+    await s.expect("the ladder is a group named 'Stuck? One hint at a time.' with no hint out, four empty dots and 'Show the technique'", async () => ({
+      group: await page.getByRole("group", { name: "Stuck? One hint at a time." }).count(), hints: await hintsOf(page), dots: await dotsOf(page), button: await rungOf(page),
+    }), { group: 1, hints: [], dots: { on: [false, false, false, false], label: "0 of 3 hints shown" }, button: "Show the technique" });
 
     // editor
     await s.expect("exactly one editor, holding the starter code", async () => ({ n: await page.locator(".cm-editor").count(), code: await codeOf(page) }), { n: 1, code: STARTER });
@@ -474,53 +546,105 @@ scenario("01-open", "open the workspace from the Line tab", async (s) => {
 });
 
 /* 2 ------------------------------------------------------------------ */
-scenario("02-problem-pane", "hint disclosures and the veiled reference solution", async (s) => {
+scenario("02-problem-pane", "the hint ladder and the follow-ups; the Solution tab veiled, then its short version first", async (s) => {
   const { ctx, page } = await newPage(s, { permissions: ["clipboard-read", "clipboard-write"] });
   try {
     await openWorkspace(s, page);
     const boxes = page.locator("details.ws-hintbox");
     const open = () => boxes.evaluateAll((els) => els.map((e) => e.open));
-    await s.expect("both disclosures start closed", open, [false, false]);
+    const body = page.locator(".ws-problem-body");
+    const rung = page.locator(sel.rung);
+    await s.expect("the one disclosure, the follow-ups, starts closed", open, [false]);
 
     await boxes.nth(0).locator("summary").click();
-    await s.expect("the hint opens (and only it)", open, [true, false]);
-    await s.expect("hint body is the 'Aim for' text", () => boxes.nth(0).innerText(), /Depth-first search from node 0, carrying the current path/);
-    await boxes.nth(1).locator("summary").click();
-    await s.expect("the follow-ups open too", open, [true, true]);
-    await s.expect("follow-ups list three questions", () => boxes.nth(1).locator("li").count(), 3);
-    await s.expect("follow-ups first bullet", () => boxes.nth(1).locator("li").first().innerText(), /^Only count the paths\./);
-    await page.locator(".ws-problem-body").evaluate((el) => (el.scrollTop = el.scrollHeight));
-    await s.shot(page, "hints-open-desktop-light");
+    await s.expect("the follow-ups open", open, [true]);
+    await s.expect("follow-ups list three questions", () => boxes.nth(0).locator("li").count(), 3);
+    await s.expect("follow-ups first bullet", () => boxes.nth(0).locator("li").first().innerText(), /^Only count the paths\./);
+    await s.expect("the 'Aim for' text is not on this tab any more (the Solution tab's walkthrough has it)", () => page.getByText("Depth-first search from node").count(), 0);
 
+    // the hint ladder, one rung at a time
+    await page.evaluate(() => {
+      window.__rung = document.querySelector(".ws-ladder .btn");
+    });
+    await s.expect("the hints' live region is on the page before any hint, and polite", () => page.locator(`${sel.ladder} .ws-ladder-hints`).getAttribute("aria-live"), "polite");
+    await rung.click();
+    await s.expect("'Show the technique' brings out the first hint: The technique", () => hintsOf(page), [HINT1]);
+    await s.expect("…the button now offers 'Show the key idea'", () => rungOf(page), "Show the key idea");
+    await s.expect("…and one dot is filled", () => dotsOf(page), { on: [true, false, false, false], label: "1 of 3 hints shown" });
+    await rung.focus();
+    await page.keyboard.press("Enter");
+    await s.expect("'Show the key idea' (by keyboard): the second hint joins the first, in order", () => hintsOf(page), [HINT1, HINT2]);
+    await s.expect("…the button now offers 'Show the steps'", () => rungOf(page), "Show the steps");
+    await s.expect("…two dots are filled", () => dotsOf(page), { on: [true, true, false, false], label: "2 of 3 hints shown" });
+    await s.expect("the button stayed mounted from tap to tap, so the keyboard focus is still on it", () => page.evaluate(() => ({ same: window.__rung === document.querySelector(".ws-ladder .btn"), connected: window.__rung.isConnected, focused: document.activeElement === window.__rung })), { same: true, connected: true, focused: true });
+    await body.evaluate((el) => (el.scrollTop = el.scrollHeight));
+    await s.shot(page, "ladder-half-desktop-light");
+    await dark(page);
+    await s.shot(page, "ladder-half-desktop-dark");
+    await page.emulateMedia({ colorScheme: "light" });
     await boxes.nth(0).locator("summary").click();
-    await s.expect("clicking the hint's summary again closes it", open, [false, true]);
-    await boxes.nth(1).locator("summary").click();
-    await s.expect("and the follow-ups too", open, [false, false]);
+    await s.expect("clicking the follow-ups' summary again closes them", open, [false]);
 
-    // the solution tab, veiled
+    // the Solution tab, veiled: the same ladder in the same state
     await page.getByRole("tab", { name: "Solution" }).click();
-    await s.expect("Solution tab is selected", () => page.locator(`${sel.problem} [role=tab][aria-selected=true]`).textContent().then((t) => t.trim()), "Solution");
-    await s.expect("the veil says 'Try it first.' and offers Reveal", () => page.locator(".ws-veil").innerText(), /Try it first\.[\s\S]*Reveal the solution/);
+    await s.expect("Solution tab is selected", () => problemTab(page), "Solution");
+    await s.expect("the veil says 'Try it first.' and that the solution opens by itself", () => textOf(page.locator(".ws-veil > p")), "Try it first. The solution opens by itself once every test passes.");
+    await s.expect("…and holds the same ladder with the same two hints out ('Show the steps' next)", async () => ({ n: await page.locator(`.ws-veil ${sel.ladder}`).count(), hints: await hintsOf(page), button: await rungOf(page) }), { n: 1, hints: [HINT1, HINT2], button: "Show the steps" });
+    await s.expect("…with a quiet 'Skip to the solution' link and no 'Reveal the solution' button", async () => ({ skip: await page.locator(".ws-veil .linkbtn").allTextContents().then((t) => t.map((x) => x.trim())), reveal: await page.getByRole("button", { name: "Reveal the solution" }).count() }), { skip: ["Skip to the solution"], reveal: 0 });
     await s.expect("no reference editor yet", () => page.locator(".ws-sol-code").count(), 0);
     await s.shot(page, "solution-veil-desktop-light");
 
-    await page.getByRole("button", { name: "Reveal the solution" }).click();
-    await s.expect("the veil is gone", () => page.locator(".ws-veil").count(), 0);
-    await s.expect("the walkthrough opens with 'Approach'", () => page.locator(".ws-problem-body .md h2").first().textContent(), "Approach");
+    await rung.click();
+    await s.expect("a hint taken inside the veil is the same state: all three hints are out here", () => hintsOf(page), [HINT1, HINT2, HINT3]);
+    await s.expect("…the steps are a numbered list of four", () => page.locator(`${sel.ladder} ol > li`).count(), 4);
+    await page.getByRole("tab", { name: "Description" }).click();
+    await s.expect("…and the Description tab's ladder shows the same three, offering 'Show the solution'", async () => ({ hints: await hintsOf(page), button: await rungOf(page), dots: await dotsOf(page) }), { hints: [HINT1, HINT2, HINT3], button: "Show the solution", dots: { on: [true, true, true, false], label: "3 of 3 hints shown" } });
+    await page.getByRole("tab", { name: "Solution" }).click();
+
+    // skip: the whole solution at once, short version first
+    await page.getByRole("button", { name: "Skip to the solution" }).click();
+    await s.expect("'Skip to the solution' reveals at once: the veil is gone", () => page.locator(".ws-veil").count(), 0);
+    await s.expect("the Solution tab opens on the technique, as a small label", () => textOf(page.locator(".ws-technique")), "Technique · " + NOTES.pattern);
+    await s.expect("…then 'The trick', 'Steps', 'Watch out for', and further down 'Reference solution'", () => page.locator(".ws-problem-body .ws-problem-heading").allTextContents(), ["The trick", "Steps", "Watch out for", "Reference solution"]);
+    await s.expect("the trick is the key idea", () => textOf(page.locator(".ws-problem-body > .md")), NOTES.idea);
+    await s.expect("the steps are the four numbered steps, in order", () => textsOf(page.locator(".ws-steps ol > li")), NOTES.steps);
+    await s.expect("…their numbers are in the accent colour, like the markers in the code", async () => ({ marker: await page.locator(".ws-steps li").first().evaluate((li) => getComputedStyle(li, "::marker").color), accent: await tokenColor(page, "--accent") }), (v) => v.marker === v.accent);
+    await s.expect("the cost is one muted line", async () => ({ text: await textOf(page.locator(".ws-cost")), color: await page.locator(".ws-cost .md").evaluate((el) => getComputedStyle(el).color), muted: await tokenColor(page, "--ink2") }), (v) => v.text === NOTES.cost && v.color === v.muted);
+
+    const items = page.locator(".ws-checklist li");
+    const marks = () => items.evaluateAll((els) => els.map((li) => { const t = getComputedStyle(li.querySelector(".md")); return [li.querySelector("input").checked, t.textDecorationLine, Number(t.opacity) < 1]; }));
+    await s.expect("'Watch out for' is a checklist of the three pitfalls, with real checkboxes, none ticked", async () => ({ texts: await textsOf(items), boxes: await items.getByRole("checkbox").count() }), { texts: NOTES.pitfalls, boxes: 3 });
+    await s.expect("…untouched: nothing dimmed or struck", marks, [[false, "none", false], [false, "none", false], [false, "none", false]]);
+    await items.nth(1).getByRole("checkbox").check();
+    await s.expect("ticking the second dims and strikes that pitfall only", marks, [[false, "none", false], [true, "line-through", true], [false, "none", false]]);
+    await s.expect("the full walkthrough is a disclosure, closed", async () => ({ title: await textOf(boxes.nth(0).locator("summary")), n: await boxes.count(), open: await open() }), { title: "Full walkthrough", n: 1, open: [false] });
+    await body.evaluate((el) => (el.scrollTop = 0));
+    await s.shot(page, "solution-revealed-desktop-light");
+    await dark(page);
+    await s.shot(page, "solution-revealed-desktop-dark");
+    await page.emulateMedia({ colorScheme: "light" });
+    await items.nth(1).getByRole("checkbox").uncheck();
+    await s.expect("unticking brings it back", marks, [[false, "none", false], [false, "none", false], [false, "none", false]]);
+
+    await boxes.nth(0).locator("summary").click();
+    await s.expect("opened, the walkthrough runs 'What to aim for' (the statement's), Approach, Complexity", () => textsOf(boxes.nth(0).locator(".md h2")), ["What to aim for", "Approach", "Complexity"]);
+    await s.expect("…and the aim is in the statement's own words", () => textOf(boxes.nth(0).locator(".md p").first()), /^Depth-first search from node 0, carrying the current path/);
+    await s.expect("…while the pitfalls are not repeated there: they are the checklist", () => boxes.nth(0).getByText("A visited set carried over").count(), 0);
+
     await s.expect("a 'Reference solution' heading with a Copy button", () => page.locator(".ws-sol-head").innerText(), /^Reference solution\s+Copy$/i);
     await s.expect("read-only reference editor holds the solution", async () => {
       const t = await codeOf(page, ".ws-sol-code");
       return { dfs: t.includes("def dfs(node):"), ro: await page.locator(".ws-sol-code .cm-content").getAttribute("contenteditable"), wrap: await page.locator(".ws-sol-code .cm-lineWrapping").count() };
     }, { dfs: true, ro: "false", wrap: 1 });
+    await s.expect("it marks the four steps: # 1. to # 4.", () => page.locator(".ws-sol-code .cm-stepmark").allTextContents(), ["# 1.", "# 2.", "# 3.", "# 4."]);
+    await s.expect("…in the accent colour, semibold, upright", async () => ({ seen: await page.locator(".ws-sol-code .cm-stepmark").evaluateAll((els) => [...new Set(els.map((e) => { const c = getComputedStyle(e.firstElementChild ?? e); return [c.color, c.fontWeight, c.fontStyle].join("/"); }))]), accent: await tokenColor(page, "--accent") }), (v) => v.seen.length === 1 && v.seen[0] === `${v.accent}/600/normal`);
     await s.expect("two editors on the page now (yours and the reference)", () => page.locator(".cm-editor").count(), 2);
-    await s.expect("your own editor is untouched", () => codeOf(page, sel.code), STARTER);
+    await s.expect("your own editor is untouched, and has no step markers", async () => ({ code: await codeOf(page, sel.code), marks: await page.locator(`${sel.code} .cm-stepmark`).count() }), { code: STARTER, marks: 0 });
     await s.expect("the Solution tab icon is unlocked", () => page.locator(`${sel.problem} .tablist [role=tab]`).nth(1).locator("svg").count(), 1);
     await page.locator(".ws-sol-head .linkbtn").click();
     await s.expect("Copy on the reference solution reads 'Copied'", () => page.locator(".ws-sol-head .linkbtn").innerText(), "Copied");
     await s.expect("the clipboard holds the reference solution", () => page.evaluate(() => navigator.clipboard.readText()), /^class Solution:\n {4}def allPathsSourceTarget/, { timeout: 3000 });
     await s.expect("…and it goes back to 'Copy'", () => page.locator(".ws-sol-head .linkbtn").innerText(), "Copy", { timeout: 4000 });
-    await page.locator(".ws-problem-body").evaluate((el) => (el.scrollTop = 0));
-    await s.shot(page, "solution-revealed-desktop-light");
 
     await page.getByRole("tab", { name: "Description" }).click();
     await s.expect("back on Description: statement sections again", () => page.locator(".ws-sec .ws-problem-heading").allTextContents(), ["The task", "Examples", "Constraints"]);
@@ -601,6 +725,12 @@ scenario("04-submit", "submit: accepted, XP and badge toasts, passed on the Line
     await s.expect("the solution is open without Reveal (no veil, reference editor shown)", async () => ({ veil: await page.locator(".ws-veil").count(), ref: await page.locator(".ws-sol-code .cm-editor").count() }), { veil: 0, ref: 1 });
     await s.shot(page, "solution-after-accept-desktop-light");
     await page.getByRole("tab", { name: "Description" }).click();
+    await s.expect("accepted: the ladder's button leads to the solution ('Open the solution'; only the solution's dot is filled)", async () => ({ hints: await hintsOf(page), button: await rungOf(page), dots: await dotsOf(page) }),
+      { hints: [], button: "Open the solution", dots: { on: [false, false, false, true], label: "0 of 3 hints shown, solution open" } });
+    await page.locator(sel.rung).click();
+    await s.expect("…and pressing it only switches to the Solution tab", () => problemTab(page), "Solution");
+    await page.getByRole("tab", { name: "Description" }).click();
+    await s.expect("…no hint was taken by it", () => hintsOf(page), []);
 
     // a second submit (keyboard) re-runs and is accepted again, but awards nothing new
     await s.expect("(setup) first toasts are gone", () => page.locator(".toast").count(), 0, { timeout: 6000 });
@@ -1321,8 +1451,10 @@ scenario("13-layout", "split panes (keyboard and drag, remembered) and the stopw
     await setCode(page, CORRECT);
     await startRun(s, page, "button");
     await s.expect("(setup) a run is on screen", () => verdictOf(page).then((v) => v.title), "Passed");
+    await page.locator(sel.rung).click();
+    await s.expect("(setup) one hint is out on the Description tab", () => hintsOf(page), [HINT1]);
     await page.getByRole("tab", { name: "Solution" }).click();
-    await page.getByRole("button", { name: "Reveal the solution" }).click();
+    await page.getByRole("button", { name: "Skip to the solution" }).click();
     await s.expect("(setup) the reference solution is revealed", () => page.locator(".ws-veil").count(), 0);
     await sleep(1300);
     await clock.click();
@@ -1332,6 +1464,8 @@ scenario("13-layout", "split panes (keyboard and drag, remembered) and the stopw
     await s.expect("below 900px: the segmented control replaces the splits", async () => ({ seg: await page.locator(".seg").count(), split: await page.locator(".split").count(), clock: await page.locator(".wclock").count() }), { seg: 1, split: 0, clock: 0 });
     await s.expect("…opening on the Problem pane", () => page.locator(".seg [role=tab]").evaluateAll((els) => els.map((e) => e.getAttribute("aria-selected"))), ["true", "false", "false"]);
     await s.expect("…the revealed solution stays revealed", async () => ({ veil: await page.locator(".ws-veil").count(), ref: await page.locator(".ws-sol-code").count() }), { veil: 0, ref: 1 });
+    await page.getByRole("tab", { name: "Description" }).click();
+    await s.expect("…and the hint taken before the swap is still out, the ladder now leading to the solution", async () => ({ hints: await hintsOf(page), button: await rungOf(page) }), { hints: [HINT1], button: "Open the solution" });
     await page.locator(".seg").getByRole("tab", { name: "Code" }).click();
     await s.expect("…the code survived the switch", () => codeOf(page), CORRECT);
     await page.locator(sel.editorContent).first().click();
@@ -1345,6 +1479,7 @@ scenario("13-layout", "split panes (keyboard and drag, remembered) and the stopw
     await s.expect("back above 900px: splits are back at their saved ratios, no segmented control", async () => ({ seg: await page.locator(".seg").count(), x: await val(sepX), y: await val(sepY), clock: await page.locator(".wclock").count() }), { seg: 0, x: "55", y: "70", clock: 1 });
     await s.expect("…and the editor still holds the code", () => codeOf(page), CORRECT);
     await s.expect("…and the stopwatch is where it was left: paused, same time", async () => [await label(), (await text()).trim()], ["Resume the clock", held]);
+    await s.expect("…and the ladder still shows the one hint", () => hintsOf(page), [HINT1]);
     finish(s);
   } finally {
     await ctx.close();
@@ -1927,6 +2062,209 @@ scenario("20-follow-ups", "Bana's follow-ups: quick replies under her latest ans
   }
   finish(s);
 }, { serial: true }); // reads the mock Anthropic log
+
+/* 21 ----------------------------------------------------------------- */
+scenario("21-ladder-solution", "the ladder's last rung opens the Solution tab; the hints last through the layout swap and end with the workspace", async (s) => {
+  const { ctx, page } = await newPage(s);
+  try {
+    await openWorkspace(s, page, { check: false });
+    const rung = page.locator(sel.rung);
+    await rung.click();
+    await rung.click();
+    await rung.click();
+    await s.expect("(setup) all three hints are out, and the button offers 'Show the solution'", async () => ({ hints: await hintsOf(page), button: await rungOf(page) }), { hints: [HINT1, HINT2, HINT3], button: "Show the solution" });
+
+    // crossing 900px swaps the layouts and remounts the panes; the hints are not theirs to lose
+    await page.setViewportSize({ width: 800, height: 860 });
+    await s.expect("below 900px (segmented panes) the ladder still has its three hints", async () => ({ seg: await page.locator(".seg").count(), hints: await hintsOf(page), button: await rungOf(page) }), { seg: 1, hints: [HINT1, HINT2, HINT3], button: "Show the solution" });
+    await page.setViewportSize({ width: 1280, height: 860 });
+    await s.expect("…and so it does above 900px again", async () => ({ seg: await page.locator(".seg").count(), hints: await hintsOf(page), button: await rungOf(page) }), { seg: 0, hints: [HINT1, HINT2, HINT3], button: "Show the solution" });
+
+    // the fourth rung is the solution itself
+    await rung.click();
+    await s.expect("'Show the solution' reveals it and switches to the Solution tab", async () => ({ tab: await problemTab(page), veil: await page.locator(".ws-veil").count(), ref: await page.locator(".ws-sol-code .cm-editor").count() }), { tab: "Solution", veil: 0, ref: 1 });
+    await s.expect("…which opens on the short version", () => textOf(page.locator(".ws-technique")), "Technique · " + NOTES.pattern);
+    await page.getByRole("tab", { name: "Description" }).click();
+    await s.expect("back on Description: the three hints are still out", () => hintsOf(page), [HINT1, HINT2, HINT3]);
+    await s.expect("…the button now reads 'Open the solution' and all four dots are filled", async () => ({ button: await rungOf(page), dots: await dotsOf(page) }), { button: "Open the solution", dots: { on: [true, true, true, true], label: "3 of 3 hints shown, solution open" } });
+    await rung.click();
+    await s.expect("'Open the solution' only switches to the Solution tab", () => problemTab(page), "Solution");
+    await page.getByRole("tab", { name: "Description" }).click();
+    await s.expect("…and changes no hint", () => hintsOf(page), [HINT1, HINT2, HINT3]);
+
+    // nothing is kept: closing the workspace forgets the hints, as it forgets the reveal
+    await page.locator(sel.back).click();
+    await page.locator(sel.openBtn).first().click();
+    await page.locator(sel.dialog).waitFor();
+    await s.expect("reopened: no hint is out and the first rung is on offer again", async () => ({ hints: await hintsOf(page), button: await rungOf(page) }), { hints: [], button: "Show the technique" });
+    await page.getByRole("tab", { name: "Solution" }).click();
+    await s.expect("…and the Solution tab is veiled again", async () => ({ veil: await page.locator(".ws-veil").count(), ref: await page.locator(".ws-sol-code").count() }), { veil: 1, ref: 0 });
+    finish(s);
+  } finally {
+    await ctx.close();
+  }
+});
+
+/* 22 ----------------------------------------------------------------- */
+/* The stuck nudge runs on Playwright's clock, installed before the page loads: the app's stopwatch and the nudge's timer
+   read it, and fastForward jumps it the way a long afternoon would. Between jumps it runs on by itself, so Python still loads. */
+const NUDGE_CLOCK = new Date("2026-03-02T09:00:00Z");
+const nudgeAsks = async (card) => ({ text: await textOf(card.locator("p")), buttons: await textsOf(card.locator("button")) });
+
+/* fastForward, checked. Playwright's clock calls skip a frame that is navigating or has a dialog open without saying so, and a
+   jump that didn't happen would only show as a card that never comes: so the page's own Date.now() must have moved on by that
+   much, or the rest of the jump is made. */
+async function jump(page, ticks) {
+  const ms = ticks.split(":").reduce((t, part) => t * 60 + Number(part), 0) * 1000;
+  const from = await page.evaluate(() => Date.now());
+  await page.clock.fastForward(ticks);
+  for (let tries = 0; tries < 3; tries++) {
+    const short = from + ms - (await page.evaluate(() => Date.now()));
+    if (short <= 0) return;
+    await page.clock.fastForward(Math.ceil(short));
+  }
+}
+
+scenario("22-stuck-nudge", "the stuck nudge: the card at 20 minutes, its buttons, ten-minute snoozes, every rung up to the solution", async (s) => {
+  const { ctx, page } = await newPage(s);
+  try {
+    await page.clock.install({ time: NUDGE_CLOCK });
+    await openWorkspace(s, page, { check: false, ready: false });
+    const card = page.locator(sel.nudge);
+    const rung = page.locator(sel.rung);
+    /* After a hint or a "Not now" the card keeps away for ten minutes: nothing at nine, back by eleven. */
+    const keepsAway = async (what, next) => {
+      await jump(page, "09:00");
+      await sleep(500);
+      await s.expect(`${what}: nine minutes on there is still no card`, () => card.count(), 0, { timeout: 0 });
+      await jump(page, "02:00");
+      await s.expect(`${what}: eleven minutes on the card is back, offering '${next}'`, () => nudgeAsks(card).then((a) => a.buttons), [next, "Not now"]);
+    };
+
+    await s.expect("no card when the workspace opens", () => card.count(), 0, { timeout: 0 });
+    await jump(page, "15:00");
+    await sleep(500);
+    await s.expect("15 minutes in there is still no card", () => card.count(), 0, { timeout: 0 });
+    await jump(page, "05:00");
+    await s.expect("20 minutes in a card comes up: a status, not a dialog (the workspace is the only dialog)", async () => ({ role: await card.getAttribute("role"), dialogs: await page.locator("[role=dialog]").count() }), { role: "status", dialogs: 1 });
+    await s.expect("…it says '20 minutes in. Want a nudge?' and offers 'Show the technique' and 'Not now'", () => nudgeAsks(card), { text: "20 minutes in. Want a nudge?", buttons: ["Show the technique", "Not now"] });
+    await s.expect("…it floats at the bottom left, 300 px wide, and has taken no focus", async () => ({
+      box: await card.evaluate((e) => { const r = e.getBoundingClientRect(); return { left: Math.round(r.left), bottom: Math.round(innerHeight - r.bottom), w: Math.round(r.width) }; }),
+      focusInside: await page.evaluate(() => !!document.activeElement?.closest(".ws-nudge")),
+    }), { box: { left: 16, bottom: 16, w: 300 }, focusInside: false });
+    await s.shot(page, "nudge-desktop-light");
+    await dark(page);
+    await s.shot(page, "nudge-desktop-dark");
+    await page.emulateMedia({ colorScheme: "light" });
+
+    // the card's own button takes the first rung
+    await card.getByRole("button", { name: "Show the technique" }).click();
+    await s.expect("'Show the technique' takes the hint and the card goes", async () => ({ card: await card.count(), tab: await problemTab(page), hints: await hintsOf(page) }), { card: 0, tab: "Description", hints: [HINT1] });
+    await s.expect("…the ladder is scrolled into view, and offers the next rung", async () => ({ seen: await inView(page, page.locator(sel.ladder)), button: await rungOf(page) }), { seen: true, button: "Show the key idea" });
+    await keepsAway("after a hint", "Show the key idea");
+    await s.expect("…the card quotes the clock: within a minute of the stopwatch, past 30", async () => {
+      const said = Number((await textOf(card.locator("p"))).match(/^(\d+) minutes in\./)?.[1]);
+      const shown = Number((await page.locator(".wclock-time").textContent()).trim().split(":")[0]);
+      return Math.abs(said - shown) <= 1 && said >= 30;
+    }, true);
+
+    // a hint taken on the ladder, with the card up, is a hint taken: the card goes, the next is ten minutes off
+    await page.locator(sel.ladder).evaluate((el) => el.scrollIntoView({ block: "center" })); // the card floats over the pane's foot
+    await rung.click();
+    await s.expect("the ladder's own 'Show the key idea' takes the hint and the card goes", async () => ({ card: await card.count(), hints: await hintsOf(page) }), { card: 0, hints: [HINT1, HINT2] });
+    await keepsAway("after a hint from the ladder", "Show the steps");
+
+    // "Not now"
+    await card.getByRole("button", { name: "Not now" }).click();
+    await s.expect("'Not now' takes the card away and no hint", async () => ({ card: await card.count(), hints: await hintsOf(page) }), { card: 0, hints: [HINT1, HINT2] });
+    await keepsAway("after 'Not now'", "Show the steps");
+
+    // from the Solution tab, the card's hint switches back to the Description tab
+    await page.getByRole("tab", { name: "Solution" }).click();
+    await card.getByRole("button", { name: "Show the steps" }).click();
+    await s.expect("'Show the steps' on the card, from the Solution tab: back to Description, third hint out, card gone", async () => ({ card: await card.count(), tab: await problemTab(page), hints: await hintsOf(page) }), { card: 0, tab: "Description", hints: [HINT1, HINT2, HINT3] });
+    await keepsAway("after the third hint", "Show the solution");
+
+    // with every hint out, the card's rung is the solution
+    await card.getByRole("button", { name: "Show the solution" }).click();
+    await s.expect("'Show the solution' on the card opens it and switches to the Solution tab, and the card goes", async () => ({ card: await card.count(), tab: await problemTab(page), veil: await page.locator(".ws-veil").count(), ref: await page.locator(".ws-sol-code .cm-editor").count() }), { card: 0, tab: "Solution", veil: 0, ref: 1 });
+    await jump(page, "30:00");
+    await sleep(500);
+    await s.expect("once the solution is open the nudge never comes back", () => card.count(), 0, { timeout: 0 });
+    finish(s);
+  } finally {
+    await ctx.close();
+  }
+});
+
+/* 23 ----------------------------------------------------------------- */
+scenario("23-stuck-clock", "the stuck nudge follows the stopwatch: a paused clock never brings it, a reset starts the count again", async (s) => {
+  const { ctx, page } = await newPage(s);
+  try {
+    await page.clock.install({ time: NUDGE_CLOCK });
+    await openWorkspace(s, page, { check: false, ready: false });
+    const card = page.locator(sel.nudge);
+    const clock = page.locator(".wclock-time");
+    await clock.click();
+    await s.expect("(setup) the stopwatch is paused", () => clock.getAttribute("aria-label"), "Resume the clock");
+    const held = (await clock.textContent()).trim();
+    await jump(page, "25:00");
+    await sleep(500);
+    await s.expect("paused, 25 minutes of the page's time bring no card", () => card.count(), 0, { timeout: 0 });
+    await s.expect("…and the stopwatch held still", async () => (await clock.textContent()).trim(), held);
+
+    await clock.click();
+    await jump(page, "20:00");
+    await s.expect("resumed, the clock counts again: 20 minutes of it bring the card", () => nudgeAsks(card), { text: "20 minutes in. Want a nudge?", buttons: ["Show the technique", "Not now"] });
+    await page.getByRole("button", { name: "Reset the clock" }).click();
+    await s.expect("Reset starts the count over, and takes the card away", () => card.count(), 0, { timeout: 6000 });
+    await jump(page, "19:00");
+    await sleep(500);
+    await s.expect("…19 minutes after the reset there is no card", () => card.count(), 0, { timeout: 0 });
+    await jump(page, "01:30");
+    await s.expect("…20 minutes after it the card is back", () => nudgeAsks(card).then((a) => a.text), "20 minutes in. Want a nudge?");
+    finish(s);
+  } finally {
+    await ctx.close();
+  }
+});
+
+/* 24 ----------------------------------------------------------------- */
+scenario("24-stuck-phone", "390x844 touch: the nudge rides over the pane you are in; its button leads to the ladder", async (s) => {
+  const { ctx, page } = await newPage(s, { phone: true });
+  try {
+    await page.clock.install({ time: NUDGE_CLOCK });
+    await openWorkspace(s, page, { check: false, ready: false });
+    const card = page.locator(sel.nudge);
+    const seg = () => page.locator(".seg [role=tab]").evaluateAll((els) => els.map((e) => e.textContent.trim() + ":" + e.getAttribute("aria-selected")));
+    await press(page, page.locator(".seg").getByRole("tab", { name: "Code" }));
+    await s.expect("(setup) the Code pane is showing", seg, ["Problem:false", "Code:true", "Tests:false"]);
+    await jump(page, "20:00");
+    await s.expect("20 minutes in, over the Code pane: the card spans the width at the bottom", () => card.evaluate((e) => { const r = e.getBoundingClientRect(); return { left: Math.round(r.left), right: Math.round(innerWidth - r.right), bottom: Math.round(innerHeight - r.bottom) }; }), { left: 10, right: 10, bottom: 10 });
+    await s.expect("…saying the same, with the same two buttons", () => nudgeAsks(card), { text: "20 minutes in. Want a nudge?", buttons: ["Show the technique", "Not now"] });
+    await s.shot(page, "nudge-phone-light");
+
+    await press(page, card.getByRole("button", { name: "Show the technique" }));
+    await s.expect("its button switches to the Problem pane on the Description tab, takes the hint, and the card goes", async () => ({ seg: await seg(), tab: await problemTab(page), hints: await hintsOf(page), card: await card.count() }), { seg: ["Problem:true", "Code:false", "Tests:false"], tab: "Description", hints: [HINT1], card: 0 });
+    await s.expect("…and the ladder is in view", () => inView(page, page.locator(sel.ladder)), true);
+    await s.shot(page, "ladder-phone-light");
+    await dark(page);
+    await s.shot(page, "ladder-phone-dark");
+    await page.emulateMedia({ colorScheme: "light" });
+
+    await press(page, page.getByRole("tab", { name: "Solution" }));
+    await press(page, page.getByRole("button", { name: "Skip to the solution" }));
+    await page.locator(".ws-problem-body").evaluate((el) => (el.scrollTop = 0));
+    await s.expect("the Solution tab's short version fits the phone: no sideways scroll", () => page.evaluate(() => { const b = document.querySelector(".ws-problem-body"); return b.scrollWidth <= b.clientWidth && document.documentElement.scrollWidth <= window.innerWidth; }), true);
+    await s.shot(page, "solution-short-phone-light");
+    await dark(page);
+    await s.shot(page, "solution-short-phone-dark");
+    await page.emulateMedia({ colorScheme: "light" });
+    finish(s);
+  } finally {
+    await ctx.close();
+  }
+});
 
 /* ------------------------------ driver ------------------------------ */
 

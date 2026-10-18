@@ -1,0 +1,9 @@
+.ws-technique {
+  display: inline-block; margin: 6px 0 0; padding: 3px 10px; border-radius: 12px; background: var(--sunken);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--ink2);
+}
+.ws-technique b { color: var(--ink); font-weight: 600; }
+/* The numbers wear the accent, as the "# 1." markers do in the code below. */
+.ws-steps li::marker { color: var(--accent); font-weight: 700; }
+.ws-cost .md { margin: -2px 0 4px; font-size: 12.5px; color: var(--ink2); }
+.ws-cost .md p { margin: 0; }

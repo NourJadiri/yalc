@@ -6,7 +6,7 @@ export interface Clock {
   since: number | null;
 }
 
-const elapsed = (c: Clock): number => c.banked + (c.since === null ? 0 : Math.floor((Date.now() - c.since) / 1000));
+export const elapsed = (c: Clock): number => c.banked + (c.since === null ? 0 : Math.floor((Date.now() - c.since) / 1000));
 
 /** The workspace's clock, kept above the header so a layout swap that unmounts the stopwatch doesn't restart it. */
 export function useClock(): RefObject<Clock> {

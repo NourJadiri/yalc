@@ -1,24 +1,20 @@
-import { useMemo } from "react";
-import { sections } from "../lib/markdown";
+import { useMemo, type ReactNode } from "react";
+import { parseStatement } from "../lib/statement";
 import Markdown from "../Markdown";
 import HintBox from "./HintBox";
 import ProblemHeading from "./ProblemHeading";
 import TopicList from "./TopicList";
 import "./Statement.css";
 
-const HINT = /^aim for$/i;
-const FOLLOW = /^follow-ups?/i;
-
 interface StatementProps {
   statement: string;
   topics: string[];
+  /** The hint ladder, which stands where the "Aim for" box would. Without one the box is shown. */
+  ladder: ReactNode;
 }
 
-export default function Statement({ statement, topics }: StatementProps) {
-  const parts = useMemo(() => sections(statement), [statement]);
-  const main = parts.filter((s) => !HINT.test(s.title) && !FOLLOW.test(s.title));
-  const hint = parts.find((s) => HINT.test(s.title));
-  const follow = parts.find((s) => FOLLOW.test(s.title));
+export default function Statement({ statement, topics, ladder }: StatementProps) {
+  const { main, aim, follow } = useMemo(() => parseStatement(statement), [statement]);
 
   return (
     <>
@@ -29,11 +25,12 @@ export default function Statement({ statement, topics }: StatementProps) {
           <Markdown text={s.body} />
         </div>
       ))}
-      {hint && (
-        <HintBox icon="lightbulb" title="Hint — what to aim for">
-          <Markdown text={hint.body} />
-        </HintBox>
-      )}
+      {ladder ??
+        (aim && (
+          <HintBox icon="lightbulb" title="Hint — what to aim for">
+            <Markdown text={aim.body} />
+          </HintBox>
+        ))}
       {follow && (
         <HintBox icon="arrow-right" title="Follow-ups an interviewer might ask">
           <Markdown text={follow.body} />

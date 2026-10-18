@@ -1,0 +1,21 @@
+.ws-ladder { margin: 14px 0 0; padding: 12px 14px 14px; border: 1px solid var(--line); border-radius: 10px; scroll-margin: 12px; }
+.ws-ladder-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink2); }
+.ws-ladder-head svg { flex: none; }
+.ws-ladder-hints:not(:empty) { margin-top: 12px; }
+.ws-hint + .ws-hint { margin-top: 14px; }
+.ws-hint-label {
+  margin: 0 0 4px; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  font-weight: 700; color: var(--ink2);
+}
+.ws-hint-pattern { margin: 0; font-size: 14px; font-weight: 600; line-height: 1.5; }
+.ws-hint .md > :last-child { margin-bottom: 0; }
+.ws-hint-cost { margin-top: 8px; }
+.ws-hint-cost .md { font-size: 12.5px; color: var(--ink2); }
+.ws-ladder .btn { margin-top: 12px; }
+@media (max-width: 899px) {
+  .ws-ladder .btn { height: 38px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ws-hint { animation: hintin .25s ease-out; }
+}
+@keyframes hintin { from { opacity: 0; transform: translateY(-4px); } }

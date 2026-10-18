@@ -1,4 +1,4 @@
-import { Marked } from "marked";
+import { Marked, type Tokens } from "marked";
 
 /* Problem text is ours (bundled, reviewed, never user input), so marked's HTML goes in as is. */
 const problemText = new Marked({ gfm: true, breaks: false });
@@ -32,4 +32,11 @@ export function sections(md: string): Section[] {
 export function withoutLead(md: string): string {
   const i = md.search(/^## /m);
   return i < 0 ? md : md.slice(i);
+}
+
+/** The items of the first list in `md`, each as HTML with no <p> around it. Read through marked's lexer, so a line
+ *  that wraps or a bullet nested under an item stays with its item. */
+export function listItems(md: string): string[] {
+  const list = problemText.lexer(md).find((t): t is Tokens.List => t.type === "list");
+  return list ? list.items.map((item) => problemText.parser(item.tokens)) : [];
 }

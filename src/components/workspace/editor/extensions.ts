@@ -25,6 +25,7 @@ import { python } from "@codemirror/lang-python";
 import { errorLine } from "./errorLine";
 import { highlight } from "./highlight";
 import { jumpLine } from "./jumpLine";
+import { stepMarks } from "./stepMarks";
 import { fontTheme, theme } from "./theme";
 
 export interface EditorCallbacks {
@@ -86,6 +87,7 @@ export function editorExtensions({ callbacks, font, fontSize, label, readOnly }:
     EditorView.editable.of(!readOnly),
     /* A reference solution is read in a narrow pane: wrap it rather than hide the ends of its comments. */
     readOnly ? EditorView.lineWrapping : [],
+    readOnly ? stepMarks : [],
     EditorView.updateListener.of((u) => {
       if (u.docChanged) callbacks.current.onChange?.(u.state.doc.toString());
     }),

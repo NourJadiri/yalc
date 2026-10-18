@@ -1,7 +1,10 @@
+import type { Ref } from "react";
 import type { ProblemContent } from "../../../data/problems";
 import { useCopied } from "../../../hooks/useCopied";
 import Tab from "../../ui/Tab";
 import Tabs from "../../ui/Tabs";
+import type { Notes } from "../lib/notes";
+import HintLadder from "./HintLadder";
 import ReferenceSolution from "./ReferenceSolution";
 import SolutionVeil from "./SolutionVeil";
 import Statement from "./Statement";
@@ -9,19 +12,25 @@ import "./ProblemPane.css";
 
 interface ProblemPaneProps {
   content: ProblemContent;
+  /** The notes' short version. Having one turns on the hint ladder and the short Solution tab. */
+  notes: Notes | null;
   tab: "desc" | "solution";
   onTab: (t: "desc" | "solution") => void;
-  /** Passed every test at some point: the solution is open. */
-  accepted: boolean;
-  revealed: boolean;
+  /** The solution is open: passed every test at some point, or revealed. */
+  open: boolean;
   onReveal: () => void;
+  /** How many hints the ladder has shown. */
+  hints: number;
+  /** The ladder's button: the next hint, then the solution; once that is open, a switch to its tab. */
+  onClimb: () => void;
+  ladderRef: Ref<HTMLDivElement>;
   fontSize: number;
 }
 
-export default function ProblemPane({ content, tab, onTab, accepted, revealed, onReveal, fontSize }: ProblemPaneProps) {
+export default function ProblemPane({ content, notes, tab, onTab, open, onReveal, hints, onClimb, ladderRef, fontSize }: ProblemPaneProps) {
   /* Held here, not in the solution, so the flash survives a trip to the other tab. */
   const [copied, copy] = useCopied(1800);
-  const open = accepted || revealed;
+  const ladder = notes && <HintLadder notes={notes} hints={hints} open={open} onClimb={onClimb} ref={ladderRef} />;
 
   return (
     <section className="ws-problem" aria-label="Problem">
@@ -36,11 +45,17 @@ export default function ProblemPane({ content, tab, onTab, accepted, revealed, o
 
       <div className="ws-problem-body">
         {tab === "desc" ? (
-          <Statement statement={content.statement} topics={content.spec.topics ?? []} />
+          <Statement statement={content.statement} topics={content.spec.topics ?? []} ladder={ladder} />
         ) : !open ? (
-          <SolutionVeil onReveal={onReveal} />
+          <SolutionVeil ladder={ladder} onReveal={onReveal} />
         ) : (
-          <ReferenceSolution content={content} fontSize={fontSize} copied={copied} onCopy={() => copy(content.solution)} />
+          <ReferenceSolution
+            content={content}
+            notes={notes}
+            fontSize={fontSize}
+            copied={copied}
+            onCopy={() => copy(content.solution)}
+          />
         )}
       </div>
     </section>

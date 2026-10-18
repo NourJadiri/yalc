@@ -1,0 +1,21 @@
+/* Under the assistant (6) when the two meet. Bottom left, where the assistant is not. */
+.ws-nudge {
+  position: fixed; z-index: 5; left: 16px; bottom: 16px; width: 300px; max-width: calc(100vw - 32px);
+  display: flex; flex-direction: column; gap: 10px; padding: 12px 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(32,33,36,.16), 0 2px 6px rgba(32,33,36,.1);
+}
+.ws-nudge p { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 13px; font-weight: 600; }
+.ws-nudge p svg { flex: none; color: var(--ink2); }
+.ws-nudge-actions { display: flex; align-items: center; gap: 6px; }
+@media (max-width: 899px) {
+  .ws-nudge { left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); width: auto; max-width: none; }
+  .ws-nudge .btn { height: 38px; }
+}
+@media (prefers-color-scheme: dark) {
+  .ws-nudge { box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.35); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ws-nudge { animation: nudgein .2s cubic-bezier(.05, .7, .1, 1); }
+}
+@keyframes nudgein { from { opacity: 0; transform: translateY(8px); } }
