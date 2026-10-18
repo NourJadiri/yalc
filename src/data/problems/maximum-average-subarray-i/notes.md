@@ -1,3 +1,18 @@
+## Pattern
+Sliding window (fixed size)
+
+## Key idea
+Sliding the window one step changes only two elements, so update a running sum instead of re-adding `k` numbers; windows of equal length compare by sum alone.
+
+## Steps
+1. Sum the first `k` elements: that is the first window, and the starting `best` (not `0`: every sum might be negative).
+2. For each `i` from `k` on, slide the window: add `nums[i]` and drop `nums[i - k]`.
+3. Keep the largest window sum seen in `best`.
+4. Return `best / k`: divide once, at the end.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 The direct approach adds up all `k` elements of every window: `O(k)` per window, `O(n * k)` overall, which at the maximum size is billions of additions. But neighbouring windows overlap almost completely.

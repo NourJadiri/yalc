@@ -1,3 +1,18 @@
+## Pattern
+Dijkstra's algorithm
+
+## Key idea
+The answer is the smallest possible maximum elevation along a route, so flood from the start, always popping the lowest border cell, and track the running maximum.
+
+## Steps
+1. Put `(0, 0)` on a min-heap `border` keyed by elevation, mark it `seen`, and start `level` at `0`.
+2. Pop the lowest border cell and raise `level` to its elevation if that is higher.
+3. If that cell is the bottom-right corner, return `level`.
+4. Otherwise push each unseen neighbour inside the grid, marking it `seen` as you push it.
+
+## Cost
+`O(n^2 log n)` time · `O(n^2)` space for an `n x n` grid
+
 ## Approach
 
 At time `t` the usable cells are exactly those with elevation at most `t`, and the trip works when `(0, 0)` and `(n - 1, n - 1)` are connected through usable cells. So the answer is the **smallest possible maximum elevation along a route**, with both endpoints included: a minimax path.

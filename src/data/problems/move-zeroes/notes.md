@@ -1,3 +1,17 @@
+## Pattern
+Two pointers
+
+## Key idea
+`write` trails `read` and marks where the next non-zero value belongs, so swapping each non-zero into it packs them at the front in order and pushes zeros back.
+
+## Steps
+1. Start `write` at `0`: it marks the slot where the next non-zero value belongs.
+2. Walk `read` over every index; when `nums[read]` is non-zero, swap it with `nums[write]`.
+3. Then move `write` up by one; zeros are just walked past.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **The pattern: a read pointer and a write pointer.** A lot of in-place list problems come down to the same move. One index, `read`, walks over every element. A second index, `write`, trails behind it and marks the slot where the next element worth keeping should go. The reader decides what to keep, and the writer packs the keepers tightly at the front. Because `write` never gets ahead of `read`, you only ever write over slots you've already looked at.

@@ -1,3 +1,19 @@
+## Pattern
+Backtracking
+
+## Key idea
+Sort so equal values sit together; trying the same value twice in one slot rebuilds the same combinations, so skip it there but allow it one slot deeper.
+
+## Steps
+1. Sort `candidates`, so equal values sit next to each other.
+2. When `remaining` hits `0`, record a copy of `path` and return.
+3. Loop `i` from `start`; skip `candidates[i]` if `i > start` and it equals `candidates[i - 1]`: that value already had this slot.
+4. Break at the first `c` bigger than `remaining`: the list is sorted, so every later one is too big as well.
+5. Append `c`, recurse from `i + 1` with `remaining - c` so each entry is used once, then pop.
+
+## Cost
+`O(2^n · n)` time in the worst case · `O(target)` space
+
 ## Approach
 
 Sort the candidates, then build combinations in index order: the subsets pattern with a running total.

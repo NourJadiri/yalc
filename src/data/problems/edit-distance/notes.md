@@ -1,3 +1,19 @@
+## Pattern
+Dynamic programming (two strings)
+
+## Key idea
+Look at the last characters: a match costs nothing and shrinks both prefixes; a mismatch needs one replace, delete or insert, so take the cheapest of the three.
+
+## Steps
+1. Define `d[i][j]` as the fewest edits turning `word1[:i]` into `word2[:j]`; keep only the previous row.
+2. Start row 0 as `0..n`: building `word2[:j]` from nothing takes `j` inserts.
+3. For each `i`, start a new row at `i` (delete all `i` characters), then fill it for `j` from `1` to `n`.
+4. If the last characters match, copy the diagonal (`prev[j - 1]`); otherwise take `1 +` the cheapest of replace, delete and insert.
+5. Make `cur` the previous row; after the last row, return `prev[n]`.
+
+## Cost
+`O(m · n)` time · `O(min(m, n))` space with two rows over the shorter word
+
 ## Approach
 
 The classic two-string DP: Levenshtein distance. Look at the **last character** of each prefix and ask what the final edit does to it.

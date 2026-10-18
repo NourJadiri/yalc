@@ -1,3 +1,17 @@
+## Pattern
+Hash map, two passes
+
+## Key idea
+Whether a letter is unique depends on the whole string, so count every letter first, then rescan in string order for the first count of `1`.
+
+## Steps
+1. Count every letter of `s` with `Counter`.
+2. Walk `s` again with `enumerate`, in string order rather than alphabetical order.
+3. Return the first index whose letter has a count of `1`; if the walk ends without one, return `-1`.
+
+## Cost
+`O(n)` time · `O(1)` space (26 letters)
+
 ## Approach
 
 **The pattern: count first, then look.** "Appears exactly once" is a fact about the *whole* string, so you can't settle it for a letter while you're still reading. In `"swiss"`, the first `s` looks unique right up until the second `s` arrives. So split the work into two passes:

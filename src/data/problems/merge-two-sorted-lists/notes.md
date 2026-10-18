@@ -1,3 +1,19 @@
+## Pattern
+Two pointers
+
+## Key idea
+Both lists are sorted, so the smallest remaining node is always one of the two fronts; take it and advance that list only.
+
+## Steps
+1. Make a `dummy` node and point `tail` at it, so the first real node needs no special case.
+2. While both lists have nodes, link the smaller front node after `tail` and move that list forward.
+3. Move `tail` onto the node you just linked.
+4. When one list runs out, attach the rest of the other with `tail.next = list1 or list2`.
+5. Return `dummy.next`, the real head.
+
+## Cost
+`O(n + m)` time for lists of `n` and `m` nodes · `O(1)` space
+
 ## Approach
 
 **The pattern: merging with two pointers.** You may have done this by hand. You have two piles of exam papers, each sorted by name, and you want one sorted pile. Look at the top paper of each pile, take whichever comes first, and repeat. You never need to look further down than the two tops. Each pile is sorted, so the smallest paper left anywhere has to be on top of one of them.

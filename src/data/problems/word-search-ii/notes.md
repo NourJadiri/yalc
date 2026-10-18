@@ -1,3 +1,19 @@
+## Pattern
+Trie (with backtracking)
+
+## Key idea
+Walk a trie of the words alongside the board, so shared prefixes are searched once and a path dies as soon as no word continues it.
+
+## Steps
+1. Build a trie of all the words, keeping each whole word on its end node.
+2. In `dfs`, step to the trie child for the cell's letter; if a word ends there, record it and set `word` to `None`.
+3. Mark the cell `#`, recurse into each in-board neighbour whose letter is a child of `node`, then restore the letter.
+4. If `node` has no children and no word left, delete it from its parent: nothing is left to find below.
+5. Start `dfs` from every cell whose letter is a child of `root`, then return `found`.
+
+## Cost
+`O(T + m · n · 3^L)` time · `O(T)` space, `T` = total letters, `L` = longest word
+
 ## Approach
 
 Start from the one-word version, Word Search: backtracking from a starting cell, trying each neighbour that holds the next letter, marking cells on the current path so none is used twice and unmarking them on the way back. Running that once per word works, but it wastes effort: `sea` and `seat` walk the same cells, and when thousands of words share their first few letters, repeating those walks is nearly all the work.

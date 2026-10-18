@@ -1,3 +1,19 @@
+## Pattern
+Multi-source BFS
+
+## Key idea
+Instead of tracing rain downhill from every cell, search backwards from each ocean's shore, stepping uphill or level, then intersect the two marked sets.
+
+## Steps
+1. In `climb(shore)`, mark every shore cell as draining and queue them all at once.
+2. While the queue is not empty, pop a cell and look at its four neighbours.
+3. Mark and queue each neighbour that is inside the grid, not yet marked, and at least as high as the cell.
+4. Run `climb` from the Pacific shore (top row, left column) and again from the Atlantic shore (bottom row, right column).
+5. Return the cells in both sets: `pacific & atlantic`.
+
+## Cost
+`O(m · n)` time · `O(m · n)` space
+
 ## Approach
 
 The direct approach asks, for every cell, "where can rain from here go?" and runs a downhill search from each one. That's up to `m·n` searches of up to `m·n` cells each. On flat ground, each search really does cover the whole flat area.

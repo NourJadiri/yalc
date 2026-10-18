@@ -1,3 +1,17 @@
+## Pattern
+Bit manipulation
+
+## Key idea
+Equal numbers cancel under XOR (`a ^ a == 0`), in any order, and `0` changes nothing, so XOR-ing everything leaves only the unpaired number.
+
+## Steps
+1. Start `result` at `0`, since `a ^ 0 == a`.
+2. XOR every number into `result`: each pair cancels, whatever the order.
+3. Return `result`: only the number with no twin is left.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **Say the plain answers first.** A set works: add a number the first time you see it, remove it the second time, and the one number left in the set is the answer. So does a dictionary of counts. Both are `O(n)` time — and both use `O(n)` extra space, which is what the interviewer will ask you to get rid of.

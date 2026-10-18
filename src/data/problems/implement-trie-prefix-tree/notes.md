@@ -1,3 +1,19 @@
+## Pattern
+Trie
+
+## Key idea
+Each node is the prefix spelled by the path to it, so words that start alike share nodes; an `is_word` flag tells a word from a mere prefix.
+
+## Steps
+1. Give each node a `children` dict (letter to child) and an `is_word` flag; the trie keeps one empty root.
+2. `insert`: follow the word's letters from the root, creating each missing child, then set `is_word` on the last node.
+3. `search`: find the node for the word, and also require its `is_word` flag.
+4. `startsWith`: find the node for the prefix; reaching it is enough.
+5. In `_find`, follow the letters with `children.get` and never create nodes, so a failed lookup leaves nothing behind.
+
+## Cost
+`O(L)` time per call for a string of length `L` · `O(total letters inserted)` space
+
 ## Approach
 
 A trie stores strings letter by letter along paths from the root: the node you reach by spelling `s` *is* the prefix `s`. Words that share a beginning share those nodes, so `car`, `cart` and `carpet` all hang off the same `c → a → r` path.

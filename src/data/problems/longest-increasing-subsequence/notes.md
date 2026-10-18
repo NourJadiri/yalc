@@ -1,3 +1,19 @@
+## Pattern
+Binary search (patience sorting)
+
+## Key idea
+For each length of increasing subsequence, only the smallest value that can end one matters; these tails stay sorted, so binary search finds where each number goes.
+
+## Steps
+1. Keep `tails`, where `tails[k]` is the smallest value that ends a strictly increasing subsequence of length `k + 1` so far.
+2. For each `x`, find `k`, the first tail `>= x`, with `bisect_left`; left, so an equal value can't extend.
+3. If no tail is `>= x`, append `x`: it extends the longest subsequence so far.
+4. Otherwise set `tails[k] = x`: a smaller ending for length `k + 1`, which is never worse.
+5. Return `len(tails)`: only the length means anything, not the contents.
+
+## Cost
+`O(n log n)` time · `O(n)` space
+
 ## Approach
 
 **The O(n^2) DP.** The trick is a subproblem that remembers enough to extend. "The LIS of the first `i` elements" doesn't: to append `nums[i]` you need to know what the subsequence *ends* with. So pin the end.

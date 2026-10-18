@@ -1,3 +1,18 @@
+## Pattern
+Backtracking
+
+## Key idea
+Every prefix of a valid pattern is valid, so extend one dot at a time; a move is blocked only if it jumps over an unused dot.
+
+## Steps
+1. Build `skip[a][b]`, the dot a move `a -> b` passes over (the ends of each row, column, diagonal; else `0`), and a `used` flag per dot.
+2. Count the path once its length reaches `m`, and stop extending it at length `n`.
+3. Mark the dot used, recurse into each unused `nxt` whose `skip` dot is `0` or already used, then unmark.
+4. Start from one corner, one edge and the centre only: the answer is `4 · count(1) + 4 · count(2) + count(5)` by symmetry.
+
+## Cost
+`O(1)` time (at most `389,497` paths) · `O(1)` space (9 dots)
+
 ## Approach
 
 Backtracking over paths. A path is valid exactly when every one of its prefixes is valid, so grow paths one dot at a time and count each path whose length lands in `[m, n]` as you pass it — there's no need to enumerate patterns separately per length.

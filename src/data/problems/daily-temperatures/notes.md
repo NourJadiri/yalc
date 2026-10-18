@@ -1,3 +1,18 @@
+## Pattern
+Monotonic stack
+
+## Key idea
+The days still waiting for a warmer day sit on a stack, coldest on top, so a new day only needs to pop and answer the colder ones.
+
+## Steps
+1. Start `answer` as all `0`s, and keep a `stack` of indices of days still waiting for a warmer day.
+2. Sweep the days left to right; while the top of the stack is strictly colder than today's `t`, pop it as `j`.
+3. Set `answer[j] = i - j`: day `i` is the first warmer day `j` has met.
+4. Push `i`: it waits now too.
+
+## Cost
+`O(n)` time · `O(n)` space
+
 ## Approach
 
 **A monotonic stack of unresolved days.** Sweep left to right, keeping a stack of the indices of days that haven't met a warmer day yet. Their temperatures never rise from the bottom of the stack to the top: a warmer day pushed above a colder one would have resolved it on the way in.

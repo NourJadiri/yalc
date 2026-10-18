@@ -1,3 +1,18 @@
+## Pattern
+Heap (priority queue)
+
+## Key idea
+Only the `k` largest scores can still matter, and the smallest of them is the answer, so keep them in a min-heap of size `k`.
+
+## Steps
+1. Heapify `nums` as a min-heap that will hold the `k` largest scores; its top is the `k`-th largest.
+2. Pop the smallest until only `k` values remain: `k` larger scores exist, so those can never matter again.
+3. In `add`, push `val` first, then pop the smallest if the heap holds more than `k`.
+4. Return the top, `self.heap[0]`: the `k`-th largest so far.
+
+## Cost
+`O(log k)` time per `add` (`O(n log n)` to build) · `O(k)` space
+
 ## Approach
 
 **Keep only what can still matter.** Say `k = 3` and the scores so far are `12, 9, 8, 5, 1`. The answer is `8`. Could `5` or `1` ever be the answer again? No — three scores at least as large as them have already arrived, and future scores can only add competition. So at any moment only the `k` largest scores matter, and the answer is the **smallest** of those `k`.

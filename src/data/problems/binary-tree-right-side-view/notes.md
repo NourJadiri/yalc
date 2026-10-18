@@ -1,3 +1,17 @@
+## Pattern
+Breadth-first search
+
+## Key idea
+You see only the rightmost node of each level, and it can sit in the left subtree; so go level by level and keep the last node.
+
+## Steps
+1. Start the level list as `[root]`, or `[]` for an empty tree.
+2. While the level is not empty, record the value of its last node.
+3. Build the next level from every node's left child, then right child, so it stays left to right.
+
+## Cost
+`O(n)` time · `O(width)` space, for the widest level
+
 ## Approach
 
 Ask what you need from each level: only its last node. Breadth-first search gives you whole levels, so the answer drops straight out.

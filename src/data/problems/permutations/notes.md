@@ -1,3 +1,19 @@
+## Pattern
+Backtracking
+
+## Key idea
+Fill the slots left to right, offering every unused element at each slot; undo each choice afterwards so the next branch starts from the same state.
+
+## Steps
+1. Keep the permutation so far in `path`, and a `used` flag for each element.
+2. When `path` holds all `n` elements, record a copy of it and return.
+3. Otherwise loop over `nums`, skipping each element that is already `used`.
+4. Choose `x` (set `used[i]`, append it), recurse for the next slot, then undo both changes.
+5. Call `backtrack()` once to start from an empty `path`, and return `out`.
+
+## Cost
+`O(n · n!)` time · `O(n)` space besides the output
+
 ## Approach
 
 Fill `n` slots from left to right. For the next slot, every element not used yet is a choice.

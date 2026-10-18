@@ -1,3 +1,18 @@
+## Pattern
+Hash map
+
+## Key idea
+The symbol right after decides each sign: if it is larger, this one starts a subtractive pair, so subtract; otherwise add.
+
+## Steps
+1. Build a `value` dictionary from symbol to number, and start `total` at `0`.
+2. Walk the numeral, looking up each symbol's value `v`.
+3. If a next symbol exists and is larger than `v`, this starts a pair like `IV`: subtract `v`; otherwise add it.
+4. Return `total`.
+
+## Cost
+`O(n)` time for `n` symbols · `O(1)` space (a seven-entry dictionary)
+
 ## Approach
 
 **The pattern: look one step ahead.** Reading left to right, every symbol's value is either added or subtracted, and the symbol *right after it* decides which:

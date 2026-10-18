@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming (2D grid)
+
+## Key idea
+A cell is entered only from above or from the left, so its route count is the sum of those two neighbours' counts.
+
+## Steps
+1. Keep one array `row` of `n` counts, starting as the top row: all `1`s.
+2. For each of the other `m - 1` rows, sweep `c` from `1` to `n - 1`.
+3. Add the left neighbour: `row[c] += row[c - 1]`; `row[c]` still holds the count from the row above.
+4. Return `row[-1]`, the number of routes to the bottom-right cell.
+
+## Cost
+`O(m · n)` time · `O(n)` space with a single row
+
 ## Approach
 
 Grid path counting — the cleanest DP there is.
