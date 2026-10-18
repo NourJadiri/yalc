@@ -1,3 +1,19 @@
+## Pattern
+Intervals (sort and sweep)
+
+## Key idea
+In start order, a booking needs a new studio only if the one freeing up first is still busy; a min-heap of end times finds it instantly.
+
+## Steps
+1. Keep a min-heap `ends` holding the end time of the latest session in each studio opened so far.
+2. Go through the bookings sorted by start time.
+3. If the earliest-ending studio is free by this start (`ends[0] <= start`), reuse it: replace its end time with this booking's end.
+4. Otherwise every studio is busy: push this booking's end time to open a new one.
+5. Return the heap size: it never shrinks, so it is the most studios needed at once.
+
+## Cost
+`O(n log n)` time · `O(n)` space
+
 ## Approach
 
 The answer is the overlap depth: the largest number of bookings live at the same instant. Fewer studios than that can't work — those bookings all need a studio at that moment — and a greedy assignment never needs more.

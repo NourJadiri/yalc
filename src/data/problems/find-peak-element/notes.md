@@ -1,3 +1,19 @@
+## Pattern
+Binary search
+
+## Key idea
+Compare `nums[mid]` with its right neighbour: rising guarantees a peak to the right, falling guarantees one at `mid` or to its left, so you can always discard half.
+
+## Steps
+1. Start with the whole index range: `lo = 0` and `hi = len(nums) - 1`.
+2. While `lo < hi`, compare `nums[mid]` with `nums[mid + 1]` (it exists, since `mid < hi`).
+3. If it rises, a peak lies to the right: set `lo = mid + 1`.
+4. Otherwise it falls, so `mid` or something left of it is a peak: set `hi = mid`, not `mid - 1`.
+5. When `lo == hi`, that one index is a peak: return it.
+
+## Cost
+`O(log n)` time · `O(1)` space
+
 ## Approach
 
 Binary search on the *slope*, not on a value. Compare `nums[mid]` with its right neighbour:

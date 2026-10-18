@@ -1,3 +1,18 @@
+## Pattern
+Binary search
+
+## Key idea
+When the search misses, everything left of `lo` is smaller and everything from `lo` on is bigger, so `lo` is where `target` belongs.
+
+## Steps
+1. Search the whole index range: `lo = 0` and `hi = len(nums) - 1`.
+2. While `lo <= hi`, take the middle and return `mid` if `nums[mid] == target`.
+3. Otherwise shrink the range: if `nums[mid] < target` set `lo = mid + 1`, else `hi = mid - 1`.
+4. When the range is empty (`lo == hi + 1`), return `lo`: the target is not there, and `lo` is where it belongs.
+
+## Cost
+`O(log n)` time · `O(1)` space
+
 ## Approach
 
 **The same loop as Binary Search, plus one new idea.** Run exactly the loop from Binary Search. Set `lo = 0` and `hi = len(nums) - 1`, and while `lo <= hi`, compare `nums[mid]` with `target` and move `lo` up past `mid` or `hi` down past it. If you find the target, return `mid`. The only new question is this: *when the loop ends without finding it, where would the target go?*

@@ -1,3 +1,18 @@
+## Pattern
+Fast and slow pointers
+
+## Key idea
+The digit-square chain is a linked list in disguise: it either reaches `1`, which points to itself, or falls into a loop, so use cycle detection.
+
+## Steps
+1. Write `step(x)`, the sum of the squares of the digits of `x`: the "next pointer" of the chain.
+2. Start `slow` at `n` and `fast` one step ahead at `step(n)`, so they do not begin equal.
+3. While `fast != 1` and `slow != fast`, move `slow` one step and `fast` two steps per turn.
+4. Return `fast == 1`: `True` if the chain reached `1`, `False` if the runners met inside a loop.
+
+## Cost
+`O(log n)` time · `O(1)` space
+
 ## Approach
 
 Simulating the process is the easy part. The hard part is knowing when to stop if the answer is "no".

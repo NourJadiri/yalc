@@ -1,3 +1,18 @@
+## Pattern
+Depth-first search
+
+## Key idea
+Every node must lie in an interval built from all its ancestors, so pass bounds down: going left sets `high` to the parent's value, going right sets `low`.
+
+## Steps
+1. Write `within(node, low, high)`: do all values in this subtree lie strictly between the bounds? An empty subtree does: return `True`.
+2. If `node.val` is not strictly between `low` and `high`, return `False`.
+3. Check both subtrees: left with `high = node.val`, right with `low = node.val`; both must pass.
+4. Call `within(root, -math.inf, math.inf)`: infinite bounds, so values at the integer limits need no special case.
+
+## Cost
+`O(n)` time · `O(h)` space, where `h` is the tree height
+
 ## Approach
 
 Think of the contract between a node and its ancestors. What does a node need to know to judge itself? The interval its value has to lie in. Hand that interval down the tree:

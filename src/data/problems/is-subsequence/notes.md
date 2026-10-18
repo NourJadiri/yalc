@@ -1,3 +1,18 @@
+## Pattern
+Two pointers
+
+## Key idea
+Matching `s[i]` at its earliest possible spot in `t` leaves the most of `t` for the rest, so one left-to-right pass with a pointer into `s` is enough.
+
+## Steps
+1. Keep `i`, the position in `s` of the next letter that still needs a match, starting at `0`.
+2. Walk through `t` one letter at a time.
+3. If `s` still has letters to match and the current letter equals `s[i]`, take it as that letter's match and advance `i`.
+4. After the walk, `s` is a subsequence exactly when `i == len(s)`.
+
+## Cost
+`O(len(t))` time · `O(1)` space
+
 ## Approach
 
 **The pattern: two pointers, one in each sequence.** When two sequences have to be lined up in order, walk through them together. Here, `i` points at the next letter of `s` that still needs a match, and you walk through `t` one letter at a time. If the current letter of `t` equals `s[i]`, it becomes that letter's match and `i` moves on. Either way, you move on in `t`. When `t` runs out, `s` is a subsequence exactly when every one of its letters got matched: `i == len(s)`.

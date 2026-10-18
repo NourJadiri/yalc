@@ -1,3 +1,17 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+Split the ways to reach step `k` by their last move, a 1-step or a 2-step: `ways(k) = ways(k - 1) + ways(k - 2)`.
+
+## Steps
+1. Start from the base cases `ways(0) = 1` and `ways(1) = 1`, kept as the pair `two_back`, `one_back`; each answer needs only the previous two.
+2. For each `k` from 2 to `n`, the new answer is the sum of the pair; slide the pair forward by one.
+3. Return `one_back`, which now holds `ways(n)`.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **The pattern: dynamic programming.** This is the classic first DP problem, so let's build the idea from scratch. Dynamic programming fits problems where the answer for a big input can be assembled from answers to smaller inputs *of the same problem*, and those smaller answers are needed again and again. You describe a DP with three things:

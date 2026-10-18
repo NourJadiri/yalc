@@ -1,3 +1,18 @@
+## Pattern
+Sorting
+
+## Key idea
+Tuples compare item by item, so the pair `(soldiers, index)` orders rows exactly as "weaker" is defined: fewer soldiers first, then the smaller index.
+
+## Steps
+1. Write `soldiers(row)`: the `1`s come first, so the count is the position of the first `0`, in `[lo, hi]` with `hi = len(row)` (no `0` at all).
+2. Binary search it: if `row[mid] == 1`, the first `0` is further right (`lo = mid + 1`); otherwise `hi = mid`. Return `lo`.
+3. Pair each row's count with its index, `(soldiers(row), i)`, so tuple order matches "weaker".
+4. Return the indices of the `k` smallest pairs: `heapq.nsmallest(k, strength)`.
+
+## Cost
+`O(m log n + m log k)` time · `O(m)` space
+
 ## Approach
 
 Two small jobs: measure each row's strength, then pick the `k` weakest in the right order.

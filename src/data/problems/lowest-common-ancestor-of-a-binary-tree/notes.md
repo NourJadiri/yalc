@@ -1,3 +1,18 @@
+## Pattern
+Depth-first search (post-order)
+
+## Key idea
+Each call reports what its subtree holds: nothing, one target, or their LCA; the first node to hear a target from both sides is where the paths split.
+
+## Steps
+1. If `root` is `None`, `p` or `q`, return `root` at once, without looking further down.
+2. Ask both children what their subtrees hold: `left` and `right`.
+3. If both report something, `p` and `q` are on different sides: return this node.
+4. Otherwise pass up whichever side reported something, or `None`.
+
+## Cost
+`O(n)` time · `O(h)` space, where `h` is the tree height
+
 ## Approach
 
 The contract per node: *tell me what your subtree contains.* A call on `root` returns

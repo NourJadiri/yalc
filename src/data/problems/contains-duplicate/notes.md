@@ -1,3 +1,18 @@
+## Pattern
+Hash set
+
+## Key idea
+A set answers "have I seen this value?" in `O(1)` on average, so one pass that remembers every value it has passed finds a repeat without comparing pairs.
+
+## Steps
+1. Start with an empty set `seen` for the values you have already walked past.
+2. Walk the numbers; if the current one is already in `seen`, return `True`.
+3. Otherwise add it to `seen` and move on.
+4. If the walk ends with no hit, every value was different: return `False`.
+
+## Cost
+`O(n)` time · `O(n)` space
+
 ## Approach
 
 **The pattern: a hash set as your memory.** The direct way to find a repeat is to compare every number with every other number. That's correct, but with `n` numbers it's about `n^2 / 2` comparisons — five billion when `n` is `10^5`.

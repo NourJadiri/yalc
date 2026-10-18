@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming (2D grid)
+
+## Key idea
+A cell's cheapest path total is its value plus the smallest total among the up-to-three cells above it, so each row needs only the row above.
+
+## Steps
+1. Keep `best[c]`, the cheapest path ending in column `c` of the row just processed; start it as a copy of the top row.
+2. For each row below the first, rebuild `best` from the row above.
+3. Each new `best[c]` is `row[c]` plus the minimum of the entries above-left, above and above-right, clipped at the grid's edges.
+4. Return the minimum of `best` over the whole last row.
+
+## Cost
+`O(n^2)` time · `O(n)` space
+
 ## Approach
 
 A DP over rows. A path to row `r` is a path to row `r - 1` plus one step, and the earlier part of the path matters only through its cost.

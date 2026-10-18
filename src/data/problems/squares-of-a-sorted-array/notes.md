@@ -1,3 +1,18 @@
+## Pattern
+Two pointers
+
+## Key idea
+Squares depend on distance from zero, so the biggest unplaced square is always at one of the two ends: take it and fill the answer from the back.
+
+## Steps
+1. Make `result` as long as `nums`, with `lo` at the left end and `hi` at the right end.
+2. Fill `result` from the back, one slot per turn (`write` from the last index down to `0`).
+3. Compare `abs(nums[lo])` with `abs(nums[hi])`, write the square of the bigger one into `result[write]`, and move that pointer inward.
+4. Return `result`.
+
+## Cost
+`O(n)` time · `O(1)` space besides the output
+
 ## Approach
 
 Start with the honest first answer: square everything, then sort. That's `O(n log n)`, and saying it out loud is worth points. To beat it, use the order the input already has.

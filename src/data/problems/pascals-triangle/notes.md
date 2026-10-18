@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+Each row is built only from the row above it: a `1` at both ends, and every number between is the sum of the two above it.
+
+## Steps
+1. Start with row `0`: `rows = [[1]]`.
+2. Repeat `numRows - 1` times, building each new row from the last one, `above`.
+3. Both ends are `1`; each number between them is the sum of the two above it, `above[j - 1] + above[j]`; append the new row.
+4. Return `rows`.
+
+## Cost
+`O(numRows^2)` time, the size of the output · `O(numRows)` space beyond the output
+
 ## Approach
 
 **The pattern: build each answer from answers you already have.** Pascal's triangle is dynamic programming in its simplest form: the table *is* the answer, and every entry is computed from entries above it that are already filled in. In the usual DP vocabulary:

@@ -1,3 +1,17 @@
+## Pattern
+Dynamic programming (one pass)
+
+## Key idea
+Fix the sell day: the best day to have bought is the cheapest one before it, so a single running minimum replaces the search over pairs.
+
+## Steps
+1. Keep `lowest`, the cheapest price so far, and `best`, the best profit so far, starting at `0` because not trading is allowed.
+2. Walk the prices once; on each day, lower `lowest` if today is cheaper.
+3. Treat today as the sell day: `price - lowest` is the best profit from selling today, so keep the larger of it and `best`.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 The brute force pairs every buy day with every later sell day: `O(n^2)`, about five billion pairs at the maximum size. The way out is to stop thinking about pairs.

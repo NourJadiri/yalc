@@ -1,3 +1,19 @@
+## Pattern
+Trie
+
+## Key idea
+In a trie a letter has one way forward, so only a `.` branches: try every child, stopping at the first success, rather than scanning stored words.
+
+## Steps
+1. Build a trie: a node holds `children` and an `is_word` flag; `addWord` walks the word from the root, creating missing nodes, and flags the last one.
+2. In `search`, write a recursive `match(node, i)`: can a path below `node` spell `word[i:]` and end on a word? When the query runs out, return `node.is_word`.
+3. A letter has one way forward: follow its child, or return `False` if there is none.
+4. A `.` can be any letter: try every child, return `True` at the first match, and `False` once all have failed.
+5. Return `match(self.root, 0)`: start at the root, before the first character.
+
+## Cost
+`O(L)` time per add, `O(26^d · L)` per search with `d` dots · `O(T)` space, `T` letters stored
+
 ## Approach
 
 Store the words in a trie, exactly as in Implement Trie: every node has `children` (letter → node) and an `is_word` flag, and `addWord` is ordinary insertion.

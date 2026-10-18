@@ -1,3 +1,18 @@
+## Pattern
+Sorting
+
+## Key idea
+Sort the athletes' indices by score, not the scores themselves, so each position in the sorted order still names the athlete who finished there.
+
+## Steps
+1. Keep the three medal labels in order: Gold, Silver, Bronze.
+2. Sort the indices `0` to `n - 1` by score, highest first: `order` names the athletes in finishing order.
+3. Make `answer`, then walk `order` and write each athlete's label at their own index: a medal for the first three places, else `str(place + 1)`.
+4. Return `answer`: every label sits at its athlete's original index.
+
+## Cost
+`O(n log n)` time · `O(n)` space
+
 ## Approach
 
 **Sort — but remember who's who.** A place is all about order (1st place is the highest score), so sorting is the natural move. The catch is the output: `answer[i]` has to describe athlete `i`, in the original order. Sort the scores themselves and you can no longer tell which athlete each score belonged to.

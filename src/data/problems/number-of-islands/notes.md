@@ -1,3 +1,18 @@
+## Pattern
+Depth-first search (flood fill)
+
+## Key idea
+Count a new island at each unvisited land cell, then flood the whole island, turning its land to water, so the scan never counts it again.
+
+## Steps
+1. Scan the grid cell by cell, keeping a count `islands`; skip anything that is not land (`"1"`).
+2. At unvisited land, count a new island: add one to `islands`, sink the cell (`"0"`) and push it on a stack.
+3. Flood the island: pop a cell and check its four neighbours; sink each land neighbour as you push it, so no cell is stacked twice.
+4. When the scan ends, return `islands`.
+
+## Cost
+`O(m · n)` time · `O(m · n)` space
+
 ## Approach
 
 This is connected-component counting on an implicit graph. Every land cell is a node, and two land cells that share a side are joined by an edge. Scan the cells in any order. The first time the scan reaches an unvisited land cell, that cell belongs to an island nobody has counted yet. Add one, then visit the entire island, so that none of its other cells can trigger another count.
