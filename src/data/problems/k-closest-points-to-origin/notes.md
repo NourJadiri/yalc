@@ -1,3 +1,19 @@
+## Pattern
+Heap (priority queue)
+
+## Key idea
+The `k` closest so far live in a max-heap, so the farthest of them is always at the root, ready to be evicted by a closer newcomer.
+
+## Steps
+1. Keep a max-heap of the `k` closest points so far; `heapq` is a min-heap, so key it on the negated distance.
+2. For each point, compute `d = -(x*x + y*y)`, its squared distance negated (no `sqrt` needed).
+3. While the heap holds fewer than `k` points, push the point.
+4. Otherwise, if the point is closer than the root (the farthest kept), replace the root with it.
+5. Return the points left in the heap.
+
+## Cost
+`O(n log k)` time · `O(k)` space
+
 ## Approach
 
 **A bounded max-heap.** Walk the points once, keeping the `k` closest seen so far in a heap whose root is the *farthest* of them. For each new point: while the heap holds fewer than `k` points, push it; after that, if the newcomer is closer than the root, replace the root with it, otherwise ignore it. When the walk ends, the heap holds the answer.

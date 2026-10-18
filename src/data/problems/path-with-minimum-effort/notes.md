@@ -1,3 +1,19 @@
+## Pattern
+Dijkstra's algorithm
+
+## Key idea
+A route's effort is its worst step, and extending a route can never lower it, so Dijkstra still works if you relax with `max` instead of `+`.
+
+## Steps
+1. Keep `effort[r][c]`, the smallest hardest step found so far to each cell: `inf` everywhere except `0` at the start, plus a min-heap holding `(0, 0, 0)`.
+2. Pop the smallest `(e, r, c)` from the heap; if it is the bottom-right cell, return `e`.
+3. Skip a stale entry: one with `e > effort[r][c]`.
+4. For each neighbour inside the grid, extend the route with `ne = max(e, abs(height difference))`: the worst step, not a sum.
+5. If `ne` beats the neighbour's recorded effort, update it and push it onto the heap.
+
+## Cost
+`O(RC log(RC))` time for `R` rows and `C` columns · `O(RC)` space
+
 ## Approach
 
 Think of the grid as a graph: cells are nodes, and each pair of side-by-side cells is an edge weighted by their altitude difference. The task is a **minimax path**: a path whose largest edge is as small as possible. That's still a shortest-path problem, with "add the weight" replaced by "take the max".

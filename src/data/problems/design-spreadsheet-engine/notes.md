@@ -1,3 +1,20 @@
+## Pattern
+Topological sort (Kahn's algorithm)
+
+## Key idea
+Cache each cell's number so reads are free; on a change, recompute only the downstream cells in topological order, so each one runs once with fresh inputs.
+
+## Steps
+1. Keep, per cell, its cached `value`, its parsed `terms`, the cells it `reads` and the cells that read it (`readers`).
+2. In `set`, parse the value into the cells it references plus a constant.
+3. Collect the affected cells (`cell` and everything downstream through `readers`); if the new formula reads any of them, return `False`.
+4. Unhook the old formula's edges, then hook up the new formula's edges.
+5. Recompute only the affected cells in topological order (Kahn's algorithm), so each cell comes after its inputs.
+6. Make `get` return the cached `value`, so a read costs `O(1)`.
+
+## Cost
+`get` is `O(1)` time, `set` is `O(k + e)` (`k` affected cells, `e` edges) · `O(cells + refs)` space
+
 ## Approach
 
 Pattern: a **dependency graph with a cache**, recomputed in **topological order**.

@@ -1,21 +1,23 @@
 class Spreadsheet:
 
     def __init__(self):
+        # 1. Per cell: value, terms, reads, readers
         self.value = {}                         # cell -> cached number (unset cells read 0)
         self.terms = {}                         # cell -> (refs, constant) it was last set to
         self.reads = collections.defaultdict(set)    # cell -> cells its formula reads
         self.readers = collections.defaultdict(set)  # cell -> cells whose formula reads it
 
     def set(self, cell: str, value: int | str) -> bool:
+        # 2. Parse into referenced cells plus constant
         refs, const = self._parse(value)
 
-        # Everything that must be recomputed: the cell, then whoever reads it,
+        # 3. Everything that must be recomputed: the cell, then whoever reads it,
         # transitively. If the new formula reads any of these, it reads itself.
         affected = self._downstream(cell)
         if any(r in affected for r in refs):
             return False                        # cycle: leave the sheet untouched
 
-        # Unhook the old formula's edges before hooking the new ones,
+        # 4. Unhook the old formula's edges before hooking the new ones,
         # or a dropped reference keeps pushing updates into this cell.
         for r in self.reads.pop(cell, ()):
             self.readers[r].discard(cell)
@@ -24,7 +26,7 @@ class Spreadsheet:
             self.readers[r].add(cell)
         self.terms[cell] = (refs, const)
 
-        # Recompute in topological order (Kahn's) over the affected cells only.
+        # 5. Recompute in topological order (Kahn's) over the affected cells only.
         # A cell waits until every affected cell it reads is already up to date.
         waiting = {c: 0 for c in affected}
         for c in affected:
@@ -42,6 +44,7 @@ class Spreadsheet:
         return True
 
     def get(self, cell: str) -> int:
+        # 6. get is a cache lookup
         return self.value.get(cell, 0)          # O(1): the work already happened in set
 
     def _downstream(self, cell):

@@ -1,3 +1,17 @@
+## Pattern
+Degree counting
+
+## Key idea
+Read each trust as an arrow: the judge has `n - 1` arrows in and none out, so counting arrows per resident replaces any graph search.
+
+## Steps
+1. Make two counters per resident, `trusted_by` (arrows in) and `trusts` (arrows out), sized `n + 1` so a label is its own index.
+2. For each pair `[a, b]`, add 1 to `trusts[a]` and to `trusted_by[b]`.
+3. Return the resident with `trusted_by == n - 1` and `trusts == 0`, or `-1` if there is none.
+
+## Cost
+`O(n + T)` time for `T` trust pairs · `O(n)` space
+
 ## Approach
 
 **The pattern: count degrees instead of searching.** Not every graph problem needs a BFS or DFS. Treat each pair `[a, b]` as an arrow `a → b`. Then both rules are statements about the arrows touching a single resident:

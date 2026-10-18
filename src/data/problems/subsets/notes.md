@@ -1,3 +1,18 @@
+## Pattern
+Backtracking
+
+## Key idea
+Every node of the search tree is a subset, and letting each child add only a later element builds every subset exactly one way.
+
+## Steps
+1. Keep `out` for the finished subsets and one shared `path` for the subset being built.
+2. At each call, record a copy of `path` (`path[:]`): every node of the search tree is a subset.
+3. For each index `i` from `start` on: append `nums[i]`, recurse from `i + 1` so only later elements follow, then pop it.
+4. Start with `backtrack(0)` and return `out`.
+
+## Cost
+`O(n · 2^n)` time, the size of the output · `O(n)` space
+
 ## Approach
 
 Every element is either in or out, so there are `2^n` subsets. Backtracking generates them as a tree in which every node *is* a subset, and each child extends its parent by one element that comes **later** in `nums`.

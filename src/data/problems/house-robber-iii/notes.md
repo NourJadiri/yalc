@@ -1,3 +1,19 @@
+## Pattern
+Dynamic programming (tree)
+
+## Key idea
+Once you fix whether a node is robbed, its subtrees are independent, so each node can hand its parent two numbers: its best total robbed and skipped.
+
+## Steps
+1. Let `best(node)` return a pair `(take, skip)`: the best total in `node`'s subtree if `node` is robbed, and if it isn't; an empty subtree is `(0, 0)`.
+2. Get both children's pairs first (post-order).
+3. Set `take = node.val + left_skip + right_skip`: a robbed node forces both children to be skipped.
+4. Set `skip = max(left_take, left_skip) + max(right_take, right_skip)`: a skipped node lets each child choose freely.
+5. Return `(take, skip)`; the answer is the larger of the root's two totals.
+
+## Cost
+`O(n)` time · `O(h)` space for a tree of height `h`
+
 ## Approach
 
 This is tree DP. The contract per node: return a pair `(take, skip)`, the best total in this subtree if this node is robbed and the best total if it isn't.

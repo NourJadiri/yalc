@@ -1,3 +1,19 @@
+## Pattern
+Dynamic programming (prefix)
+
+## Key idea
+The only thing that matters about earlier cuts is where the last one landed, so let `dp[i]` say whether the first `i` characters split cleanly.
+
+## Steps
+1. Put the words in a set and list their distinct lengths, shortest first.
+2. Let `dp[i]` mean "the first `i` characters split cleanly into words", with `dp[0] = True` for the empty prefix.
+3. For each `i` from `1` to `n`, try each word length `size` that is at most `i`.
+4. Set `dp[i] = True` when `dp[i - size]` is true and `s[i - size:i]` is in the set; then stop trying lengths.
+5. Return `dp[n]`.
+
+## Cost
+`O(n · K)` time in substring checks, for `K` distinct word lengths · `O(n)` space plus the word set
+
 ## Approach
 
 This is a **prefix DP** ("can I reach position `i`?"), and the reason it's needed is overlap. Plain backtracking picks a first word, recurses on the rest, and on failure tries the next first word. Different choices often leave the *same* suffix — `"a" + "aa"` and `"aa" + "a"` both leave `s[3:]` — and backtracking solves that suffix again every time. On `"aaa…ab"` the number of ways to carve up the a's grows exponentially, and every one of them fails at the `b`.

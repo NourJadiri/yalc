@@ -1,3 +1,18 @@
+## Pattern
+Hash map and bucket sort
+
+## Key idea
+A frequency is a whole number from `1` to `n`, so it can index an array of buckets and no sort is needed: read them from the top.
+
+## Steps
+1. Count how often each value occurs.
+2. Make `len(nums) + 1` buckets: a frequency is at most `len(nums)`, so it can serve as an index.
+3. File each value into `buckets[f]`, where `f` is its frequency.
+4. Walk the frequencies from `len(nums)` down to `1`, collecting values into `out`, and return as soon as it holds `k`.
+
+## Cost
+`O(n)` time · `O(n)` space
+
 ## Approach
 
 There are two steps: count, then select.

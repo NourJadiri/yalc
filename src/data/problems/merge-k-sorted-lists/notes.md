@@ -1,3 +1,19 @@
+## Pattern
+Heap (priority queue)
+
+## Key idea
+The next node of the merged list is always the smallest of the `k` current heads, and a min-heap holding one head per list finds it quickly.
+
+## Steps
+1. Put the head of each non-empty list into a min-heap as `(val, i, node)`; the list index `i` breaks ties, so two `ListNode`s are never compared.
+2. Make a dummy head and a `tail` pointer to build the result behind.
+3. While the heap is not empty, pop the smallest node and link it after `tail`.
+4. If the popped node has a successor, push that in its place.
+5. Return `dummy.next`.
+
+## Cost
+`O(N log k)` time for `N` total nodes · `O(k)` space
+
 ## Approach
 
 At every step, the next node of the merged list is the smallest of the `k` current heads. The whole problem is finding that minimum quickly, over and over.

@@ -1,3 +1,19 @@
+## Pattern
+Greedy (max-heap)
+
+## Key idea
+Place the letter with the most copies remaining, since it is the one in danger of clumping, but never the one just placed, which sits out a round.
+
+## Steps
+1. Count the letters; if any letter occurs more than `(len(s) + 1) // 2` times, return `""`.
+2. Put every letter in a max-heap on its remaining count (negated, since `heapq` is a min-heap).
+3. While the heap is not empty, pop the letter with the largest count and append it to the answer.
+4. Push back the letter held out last round, if there is one.
+5. Hold out the letter just placed for the next round, with its count reduced, unless it is used up.
+
+## Cost
+`O(n log k)` time for `k` distinct letters · `O(k)` space besides the output
+
 ## Approach
 
 **When is it possible?** Picture `n` slots. Copies of one letter can't touch, so at most every other slot can hold the same letter: positions `0, 2, 4, …`, which is `ceil(n/2)` slots, `(n + 1) // 2` in Python. A letter that occurs more often than that can't be placed — return `""`. The converse, that every string within the bound has an answer, is what the greedy below proves by building one.

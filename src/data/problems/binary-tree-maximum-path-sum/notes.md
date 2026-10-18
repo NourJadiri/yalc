@@ -1,3 +1,19 @@
+## Pattern
+Depth-first search (post-order)
+
+## Key idea
+Every path has one highest node: score the best path bending there (value plus both positive arms), but pass only one arm up, since a path can't fork.
+
+## Steps
+1. Start the running `best` at `-inf`, so an all-negative tree returns its largest value.
+2. Define `gain(node)` as the best sum of a path that starts at `node` and goes only down; a missing node gains `0`.
+3. Take each child's gain, clamped at `0`, and score the path that bends here, `node.val + left + right`, against `best`.
+4. Return `node.val + max(left, right)`: a parent can extend only one arm, so the bent shape stays here.
+5. Call `gain(root)` and return `best`, not the value `gain` returns.
+
+## Cost
+`O(n)` time · `O(h)` space for a tree of height `h`
+
 ## Approach
 
 Every path has exactly one highest node, the place where it bends, or its top end if it only goes down. Picture the path as two downward arms hanging from that node, either of which may be empty. So: for every node `x`, find the best path whose highest node is `x`, then take the maximum over all `x`.

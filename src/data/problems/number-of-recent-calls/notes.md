@@ -1,3 +1,18 @@
+## Pattern
+Sliding window (queue)
+
+## Key idea
+Times only increase, so a request too old now is too old for every later ping and can be dropped from the front of a queue for good.
+
+## Steps
+1. Keep a `deque` of the times of requests still in the window, oldest first.
+2. In `ping(t)`, append `t` at the back.
+3. While the front is older than `t - 3000`, pop it from the front.
+4. Return the length of the `deque`: exactly the requests in `[t - 3000, t]`.
+
+## Cost
+`O(1)` time per `ping`, amortised · `O(w)` space for `w` requests in one window
+
 ## Approach
 
 **The pattern: a queue as a sliding window.** A queue is first in, first out, like the line at a ticket counter: people join at the back and leave from the front. Python's `collections.deque` is a queue where `append` (join at the back) and `popleft` (leave from the front) are both `O(1)`. A plain list's `pop(0)` has to shift every remaining item along, so it's `O(n)`.

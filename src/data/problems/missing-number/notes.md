@@ -1,3 +1,17 @@
+## Pattern
+Math (sum formula)
+
+## Key idea
+The full range `0` to `n` has a known total, so the amount the list's own total falls short by is the missing number.
+
+## Steps
+1. Let `n = len(nums)`: the complete list would hold every number from `0` to `n`.
+2. Work out what the complete list adds up to: `n * (n + 1) // 2`.
+3. Subtract `sum(nums)`; the shortfall is the missing number, so return it.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **The pattern: expected minus actual.** You know exactly what a complete list would contain — every number from `0` to `n` — so you know its **sum** without looking at the list: `0 + 1 + … + n = n * (n + 1) / 2`. Add up the numbers you actually have. Whatever the real total falls short by is the missing number.

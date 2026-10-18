@@ -1,3 +1,19 @@
+## Pattern
+Two pointers (sorted array)
+
+## Key idea
+Sort, then fix the smallest value of the triple; the other two lie to its right and sum to its negative, which two pointers find in one sweep.
+
+## Steps
+1. Sort `nums`.
+2. Take each index `i` as the anchor, the smallest value of the triple, and skip an anchor equal to the one before it.
+3. Put `lo` just right of the anchor and `hi` at the end; move `lo` right when the sum is negative, `hi` left when it is positive.
+4. On a zero sum, record the triple and move both pointers inward.
+5. Move `lo` past copies of the value just used, so the same triple is not recorded twice.
+
+## Cost
+`O(n^2)` time · `O(n)` space for the sorted copy
+
 ## Approach
 
 **Reduce to Two Sum on a sorted list.** Sort the numbers. For each index `i`, treat `nums[i]` as the smallest value of the triple — the anchor — and look for two values to its right that sum to `-nums[i]`.

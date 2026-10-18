@@ -1,3 +1,19 @@
+## Pattern
+Topological sort (Kahn's algorithm)
+
+## Key idea
+A course enters the order only after all its prerequisites have, so repeatedly take one with none unmet; courses never freed sit on or behind a cycle.
+
+## Steps
+1. For each pair `[a, b]`, add `a` to `unlocks[b]` and count one more unmet prerequisite in `waiting[a]`.
+2. Queue every course whose `waiting` count is `0`.
+3. While the queue is not empty, pop a course and append it to `order`.
+4. For each course it unlocks, decrement its `waiting` count and queue it when the count hits `0`.
+5. Return `order`, or `[]` if it came out shorter than `numCourses`: the missing courses sit on or behind a cycle.
+
+## Cost
+`O(V + E)` time for `V` courses and `E` pairs · `O(V + E)` space
+
 ## Approach
 
 Each pair `[a, b]` is a directed edge `b -> a`, and a valid schedule is a **topological order** of that graph. **Kahn's algorithm** builds one directly, by simulating the schedule.

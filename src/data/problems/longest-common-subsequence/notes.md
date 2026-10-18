@@ -1,3 +1,19 @@
+## Pattern
+Dynamic programming (two strings)
+
+## Key idea
+If the last letters of two prefixes match, pairing them is always safe; if not, one of them is unused, so a shorter pair of prefixes decides.
+
+## Steps
+1. Make `text2` the shorter string, then start `prev[j]`, the LCS of the `text1` prefix so far and `text2[:j]`, as all zeros.
+2. For each letter `a` of `text1`, start a new row `cur` of zeros, then walk `text2`'s letters `b` with index `j`.
+3. If `a == b`, set `cur[j] = prev[j - 1] + 1`: both letters join the LCS.
+4. Otherwise set `cur[j] = max(prev[j], cur[j - 1])`: one of the two letters goes unused.
+5. After each row, set `prev = cur`; the answer is `prev[-1]`.
+
+## Cost
+`O(m · n)` time for lengths `m` and `n` · `O(min(m, n))` space
+
 ## Approach
 
 Two strings, so two indices: the classic two-sequence DP over prefixes.

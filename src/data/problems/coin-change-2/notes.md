@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming (unbounded knapsack)
+
+## Key idea
+Handle one coin at a time, so each combination is built in one fixed coin order and counted exactly once, not once per ordering.
+
+## Steps
+1. Let `ways[a]` count the combinations of the coins handled so far that sum to `a`; start with `ways[0] = 1`, the empty combination.
+2. Make the coins the outer loop, so each combination is built in one fixed coin order and counted once.
+3. For each coin, sweep `a` upward from `coin` to `amount`, adding `ways[a - coin]` to `ways[a]`; going upward lets a coin repeat.
+4. Return `ways[amount]`.
+
+## Cost
+`O(n · amount)` time for `n` coins · `O(amount)` space
+
 ## Approach
 
 Unbounded-knapsack counting. The whole difficulty is counting each combination **once**. If you build an amount by "which coin went last", `3+5` and `5+3` are two different builds. Fix an order on the denominations and only ever build a combination in that order: every combination then has exactly one build.

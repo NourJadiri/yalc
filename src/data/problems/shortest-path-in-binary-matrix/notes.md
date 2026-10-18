@@ -1,3 +1,19 @@
+## Pattern
+Breadth-first search
+
+## Key idea
+Every step costs the same, so BFS reaches cells in order of path length; the first time the goal comes off the queue, its length is the answer.
+
+## Steps
+1. If the start or the goal is blocked, return `-1`.
+2. Mark the start visited by writing `1` into its cell, and queue `(0, 0, 1)`: (row, col, cells on the path so far).
+3. Pop the next cell; if it is the bottom-right corner, return its length.
+4. For each of the eight neighbours that is inside the grid and open, mark it visited as you queue it, with length plus one.
+5. If the queue runs empty first, return `-1`.
+
+## Cost
+`O(n^2)` time · `O(n^2)` space for an `n x n` grid
+
 ## Approach
 
 Every step costs the same (one cell), so the shortest path is the one with the fewest steps, and breadth-first search finds it. BFS explores the grid in rings. First comes the start (length 1), then every open cell one step away (length 2), then every open cell two steps away, and so on. Each cell is first discovered from a cell in the previous ring, so the length recorded at discovery is its true shortest length. When the goal is popped, its length is the answer. If the queue empties first, the goal can't be reached.

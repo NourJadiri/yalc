@@ -1,3 +1,18 @@
+## Pattern
+Boyer–Moore majority vote
+
+## Key idea
+Pair off any two different values and cancel them; the majority has more copies than all the others combined, so it is the value left standing.
+
+## Steps
+1. Keep a `candidate` and a `count` of its copies not yet cancelled.
+2. Walk `nums`; whenever `count` is `0`, make the current `x` the new `candidate`.
+3. Add 1 to `count` if `x` equals `candidate`, otherwise subtract 1: a different value cancels one copy.
+4. Return `candidate`: the majority outnumbers everything else combined, so it cannot be cancelled away.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **First answer: count with a dictionary.** Walk the list, keep `count[x]` for every value, and return the value whose count is more than `n / 2`. You can even return the moment a count goes past half. It's `O(n)` time and hard to get wrong — say it first. Its only cost is memory: the dictionary can hold close to `n / 2` different values.
