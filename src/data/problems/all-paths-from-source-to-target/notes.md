@@ -1,3 +1,18 @@
+## Pattern
+Backtracking (depth-first search)
+
+## Key idea
+Carry one path list down the recursion: add a neighbour, explore, then take it back off, so every branch starts from the same prefix.
+
+## Steps
+1. Start the path at `[0]`; the target is the last node, `n - 1`.
+2. On reaching the target, record a copy of the path (`path[:]`).
+3. Otherwise, for each neighbour: append it, recurse, then pop it.
+4. Keep no visited set: the graph has no cycles, and paths may share nodes.
+
+## Cost
+`O(2^n · n)` time, the size of the output · `O(n)` space
+
 ## Approach
 
 This is backtracking on a graph. The state is the path walked so far, starting as `[0]`; every edge out of its last node is a choice.

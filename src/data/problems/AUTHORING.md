@@ -12,7 +12,7 @@ two-sum/
   statement.md   the problem, in our own words           (required)
   spec.json      signature, starter code, tests           (required)
   solution.py    the reference solution — shown to users  (required)
-  notes.md       the walkthrough shown with the solution  (required)
+  notes.md       the short version, then the walkthrough  (required)
   brute.py       an independent, simple solution          (strongly expected)
   wrong.py       a plausible bug the tests must catch     (recommended)
   judge.py       custom input building / checking         (only when needed)
@@ -79,7 +79,8 @@ One or two sentences on why.
 - `2 <= nums.length <= 10^4`
 
 ## Aim for
-Target complexity and the shape of the approach. Shown folded, as a hint.
+Target complexity and the shape of the approach. Shown in the Solution tab's
+full walkthrough (the hints come from notes.md's short version).
 
 ## Follow-ups
 - Two or three things an interviewer asks next.
@@ -265,6 +266,12 @@ What a strong candidate would write: optimal, idiomatic, readable, in the
 starter's exact shape. Comments only where they teach (the invariant, the
 reason for an order of operations) — users read this file after solving.
 
+Mark where each of notes.md's Steps starts with a comment `# N. ` on its own
+line directly above that code, at the code's indentation: put `N. ` in front of
+the comment already there, or add a line of a few words when there is none.
+Markers run `# 1.` to the last step, once each, in order, so the steps follow
+the code from top to bottom (see `alien-dictionary`, `two-sum`).
+
 ## brute.py and wrong.py
 
 `brute.py`: the most obviously-correct implementation you can write, however
@@ -278,6 +285,19 @@ tests catch it.
 ## notes.md
 
 ```markdown
+## Pattern
+Topological sort (Kahn's algorithm)
+
+## Key idea
+Each pair of neighbouring words gives at most one rule: …
+
+## Steps
+1. Make every letter that appears a node, even letters with no rules.
+2. …
+
+## Cost
+`O(C)` time for `C` total characters · `O(1)` space (at most 26 letters)
+
 ## Approach
 The idea, then the mechanics, then why it's correct. Name the pattern.
 
@@ -288,5 +308,29 @@ Time and space, with the reason.
 - The two or three mistakes people actually make.
 ```
 
+All seven are expected; the first four, in that order, are required.
+
+**The short version** (Pattern, Key idea, Steps, Cost) is for a reader who is
+stuck and short on attention. The workspace's hint ladder hands it out one
+piece at a time (the technique, then the key idea, then the steps with their
+cost), and the Solution tab shows it first, with Approach and Complexity folded
+under "Full walkthrough" and Pitfalls as a checklist. So keep it small:
+
+- **Pattern** — the technique's name, at most 6 words, no period. Name the
+  tool, not the twist: "Breadth-first search", not "BFS over buses, not stops";
+  the twist is the key idea.
+- **Key idea** — one sentence, at most 30 words: the insight that makes the
+  technique work here, the thing a stuck reader is missing. No steps, no code
+  blocks.
+- **Steps** — 2 to 6 numbered steps (3 to 5 is typical), one line and one
+  action each, at most 30 words, imperative ("Keep…", "For each…"), in the
+  order solution.py does them. solution.py marks each one (above).
+- **Cost** — one line: `` `O(…)` time · `O(…)` space ``, with a few words
+  when a variable needs defining.
+
+`node scripts/problems/check-short.mjs <ids>` checks the short version and the
+markers in a second; validate.mjs runs the same checks with everything else.
+
+**The walkthrough** (Approach, Complexity, Pitfalls) is the long form.
 `## Approach` and `## Complexity` are required. Teach — this is what the
 reader opens after struggling.

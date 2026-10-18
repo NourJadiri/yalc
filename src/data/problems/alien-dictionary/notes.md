@@ -1,3 +1,18 @@
+## Pattern
+Topological sort (Kahn's algorithm)
+
+## Key idea
+Each pair of neighbouring words gives at most one rule: at the first position where they differ, the first word's letter comes earlier.
+
+## Steps
+1. Make every letter that appears a node, even letters with no rules.
+2. For each neighbouring pair, add an edge at the first differing letter; a word followed by its own prefix means `""`.
+3. Run Kahn's: queue the letters with indegree `0`, pop one into the answer, decrement its successors.
+4. If some letters never came out, the rules have a cycle: return `""`.
+
+## Cost
+`O(C)` time for `C` total characters · `O(1)` space (at most 26 letters)
+
 ## Approach
 
 Two phases: read the rules out of the list, then topologically sort the letters.

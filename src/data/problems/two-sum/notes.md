@@ -1,3 +1,17 @@
+## Pattern
+Hash map, one pass
+
+## Key idea
+The only number that can pair with `x` is `target - x`, so as you walk the list, ask whether you have already seen it.
+
+## Steps
+1. Keep a dictionary from each value seen so far to its index.
+2. For each `x`, look up `target - x`; if it's there, return both indices.
+3. Only then store `x`, so a number never pairs with itself.
+
+## Cost
+`O(n)` time · `O(n)` space
+
 ## Approach
 
 For each number `x`, the only partner that works is `target - x`. So walk the list once, keeping a dictionary from every value seen so far to its index. At each position, look the complement up first; if it's there, the pair is found. Only then store `x`.

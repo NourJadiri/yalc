@@ -1,10 +1,10 @@
 class Solution:
     def alienOrder(self, words: List[str]) -> str:
-        # Every letter that appears is a node, constrained or not.
+        # 1. Every letter that appears is a node, constrained or not.
         succ = {ch: set() for word in words for ch in word}
         indegree = {ch: 0 for ch in succ}
 
-        # Only adjacent words matter: the order is transitive, so a pair further
+        # 2. Only adjacent words matter: the order is transitive, so a pair further
         # apart can't say anything the chain of pairs between them doesn't.
         for a, b in zip(words, words[1:]):
             for x, y in zip(a, b):
@@ -17,7 +17,7 @@ class Solution:
                 if len(a) > len(b):              # a word listed after its own extension
                     return ""
 
-        # Kahn's algorithm: repeatedly emit a letter nothing still has to precede.
+        # 3. Kahn's algorithm: repeatedly emit a letter nothing still has to precede.
         queue = deque(ch for ch, d in indegree.items() if d == 0)
         order = []
         while queue:
@@ -28,5 +28,5 @@ class Solution:
                 if indegree[nxt] == 0:
                     queue.append(nxt)
 
-        # Letters on a cycle never reach indegree 0, so they never get emitted.
+        # 4. Letters on a cycle never reach indegree 0, so they never get emitted.
         return "".join(order) if len(order) == len(indegree) else ""
