@@ -1,3 +1,19 @@
+## Pattern
+Recursion (bottom-up)
+
+## Key idea
+Computing a node's height already gives you both child heights, so test the balance right there and return `-1`, never a real height, to say "unbalanced below".
+
+## Steps
+1. Write `height(node)` to return the subtree's height, or `-1` if it is unbalanced anywhere inside; an empty tree is `0`.
+2. Get the left height; if it is `-1`, return `-1` straight away.
+3. Get the right height; return `-1` if it is `-1` or differs from the left height by more than `1`.
+4. Otherwise return `1 + max(left, right)`.
+5. Return `True` exactly when `height(root)` is not `-1`.
+
+## Cost
+`O(n)` time · `O(h)` space for a tree of height `h`
+
 ## Approach
 
 The definition tells you what to compute: at every node, the heights of its two subtrees. Height is Maximum Depth again — `0` for an empty tree, otherwise `1 + max(left height, right height)`.

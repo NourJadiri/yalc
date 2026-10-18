@@ -1,3 +1,20 @@
+## Pattern
+Depth-first search
+
+## Key idea
+Pass down whether the parent was removed (a survivor then starts a new tree), and return `None` for a removed node so its parent's pointer is overwritten.
+
+## Steps
+1. Put `to_delete` in a set `doomed`, so each membership test is `O(1)`, and start an empty list `forest`.
+2. Write `visit(node, parent_gone)` to return the node to keep, or `None` if it is deleted; a missing node returns `None`.
+3. If the node survives while its parent is gone, add it to `forest`: it starts a new tree.
+4. Recurse into both children, passing whether this node is gone, and store the results back in `node.left` and `node.right`.
+5. Return `None` if this node is gone, otherwise the node itself.
+6. Call `visit(root, True)`, since the root has no parent, and return `forest`.
+
+## Cost
+`O(n + d)` time · `O(d + h)` extra space, with `d` deletions and tree height `h`
+
 ## Approach
 
 Two things have to happen at every removed node: its surviving children become roots, and its parent forgets it. One DFS does both, with information flowing in each direction.

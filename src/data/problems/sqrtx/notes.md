@@ -1,3 +1,17 @@
+## Pattern
+Binary search on the answer
+
+## Key idea
+The test "is `k * k <= x`?" flips from yes to no once as `k` grows; the answer is the last `k` that says yes.
+
+## Steps
+1. Start with `lo, hi = 0, x`: the answer is the largest `k` with `k * k <= x`, and the range `[0, x]` always contains it.
+2. While `lo <= hi`, test `mid`: if `mid * mid <= x`, set `lo = mid + 1`; otherwise set `hi = mid - 1`.
+3. Return `hi`: when the loop ends, `lo == hi + 1`, every `k` up to `hi` fits, and every `k` from `lo` on doesn't.
+
+## Cost
+`O(log x)` time · `O(1)` space
+
 ## Approach
 
 **Binary search on the answer.** There's no list in this problem, but there is a sorted line of yes/no answers. For each candidate `k = 0, 1, 2, ...`, ask: *is `k * k <= x`?* Squares only get bigger, so the answers go `yes, yes, ..., yes, no, no, ...`, and the answer to the problem is the last yes. Finding where a line of yes/no answers switches is exactly what binary search does. First Bad Version found the first yes, and here we want the last one.

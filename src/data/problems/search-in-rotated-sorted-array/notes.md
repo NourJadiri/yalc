@@ -1,3 +1,18 @@
+## Pattern
+Binary search
+
+## Key idea
+The rotation leaves at most one drop, so at least one half around `mid` is sorted; a range check on that half decides which side to keep.
+
+## Steps
+1. Start with `lo, hi` as the whole list; each round take `mid`, and return it if `nums[mid] == target`.
+2. Find the sorted half: `[lo, mid]` if `nums[lo] <= nums[mid]`, otherwise `[mid, hi]`.
+3. If `target` lies between that half's ends (not counting `mid`), keep that half; otherwise keep the other one.
+4. When the range is empty, `target` is not there: return `-1`.
+
+## Cost
+`O(log n)` time · `O(1)` space
+
 ## Approach
 
 Plain binary search needs the whole range in order; a rotated list isn't. The rescue is a fact about the rotation: it leaves **at most one drop** (a spot where a number is bigger than the next). Cut any range `[lo, hi]` at `mid` and the drop can be in only one of the two halves — so at least one half is in perfect order.

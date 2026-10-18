@@ -1,3 +1,19 @@
+## Pattern
+Union-find
+
+## Key idea
+A tree has exactly `n - 1` edges, and with that many, "connected" and "no cycle" imply each other, so only a cycle check remains.
+
+## Steps
+1. Return `False` unless there are exactly `n - 1` edges.
+2. Make every node its own set, and write `find(x)` to return the root of `x`'s set, halving paths as it climbs.
+3. For each edge, find the roots of both ends; if they are equal, the edge closes a loop, so return `False`.
+4. Otherwise union the two sets by pointing one root at the other.
+5. If no edge closed a loop, return `True`: with `n - 1` edges, that also means connected.
+
+## Cost
+`O(n + e · α(n))` time, almost linear · `O(n)` space
+
 ## Approach
 
 Start from a counting fact. Each cable can merge at most two pieces into one, so `n` switches need at least `n - 1` cables to end up connected — and a connected graph with exactly `n - 1` cables has no cable to spare, so it can't contain a cycle (removing any cable of a cycle would leave it connected with `n - 2`, which is impossible). Hence: **a graph is a tree exactly when it has `n - 1` edges and no cycle — equivalently, `n - 1` edges and connected.**

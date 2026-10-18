@@ -1,3 +1,18 @@
+## Pattern
+Hash map
+
+## Key idea
+Only a value's most recent earlier copy can matter, since it is closest to every index still to come; so remember each value's latest index.
+
+## Steps
+1. Keep a dictionary `last` from each value to the latest index it appeared at.
+2. For each `x` at index `i`, return `True` if `x` is already in `last` and `i - last[x] <= k`.
+3. Then set `last[x] = i`: the newest copy is the closest one for everything still to come.
+4. If the loop finishes, return `False`.
+
+## Cost
+`O(n)` time · `O(n)` space
+
 ## Approach
 
 The direct approach compares each element with the `k` elements after it: `O(n * k)`, which at the maximum size is billions of comparisons. Instead, walk the list once and let a dictionary remember the past.

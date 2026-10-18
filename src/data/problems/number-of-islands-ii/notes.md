@@ -1,3 +1,19 @@
+## Pattern
+Union-find
+
+## Key idea
+Land never sinks, so islands only merge: add `1` for new land and subtract `1` for each union that really joins two sets.
+
+## Steps
+1. Set up union-find over land cells only, keyed by `r * n + c`: dictionaries `parent` and `size`, and a `find` that halves paths.
+2. For each position, compute the cell id `r * n + c`; if that cell is already land, change nothing.
+3. Otherwise make it a one-cell set and add `1` to the running count `islands`.
+4. For each of its four neighbours that is on the grid and already land, `find` both roots; if they differ, union the sets and subtract `1`.
+5. After every position, append `islands` to the answer list `counts`, and return `counts` at the end.
+
+## Cost
+`O(k · α(m · n))` time for `k` positions · `O(min(k, m · n))` space
+
 ## Approach
 
 Islands only ever merge — land never sinks — so this is union-find, processed online. Give every land cell an id (`r * n + c`) and keep a disjoint-set forest over the land cells seen so far. Each set is one island, and the answer after a step is just the number of sets, maintained as a running counter:

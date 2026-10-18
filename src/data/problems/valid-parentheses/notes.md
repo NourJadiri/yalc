@@ -1,3 +1,18 @@
+## Pattern
+Stack
+
+## Key idea
+A closer may only close the most recent opener still open, and a stack hands you its newest item first.
+
+## Steps
+1. Map each closer to its opener, and keep a `stack` of openers not yet closed.
+2. For each closer, return `False` if the stack is empty or its top isn't the matching opener; otherwise pop it.
+3. For each opener, push it onto the stack.
+4. At the end, return whether the stack is empty: leftover openers were never closed.
+
+## Cost
+`O(n)` time · `O(n)` space
+
 ## Approach
 
 **The pattern: a stack.** Think of a stack as a pile of plates. You can only touch the top: *push* puts something on top, and *pop* takes the top thing off. Whatever went in last comes out first. A plain Python list works as a stack: `append` pushes, `pop()` pops, and `stack[-1]` looks at the top without removing it.

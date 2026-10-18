@@ -1,3 +1,18 @@
+## Pattern
+Sliding window
+
+## Key idea
+Each repeat only forces the window to drop everything up to the earlier copy, so a last-seen map lets the window's left edge jump there, never backwards.
+
+## Steps
+1. Keep `last` (each character's latest index), a window start `start` so that `s[start..i]` never repeats, and `best`, the longest window so far.
+2. For each `ch` at index `i`, if its previous copy is inside the window (`last[ch] >= start`), move `start` just past it.
+3. Record `last[ch] = i`, then update `best` with the window length `i - start + 1`.
+4. Return `best`.
+
+## Cost
+`O(n)` time · `O(min(n, Σ))` space for alphabet size `Σ`
+
 ## Approach
 
 Use a sliding window. Keep a window `s[start..i]` that contains no repeated character, grow it one character at a time on the right, and track the largest window ever seen.

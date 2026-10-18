@@ -1,3 +1,17 @@
+## Pattern
+Recursion
+
+## Key idea
+A tree's mirror image is its root with the mirrored right subtree on the left and the mirrored left subtree on the right; trust the recursion for both.
+
+## Steps
+1. If the node is `None`, return `None`: the mirror image of an empty tree is empty.
+2. Mirror both subtrees and hang them on opposite sides with one tuple assignment, so both calls see the original children.
+3. Return the node, so its parent can reattach it.
+
+## Cost
+`O(n)` time · `O(h)` space for a tree of height `h`
+
 ## Approach
 
 This is the tree template from Maximum Depth again — handle the empty tree, let recursion deal with the children, finish the job at the node — except that a call now hands back a tree instead of a number.

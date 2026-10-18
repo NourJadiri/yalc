@@ -1,3 +1,17 @@
+## Pattern
+Math
+
+## Key idea
+The most frequent label (`top` copies) forces `top - 1` frames of `n + 1` slots plus a final stretch; the answer is that length, or `len(tasks)` if larger.
+
+## Steps
+1. Count how many copies each label has.
+2. Let `top` be the largest count, and `ties` the number of labels with exactly `top` copies.
+3. Return `max(len(tasks), (top - 1) * (n + 1) + ties)`: the frames the top label forces, or the task count when nothing needs to idle.
+
+## Cost
+`O(T)` time for `T` tasks · `O(1)` space (at most 26 counters)
+
 ## Approach
 
 Let `top` be the largest number of copies any label has, and `ties` the number of labels with exactly `top` copies.

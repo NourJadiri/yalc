@@ -1,3 +1,18 @@
+## Pattern
+Backtracking
+
+## Key idea
+Each combination is one letter choice per digit, so recurse one digit per level, trying every letter; every leaf is an answer, so nothing needs pruning.
+
+## Steps
+1. Return `[]` if `digits` is empty (not `[""]`); otherwise start with an empty `path` of chosen letters and an empty result list `out`.
+2. Write `backtrack(i)`: once `i == len(digits)`, every digit has a letter, so join `path` into a string and add it to `out`.
+3. For each letter of digit `i`, append it to `path`, call `backtrack(i + 1)`, then pop it.
+4. Call `backtrack(0)` and return `out`.
+
+## Cost
+`O(n · 4^n)` time for `n` digits, the size of the output · `O(n)` space
+
 ## Approach
 
 One decision per digit: which of its letters to use. Backtracking walks those decisions in order.

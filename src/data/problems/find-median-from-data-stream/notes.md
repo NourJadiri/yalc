@@ -1,3 +1,18 @@
+## Pattern
+Two heaps
+
+## Key idea
+Split the numbers into a smaller half (max-heap) and a larger half (min-heap) of near-equal size, so the median is always at the tops.
+
+## Steps
+1. Keep `low`, the smaller half, as a max-heap (store negated values), and `high`, the larger half, as a min-heap.
+2. To add `num`, push it onto `low`, then move `low`'s largest value to `high`: the halves stay ordered whichever side `num` belongs on.
+3. If `high` now has more elements than `low`, move `high`'s smallest value back to `low`.
+4. To read the median, return `low`'s top if `low` is longer, otherwise the mean of the two tops.
+
+## Cost
+`O(log n)` time per `addNum`, `O(1)` per `findMedian` · `O(n)` space
+
 ## Approach
 
 Split the numbers into two halves and only ever look at the boundary between them.

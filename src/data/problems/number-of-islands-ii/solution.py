@@ -1,5 +1,6 @@
 class Solution:
     def numIslands2(self, m: int, n: int, positions: List[List[int]]) -> List[int]:
+        # 1. Union-find over land cells only
         parent, size = {}, {}           # union-find over land cells, keyed by r * n + c
 
         def find(x):
@@ -9,11 +10,14 @@ class Solution:
             return x
 
         counts, islands = [], 0
+        # 2. One eruption at a time
         for r, c in positions:
             cell = r * n + c
             if cell not in parent:                 # a repeat eruption changes nothing
+                # 3. New land starts as its own island
                 parent[cell], size[cell] = cell, 1
                 islands += 1                       # new land is its own island...
+                # 4. Merge with each land neighbour
                 for nr, nc in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)):
                     nb = nr * n + nc
                     if 0 <= nr < m and 0 <= nc < n and nb in parent:
@@ -24,5 +28,6 @@ class Solution:
                             parent[b] = a
                             size[a] += size[b]
                             islands -= 1
+            # 5. Record the count after every step
             counts.append(islands)
         return counts

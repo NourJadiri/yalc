@@ -1,3 +1,19 @@
+## Pattern
+Dynamic programming (two strings)
+
+## Key idea
+A starred pair either matches nothing (skip it) or takes one character and stays put, so a table over suffixes handles any repeat count.
+
+## Steps
+1. With `m = len(s)` and `n = len(p)`, make a table where `match[i][j]` says whether `s[i:]` matches `p[j:]`; only `match[m][n]` (both empty) starts `True`.
+2. Loop `i` from `m` down to `0` and `j` from `n - 1` down to `0`; let `first` be whether `p[j]` can match the letter `s[i]`.
+3. If `p[j + 1]` is `*`, the pair matches nothing (`match[i][j + 2]`) or takes `s[i]` and stays put (`first and match[i + 1][j]`).
+4. Otherwise `p[j]` must match exactly one letter: `first and match[i + 1][j + 1]`.
+5. Return `match[0][0]`.
+
+## Cost
+`O(m · n)` time · `O(m · n)` space, for `m = len(s)`, `n = len(p)`
+
 ## Approach
 
 **Subproblem.** `match[i][j]` = whether the suffix `s[i:]` matches the suffix `p[j:]`. Suffixes are the convenient direction because a `*` modifies the element *before* it: standing at `p[j]`, peek at `p[j+1]` to see whether `p[j]` is starred.

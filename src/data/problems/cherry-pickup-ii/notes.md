@@ -1,3 +1,19 @@
+## Pattern
+Dynamic programming (row by row)
+
+## Key idea
+Both robots drop one row per step, so they can only meet in the same row; track the best total for each pair of columns, row by row.
+
+## Steps
+1. Let `best[a][b]` be the most cherries with A in column `a` and B in column `b`; only the starting pair `(0, cols - 1)` is reachable at first.
+2. Go down one row at a time, filling a fresh table `nxt` for each pair with `a <= b` (the robots never need to cross).
+3. For each pair, take the best `prev` among the up to nine pairs the robots could have come from; skip the pair if none was reachable.
+4. Add this row's cherries for A and B, counting a shared cell once.
+5. Return the largest entry in the last table.
+
+## Cost
+`O(rows · cols^2)` time · `O(cols^2)` space
+
 ## Approach
 
 The robots interact only when they stand on the same cell, and that can only happen in the same row at the same moment, since both move down exactly one row per step. So process the rows top to bottom, and for each row keep the best total for every *pair* of columns.

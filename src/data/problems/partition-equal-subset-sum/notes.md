@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming (subset sum)
+
+## Key idea
+Two equal groups each sum to half the total, so it is enough to find one subset with that sum; the leftovers form the other group.
+
+## Steps
+1. Return `False` if the total is odd; otherwise set `target = total // 2`.
+2. Let `can[s]` say whether some subset of the numbers seen so far adds up to `s`: `can[0]` starts true, the rest false.
+3. For each number `x`, sweep `s` from `target` down to `x`, setting `can[s]` if `can[s - x]` is true; downward, so each number is used once.
+4. Return `True` as soon as `can[target]` is true; after the last number, return `can[target]`.
+
+## Cost
+`O(n · target)` time · `O(target)` space for `target = total / 2`
+
 ## Approach
 
 **Reduce it first.** If two groups have equal sums, each sums to exactly `total / 2`. So an odd total answers `False` at once, and otherwise the question becomes: *is there a subset that adds up to `target = total / 2`?* — whatever is left over then sums to `target` as well. That's subset sum, the decision version of the 0/1 knapsack.

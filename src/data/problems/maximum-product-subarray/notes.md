@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming (Kadane's algorithm)
+
+## Key idea
+A negative `x` turns the smallest product into the largest, so track both the largest and the smallest product of a subarray ending here.
+
+## Steps
+1. Start `hi`, `lo` and `best` all at `nums[0]`: `hi` and `lo` are the largest and smallest product of a subarray ending at the current element.
+2. For each later `x`, take three candidates: `x` alone (a fresh start), `hi * x` and `lo * x`.
+3. Set `hi` to the largest candidate and `lo` to the smallest, both computed from the old pair.
+4. Keep `best` as the largest `hi` seen, and return it.
+
+## Cost
+`O(n)` time · `O(1)` space
+
 ## Approach
 
 **Why plain Kadane fails.** For sums, the best subarray ending at `i` either extends the best one ending at `i - 1` or starts fresh. For products that's false: multiplying by a negative flips the order, so the *smallest* (most negative) product ending at `i - 1` can become the *largest* one ending at `i`. In `[2, -5, -2]`, the best product ending at `-5` is `-5`, but the one that matters next is `2 · -5 = -10`, which the `-2` turns into `20`.

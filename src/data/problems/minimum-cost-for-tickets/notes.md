@@ -1,3 +1,18 @@
+## Pattern
+Dynamic programming
+
+## Key idea
+Sliding the pass that covers a travel day to end on it loses nothing, which leaves three choices, each on top of the cheapest cover of earlier days.
+
+## Steps
+1. Make a table `best`: `best[d]` is the cheapest way to cover every trip up to day `d`, and `best[0] = 0`.
+2. Go through the days up to the last travel day; on a day with no trip, copy `best[d - 1]`.
+3. On a travel day, take the cheapest of a 1-, 7- or 30-day pass ending today, plus `best` just before it starts (index clamped at `0`).
+4. Return `best` for the last travel day.
+
+## Cost
+`O(D)` time · `O(D)` space for `D = days[-1] <= 365`
+
 ## Approach
 
 Look at the last travel day you need to cover. Some pass covers it. As far as trips up to that day are concerned, sliding that pass so it *ends* exactly on that day can only help: it still covers the day and now reaches as far back as possible. That observation turns the problem into a DP over calendar days.
