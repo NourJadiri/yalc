@@ -12,7 +12,7 @@ A tree has exactly `n - 1` edges, and with that many, "connected" and "no cycle"
 5. If no edge closed a loop, return `True`: with `n - 1` edges, that also means connected.
 
 ## Cost
-`O(n + e · α(n))` time, almost linear · `O(n)` space
+`O(n log n)` time at worst, near-linear in practice · `O(n)` space
 
 ## Approach
 

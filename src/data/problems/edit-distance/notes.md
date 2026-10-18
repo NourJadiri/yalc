@@ -12,7 +12,7 @@ Look at the last characters: a match costs nothing and shrinks both prefixes; a 
 5. Make `cur` the previous row; after the last row, return `prev[n]`.
 
 ## Cost
-`O(m · n)` time · `O(min(m, n))` space with two rows over the shorter word
+`O(m · n)` time · `O(n)` space: two rows over `word2` (make it the shorter word for `O(min(m, n))`)
 
 ## Approach
 
