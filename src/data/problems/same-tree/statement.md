@@ -1,5 +1,8 @@
 # Same Tree
 
+## In short
+Two binary trees → whether they have the same shape and the same values.
+
 ## The task
 
 You're given the roots `p` and `q` of two binary trees. Return `True` if the two trees are the same, and `False` otherwise.

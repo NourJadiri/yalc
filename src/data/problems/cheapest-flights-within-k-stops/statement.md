@@ -1,5 +1,8 @@
 # Cheapest Flights Within K Stops
 
+## In short
+One-way flights with prices → the cheapest price from `src` to `dst` with at most `k` stops, or `-1` if there's no such trip.
+
 ## The task
 
 There are `n` cities, numbered `0` to `n - 1`, connected by one-way flights: `flights[i] = [from, to, price]` means you can fly from city `from` to city `to` for `price`.

@@ -1,5 +1,8 @@
 # Insert Interval
 
+## In short
+Sorted, non-overlapping intervals and one new interval → the list with the new one added, merged with anything it overlaps.
+
 ## The task
 
 `intervals` is a list of `[start, end]` pairs (`start <= end`, both ends included), sorted by `start`, no two of which overlap. Insert `newInterval`, merging it with every interval it overlaps, and return the resulting list — still sorted by `start`, still free of overlaps.

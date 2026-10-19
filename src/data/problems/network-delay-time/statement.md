@@ -1,5 +1,8 @@
 # Network Delay Time
 
+## In short
+One-way links with delays, and a signal from node `k` → the time until every node has it, or `-1` if some never do.
+
 ## The task
 
 A network has `n` nodes labelled `1` to `n`. Each entry `times[i] = [u, v, w]` is a one-way link: a signal leaving node `u` arrives at node `v` exactly `w` time units later. A link carries signals only from `u` to `v`, never back.

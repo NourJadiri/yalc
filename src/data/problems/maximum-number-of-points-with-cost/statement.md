@@ -1,5 +1,8 @@
 # Maximum Number of Points with Cost
 
+## In short
+A grid of points → the highest score from one cell per row: their sum, minus the column distance between picks in adjacent rows.
+
 ## The task
 
 You're given an `m × n` grid of non-negative integers, `points`. Pick exactly one cell in every row. Your score is the sum of the values you picked, minus a penalty for every pair of neighbouring rows: picking column `c1` in row `r` and column `c2` in row `r + 1` costs `|c1 - c2|` points.

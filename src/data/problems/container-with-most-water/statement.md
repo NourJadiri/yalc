@@ -1,5 +1,8 @@
 # Container With Most Water
 
+## In short
+A row of wall heights → the most water any two walls can hold between them.
+
 ## The task
 
 You get an array `height` of `n` non-negative integers. Picture `n` vertical walls standing on a flat floor at positions `0, 1, …, n - 1`. Wall `i` is `height[i]` tall and has no thickness.

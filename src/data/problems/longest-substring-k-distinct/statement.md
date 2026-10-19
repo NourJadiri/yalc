@@ -2,6 +2,9 @@
 
 Stands in for LeetCode 340 (premium). Original statement written for this app — same task, own words and examples.
 
+## In short
+A string and a number `k` → the length of the longest substring with at most `k` different characters.
+
 ## The task
 
 Given a string `s` and an integer `k`, return the length of the longest contiguous substring of `s` that uses at most `k` different characters.

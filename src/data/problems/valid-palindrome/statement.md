@@ -1,5 +1,8 @@
 # Valid Palindrome
 
+## In short
+A string → whether it reads the same forwards and backwards, ignoring case and anything that isn't a letter or digit.
+
 ## The task
 
 Given a string `s`, decide whether it reads the same forwards and backwards **once you keep only its letters and digits** and ignore the difference between uppercase and lowercase. Return `True` if it does and `False` if it doesn't.

@@ -1,5 +1,8 @@
 # Split Array Largest Sum
 
+## In short
+A list of numbers and `k` → the smallest possible largest piece sum, over all ways to cut it into `k` contiguous pieces.
+
 ## The task
 
 You're given an array `nums` of non-negative integers and an integer `k`. Cut `nums` into exactly `k` non-empty pieces, each a contiguous run of the array, so that every element lands in exactly one piece. A cut's cost is its largest piece sum. Return the smallest cost any cut can achieve.

@@ -1,5 +1,8 @@
 # Min Cost Climbing Stairs
 
+## In short
+A list of step tolls → the lowest total toll to reach the top, climbing one or two steps at a time.
+
 ## The task
 
 A staircase has `n` steps, numbered `0` to `n - 1`, and each step has a toll: `cost[i]` for step `i`. Whenever you climb *off* step `i` you pay `cost[i]`, and that climb takes you up either 1 or 2 steps. You begin standing on step `0` or on step `1` — your choice, and getting there is free.

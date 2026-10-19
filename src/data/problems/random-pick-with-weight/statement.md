@@ -1,5 +1,8 @@
 # Random Pick with Weight
 
+## In short
+A picker built from a list of weights → `pickIndex`, which returns a random index with probability proportional to its weight.
+
 ## The task
 
 You're given a list of positive integers `w`, where `w[i]` is the weight of index `i`. Implement `class Solution`:

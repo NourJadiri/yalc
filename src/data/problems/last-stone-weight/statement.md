@@ -1,5 +1,8 @@
 # Last Stone Weight
 
+## In short
+A list of stone weights → the last stone's weight after repeatedly smashing the two heaviest together, or `0` if none is left.
+
 ## The task
 
 You have a pile of stones, and `stones[i]` is the weight of the `i`-th stone. Play the following game until at most one stone is left:

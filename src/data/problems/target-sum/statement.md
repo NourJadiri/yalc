@@ -1,5 +1,8 @@
 # Target Sum
 
+## In short
+A list of numbers and a `target` → how many ways to put `+` or `-` before every number so they sum to `target`.
+
 ## The task
 
 You're given a list of non-negative integers `nums` and an integer `target`. Put a `+` or a `-` sign in front of every number, then add everything up. With `n` numbers there are `2^n` sign patterns; return how many of them add up to exactly `target`.

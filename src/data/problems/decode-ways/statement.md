@@ -1,5 +1,8 @@
 # Decode Ways
 
+## In short
+A string of digits → how many ways it can be read as letters, with `1`–`26` standing for A–Z.
+
 ## The task
 
 A message of capital letters was encoded by replacing each letter with its position in the alphabet (`A → 1`, `B → 2`, …, `Z → 26`) and writing the numbers back to back with nothing in between. Given the resulting digit string `s`, return the number of different ways to split it back into letters.

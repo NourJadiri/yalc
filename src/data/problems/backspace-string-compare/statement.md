@@ -1,5 +1,8 @@
 # Backspace String Compare
 
+## In short
+Two strings of key presses, where `#` is backspace → whether both end up with the same text.
+
 ## The task
 
 Two people type into identical text boxes that both start empty. You get the keys each one pressed as a string: `s` for the first box and `t` for the second. A lowercase letter types that letter. A `#` is the backspace key: it deletes the character just before it, and does nothing if the box is already empty.

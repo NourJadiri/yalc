@@ -1,5 +1,8 @@
 # Find if Path Exists in Graph
 
+## In short
+An undirected graph and two nodes, `source` and `destination` → whether you can get from one to the other along edges.
+
 ## The task
 
 A data centre has `n` machines, numbered `0` to `n - 1`, wired together by cables. `edges[i] = [u, v]` means one cable joins machines `u` and `v`, and a cable carries messages in both directions. Return `True` if a message sent from machine `source` can reach machine `destination` by hopping along cables — directly or through any number of other machines — and `False` otherwise.

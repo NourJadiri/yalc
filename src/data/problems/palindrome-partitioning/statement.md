@@ -1,5 +1,8 @@
 # Palindrome Partitioning
 
+## In short
+A string → every way to cut it into pieces that are all palindromes.
+
 ## The task
 
 Cut a string `s` into one or more consecutive pieces so that every piece is a palindrome, a string that reads the same forwards and backwards. Return every way of doing it, each as the list of its pieces in order (joined back together, they spell `s`). The partitions can come in any order.

@@ -1,5 +1,8 @@
 # Generate Parentheses
 
+## In short
+A number `n` → every balanced string of `n` pairs of parentheses.
+
 ## The task
 
 Given `n`, return every string of `n` opening and `n` closing parentheses that is **balanced**: reading left to right, the number of `)` never gets ahead of the number of `(`, and the two counts end equal. Return the strings in any order.
