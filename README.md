@@ -17,13 +17,14 @@ that run in the browser on real CPython (Pyodide). No LeetCode account needed.
   multiply the XP, and missed cards come back in the Redemption deck.
 - **Dojo**: 15 algorithm templates, blurred until you've written them from memory.
 - **Me**: stats, the rank ladder, badges, export/import and cloud sync.
-- **Workspace**: Run the examples, Submit the full hidden suite; passing it ticks the
-  problem. Drafts are saved per problem. When you're stuck, a hint ladder gives one piece
-  at a time (the technique, the key idea, the steps) before the solution, and after 20
-  minutes without a pass a small card offers the next hint. The Solution tab opens on a
-  short version: the trick, numbered steps that match the `# 1.`, `# 2.` comments in the
-  reference code, the cost and a checklist of pitfalls, with the full walkthrough folded
-  below.
+- **Workspace**: every problem opens with its task in one line, above the story. Run the
+  examples, Submit the full hidden suite; passing it ticks the problem and offers the next
+  one in the plan. Drafts are saved per problem. When you're stuck, a hint ladder gives
+  one piece at a time (the technique, the key idea, the steps) before the solution, and
+  after 20 minutes without a pass a small card offers the next hint. The Solution tab
+  opens on a short version: the trick, numbered steps that match the `# 1.`, `# 2.`
+  comments in the reference code, the cost and a checklist of pitfalls, with the full
+  walkthrough folded below.
 - **Bana** (optional): `⌘K` / `Ctrl+K` in the workspace opens a small chat with
   Claude that already knows the problem, your code and your last run. Three modes, picked
   in its header: Normal, Tough love (roasts your code, then shows you exactly where it's
