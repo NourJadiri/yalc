@@ -2,6 +2,9 @@
 
 Stands in for LeetCode 269 (premium). Original statement written for this app — same task, own words and examples.
 
+## In short
+Words sorted in an unknown alphabet → that alphabet's letter order, or `""` if no order fits.
+
 ## The task
 
 A recovered shipping ledger lists product codes that were kept **sorted**, but under a collation whose letter order has been lost. The codes use lowercase letters. From `words`, the list in its original sorted order, reconstruct a letter ordering consistent with it.

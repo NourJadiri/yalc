@@ -2,6 +2,7 @@ import { useMemo, type ReactNode } from "react";
 import { parseStatement } from "../lib/statement";
 import Markdown from "../Markdown";
 import HintBox from "./HintBox";
+import InShort from "./InShort";
 import ProblemHeading from "./ProblemHeading";
 import TopicList from "./TopicList";
 import "./Statement.css";
@@ -14,11 +15,12 @@ interface StatementProps {
 }
 
 export default function Statement({ statement, topics, ladder }: StatementProps) {
-  const { main, aim, follow } = useMemo(() => parseStatement(statement), [statement]);
+  const { short, main, aim, follow } = useMemo(() => parseStatement(statement), [statement]);
 
   return (
     <>
       {topics.length > 0 && <TopicList topics={topics} />}
+      {short && <InShort text={short.body} />}
       {main.map((s) => (
         <div key={s.title} className="ws-sec">
           <ProblemHeading>{s.title}</ProblemHeading>

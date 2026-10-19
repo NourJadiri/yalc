@@ -10,7 +10,8 @@
  * Checks, per problem directory under src/data/problems/:
  *   - the four required files exist; spec.json is well-formed
  *   - statement.md and notes.md carry their required sections
- *   - notes.md opens with the short version, and solution.py marks its steps (short.mjs)
+ *   - statement.md opens with its one line, notes.md with the short version, and solution.py
+ *     marks its steps (short.mjs)
  *   - solution.py passes every test, each inside a third of its time limit
  *   - the starter code does NOT pass (so the tests can tell)
  *   - brute.py, when present, passes every non-perf test (two independent
@@ -21,7 +22,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadPyodide } from "pyodide";
-import { checkShort } from "./short.mjs";
+import { checkShort, checkSummary } from "./short.mjs";
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const BANK = path.join(ROOT, "src/data/problems");
@@ -158,7 +159,7 @@ for (const id of ids) {
     if (!hasSection(notes, s)) errors.push(`notes.md needs a "## ${s}" section`);
   }
   const short = checkShort(notes, solution);
-  errors.push(...short.errors);
+  errors.push(...short.errors, ...checkSummary(statement).errors);
   warnings.push(...short.warnings);
   if (errors.length) {
     failed++;

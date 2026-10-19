@@ -1,5 +1,8 @@
 # All Paths From Source to Target
 
+## In short
+A directed graph with no cycles → every path from node `0` to node `n - 1`.
+
 ## The task
 
 A directed graph has `n` nodes labelled `0` to `n - 1` and **no cycles**: once you leave a node, no sequence of edges leads back to it. It comes as an adjacency list, where `graph[i]` lists every node that node `i` has an edge *to*.

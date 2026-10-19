@@ -61,6 +61,9 @@ only the files listed above belong in a problem directory.
 ~~~markdown
 # Two Sum
 
+## In short
+A list of numbers and a target → the indices of the two numbers that add up to the target.
+
 ## The task
 …exactly what the input is, exactly what to return, every rule that matters.
 
@@ -89,8 +92,14 @@ full walkthrough (the hints come from notes.md's short version).
 - Line one is `# Title`. Anything between it and the first `##` (a lead line,
   e.g. the premium note) is skipped by the reader — the header already shows
   the title, difficulty and LeetCode link.
-- Required sections: `## The task`, `## Examples`, `## Constraints`.
+- Required sections: `## In short`, `## The task`, `## Examples`, `## Constraints`.
   Recommended: `## Aim for`, `## Follow-ups`. Nothing else.
+- `## In short` comes first and is one line of at most 25 words: what you're
+  given → what you return, with that arrow. It's the first thing the reader
+  sees, above the story, so it says the task in plain words and nothing of the
+  approach ("Words sorted in an unknown alphabet → that alphabet's letter
+  order, or `""` if no order fits", not "…via a topological sort"). Design
+  problems: what you build → what its methods do.
 - Examples: 2–3, each `**Example k**` then a fenced block in the form
   `name = value, name = value   -> output`, values in JSON style (`null`,
   `true`, double-quoted strings). **The examples must be exactly the tests
@@ -328,8 +337,9 @@ under "Full walkthrough" and Pitfalls as a checklist. So keep it small:
 - **Cost** — one line: `` `O(…)` time · `O(…)` space ``, with a few words
   when a variable needs defining.
 
-`node scripts/problems/check-short.mjs <ids>` checks the short version and the
-markers in a second; validate.mjs runs the same checks with everything else.
+`node scripts/problems/check-short.mjs <ids>` checks the short version, the
+markers and statement.md's In short line in a second; validate.mjs runs the same
+checks with everything else.
 
 **The walkthrough** (Approach, Complexity, Pitfalls) is the long form.
 `## Approach` and `## Complexity` are required. Teach — this is what the

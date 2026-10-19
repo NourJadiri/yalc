@@ -1,8 +1,11 @@
-/* The short version a stuck reader gets first: four sections at the top of notes.md (Pattern, Key
- * idea, Steps, Cost) and a `# N.` marker in solution.py where each step starts. validate.mjs runs
- * these checks with the rest; check-short.mjs runs only these, without loading Python. */
+/* The short versions a reader gets first: the one line at the top of statement.md (In short), four
+ * sections at the top of notes.md (Pattern, Key idea, Steps, Cost) and a `# N.` marker in
+ * solution.py where each step starts. validate.mjs runs these checks with the rest; check-short.mjs
+ * runs only these, without loading Python. */
 
 export const SHORT = ["Pattern", "Key idea", "Steps", "Cost"];
+export const IN_SHORT = "In short";
+const SUMMARY_WORDS = 25;
 
 /* `# 3. Walk in from both ends.`: a step marker, at the indentation of the code it heads. */
 const MARK = /^(\s*)# (\d+)\. (.*)$/;
@@ -86,6 +89,30 @@ export function checkShort(notes, solution) {
     if (indent !== m.indent) errors.push(`solution.py line ${m.at + 1}: put "# ${m.n}." at the indentation of the code below it`);
   }
   return { errors, warnings };
+}
+
+/** The statement's one line: what you're given → what you return, before the story starts. */
+export function checkSummary(statement) {
+  const errors = [];
+  const secs = sections(statement);
+  if (secs[0]?.title !== IN_SHORT || secs[1]?.title !== "The task") {
+    errors.push(`statement.md must open with "## ${IN_SHORT}", right before "## The task"`);
+    return { errors, warnings: [] };
+  }
+  const line = secs[0].body.trim();
+  if (!line || line.includes("\n")) errors.push(`## ${IN_SHORT} is one line`);
+  else {
+    if (!line.includes(" → ")) errors.push(`## ${IN_SHORT} reads "<what you get> → <what you return>", with a " → "`);
+    if (words(line) > SUMMARY_WORDS) errors.push(`## ${IN_SHORT} has ${words(line)} words; keep it to ${SUMMARY_WORDS}`);
+  }
+  return { errors, warnings: [] };
+}
+
+/** Whether `now` is `before` with the In short section put in front of ## The task and nothing else changed. */
+export function onlySummaryAdded(before, now) {
+  const from = now.search(/^## In short$/m);
+  const at = now.search(/^## The task/m);
+  return from >= 0 && at > from && now.slice(0, from) + now.slice(at) === before && sections(now.slice(from, at)).length === 1;
 }
 
 /** Whether `now` is `before` with step markers added and nothing else: a marker line inserted, or `N. `

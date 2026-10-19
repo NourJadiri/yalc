@@ -1,0 +1,10 @@
+.ws-inshort {
+  margin: 10px 0 2px; padding: 9px 12px 10px; border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.ws-inshort-label {
+  margin: 0 0 2px; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  font-weight: 700; color: var(--accent);
+}
+.ws-inshort .md { font-size: 14.5px; font-weight: 600; line-height: 1.5; }
+.ws-inshort .md p { margin: 0; }

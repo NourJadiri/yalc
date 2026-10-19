@@ -1,5 +1,8 @@
 # Two Sum
 
+## In short
+A list of numbers and a target → the indices of the two numbers that add up to the target.
+
 ## The task
 
 You're given a list of integers `nums` and an integer `target`. Exactly one pair of **different positions** `i` and `j` has `nums[i] + nums[j] == target`. Return those two indices, in either order.

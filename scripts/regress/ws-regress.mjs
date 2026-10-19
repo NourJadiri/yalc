@@ -508,6 +508,8 @@ scenario("01-open", "open the workspace from the Line tab", async (s) => {
       ["Description:true", "Solution:false"]);
     await s.expect("topic chips", () => page.locator(".ws-topic").allTextContents(), ["graph", "dfs", "backtracking"]);
     await s.expect("statement sections", () => page.locator(".ws-sec .ws-problem-heading").allTextContents(), ["The task", "Examples", "Constraints"]);
+    await s.expect("the task in one line sits above them, in its own box", () => page.locator(".ws-inshort").evaluate((el) => ({ label: el.querySelector("h3").textContent, text: el.querySelector(".md").textContent.trim(), next: el.nextElementSibling?.querySelector(".ws-problem-heading")?.textContent })),
+      { label: "In short", text: "A directed graph with no cycles → every path from node 0 to node n - 1.", next: "The task" });
     await s.expect("one disclosure, closed: the follow-ups (the hint ladder took the Aim for box's place)", () => page.locator("details.ws-hintbox").evaluateAll((els) => els.map((e) => e.querySelector("summary").textContent.trim() + ":" + e.open)),
       ["Follow-ups an interviewer might ask:false"]);
     await s.expect("the statement's sections are followed by the hint ladder, then the follow-ups", () => page.locator(".ws-problem-body").evaluate((el) => [...el.children].map((c) => c.className)),
@@ -1055,7 +1057,7 @@ scenario("09-copy-for-claude", "Copy for Claude: feedback and clipboard text", a
 
     const text = await page.evaluate(() => navigator.clipboard.readText());
     await s.expect("clipboard: title line with the LeetCode number", () => text.split("\n")[0], `# ${TITLE} (LeetCode 797)`);
-    await s.expect("clipboard: statement without the title (starts at '## The task')", () => text.split("\n")[2], "## The task");
+    await s.expect("clipboard: statement without the title (its one line first, then '## The task')", () => text.split("\n").slice(2, 6), ["## In short", "A directed graph with no cycles → every path from node `0` to node `n - 1`.", "", "## The task"]);
     await s.expect("clipboard: 'My code so far' with the code in a python fence", () => text.includes("## My code so far\n\n```python\n" + WRONG.trimEnd() + "\n```"), true);
     await s.expect("clipboard: the last run, with the failing case", () => /## Last run: Wrong Answer\n\n1 \/ 3 cases passed\n\nOn an example:\n\nInput:\n {4}graph = \[\[1,2,3\],\[4\],\[1,4\],\[4\],\[\]\]\nOutput:\n {4}\[\]\nExpected:\n {4}\[\[0,1,4\],\[0,2,1,4\],\[0,2,4\],\[0,3,4\]\]/.test(text), true);
     await s.expect("clipboard: ends with the interviewer instruction", () => text.trimEnd().endsWith("give a hint only when I ask for one.*"), true);
