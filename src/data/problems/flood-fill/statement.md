@@ -1,5 +1,8 @@
 # Flood Fill
 
+## In short
+A grid of colours, a starting cell and a new colour → the grid with that cell's connected same-coloured region repainted.
+
 ## The task
 
 You're writing the paint-bucket tool for a pixel-art editor. The picture is `image`, a grid with `m` rows and `n` columns: `image[r][c]` is the colour of the pixel in row `r`, column `c` — written `(r, c)` below — and colours are plain integers. The user clicks the pixel `(sr, sc)` with the bucket loaded with colour `color`.

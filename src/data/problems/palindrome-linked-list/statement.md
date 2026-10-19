@@ -1,5 +1,8 @@
 # Palindrome Linked List
 
+## In short
+A linked list of digits → `True` if it reads the same forwards and backwards, else `False`.
+
 ## The task
 
 You get the `head` of a non-empty singly linked list whose values are digits. Return `True` if the values read the same from back to front as they do from front to back, and `False` otherwise.

@@ -1,5 +1,8 @@
 # Symmetric Tree
 
+## In short
+A binary tree → `True` if it's a mirror image of itself, else `False`.
+
 ## The task
 
 You're given the `root` of a binary tree. Return `True` if the tree is symmetric — a mirror image of itself across the vertical line through the root — and `False` otherwise.

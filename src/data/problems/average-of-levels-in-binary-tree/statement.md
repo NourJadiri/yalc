@@ -1,5 +1,8 @@
 # Average of Levels in Binary Tree
 
+## In short
+A binary tree → the average of the node values on each level, from the top down.
+
 ## The task
 
 You're given the `root` of a binary tree. Return a list holding the average value of the nodes on each level, starting from the top level (just the root) and going down.

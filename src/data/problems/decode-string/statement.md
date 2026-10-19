@@ -1,5 +1,8 @@
 # Decode String
 
+## In short
+A compressed string, where `3[ab]` means `ababab` and groups can nest → the decoded string.
+
 ## The task
 
 A string was compressed with a single rule: `k[text]` stands for `text` written out `k` times in a row. Groups can nest inside each other, and plain letters can appear anywhere — before, between, after and inside groups. Given the compressed string `s`, return the decoded string.

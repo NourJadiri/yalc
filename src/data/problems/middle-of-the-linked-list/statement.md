@@ -1,5 +1,8 @@
 # Middle of the Linked List
 
+## In short
+A linked list → its middle node (the second of the two middle nodes when the length is even).
+
 ## The task
 
 You get the `head` of a non-empty singly linked list. Return its middle node.

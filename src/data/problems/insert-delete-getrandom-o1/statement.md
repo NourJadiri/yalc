@@ -1,5 +1,8 @@
 # Insert Delete GetRandom O(1)
 
+## In short
+A set of integers → `insert` and `remove` (returning whether the set changed), and `getRandom`, which returns any member with equal chance.
+
 ## The task
 
 Build a set of integers that can also hand back a member chosen at random. Implement `class RandomizedSet`:

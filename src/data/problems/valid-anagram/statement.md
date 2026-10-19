@@ -1,5 +1,8 @@
 # Valid Anagram
 
+## In short
+Two strings → `True` if one is a rearrangement of the other, else `False`.
+
 ## The task
 
 Two strings are **anagrams** when one is a rearrangement of the other: they contain exactly the same letters, each letter the same number of times. Only the order may differ.

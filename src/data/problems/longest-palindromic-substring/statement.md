@@ -1,5 +1,8 @@
 # Longest Palindromic Substring
 
+## In short
+A string → its longest substring that reads the same forwards and backwards.
+
 ## The task
 
 Given a string `s`, return its longest **substring** (a contiguous run of characters) that reads the same forwards and backwards.

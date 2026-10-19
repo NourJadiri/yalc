@@ -1,5 +1,8 @@
 # Bus Routes
 
+## In short
+Bus routes, a start stop and a target stop → the fewest buses needed to get there, or `-1` if it's impossible.
+
 ## The task
 
 `routes[i]` lists the stops served by bus `i`, which drives that loop forever. Once you're on bus `i`, you can ride it to any of its stops. You start at stop `source`, not on any bus yet, and want to reach stop `target`. You can travel only by bus, and you may change buses at any stop both of them serve.

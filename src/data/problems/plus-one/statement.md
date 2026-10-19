@@ -1,5 +1,8 @@
 # Plus One
 
+## In short
+A number stored as a list of digits, like `[4,0,7]` for `407` → that number plus one, in the same form.
+
 ## The task
 
 A non-negative integer is stored as the list of its decimal digits, `digits`, most significant digit first: `[4,0,7]` stands for `407`. There are no leading zeros, except that the number zero is written as `[0]`.

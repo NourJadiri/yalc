@@ -1,5 +1,8 @@
 # Find First and Last Position of Element in Sorted Array
 
+## In short
+A sorted list of numbers and a `target` → the first and last index where `target` appears, or `[-1, -1]` if it doesn't.
+
 ## The task
 
 `nums` is sorted in non-decreasing order, so equal values sit side by side in a run. Return `[first, last]`: the index of the first and of the last occurrence of `target`. If `target` doesn't occur at all, return `[-1, -1]`.

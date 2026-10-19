@@ -1,5 +1,8 @@
 # N-Queens
 
+## In short
+A number `n` → every way to place `n` queens on an `n × n` chessboard so that no two attack each other.
+
 ## The task
 
 Place `n` queens on an `n × n` chessboard so that no two attack each other: no two may share a row, a column, or a diagonal (in either direction). Return every such placement.

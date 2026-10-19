@@ -1,5 +1,8 @@
 # Word Search
 
+## In short
+A grid of letters and a word → `True` if the word can be traced through adjacent cells, none used twice, else `False`.
+
 ## The task
 
 You're given an `m x n` grid of letters `board` and a string `word`. Return `true` if `word` can be traced on the board. To trace it, start on any cell holding its first letter, then step each time to an edge-adjacent cell (up, down, left or right) holding the next letter. No cell may be used twice in the same path. Upper- and lowercase letters are different.

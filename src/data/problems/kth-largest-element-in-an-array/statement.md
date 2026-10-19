@@ -1,5 +1,8 @@
 # Kth Largest Element in an Array
 
+## In short
+A list of numbers and `k` → the `k`-th largest element, duplicates included.
+
 ## The task
 
 Given an integer list `nums` and an integer `k`, return the value that would sit at position `k` (counting from 1) if `nums` were sorted from largest to smallest.

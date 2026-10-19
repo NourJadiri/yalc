@@ -1,5 +1,8 @@
 # Sliding Window Maximum
 
+## In short
+A list of numbers and a size `k` → the maximum of every group of `k` consecutive numbers, left to right.
+
 ## The task
 
 You get an integer array `nums` and a window width `k`. The window starts over the first `k` elements and slides right one position at a time until it covers the last `k`, which makes `n - k + 1` positions. Return a list of the window's maximum at each position, in order.

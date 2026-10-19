@@ -1,5 +1,8 @@
 # Rotting Oranges
 
+## In short
+A grid of oranges where rot spreads to neighbours each minute → the minutes until none are fresh, or `-1` if some never rot.
+
 ## The task
 
 A crate of oranges is an `m x n` grid `grid`. Each cell is `0` (empty), `1` (a fresh orange) or `2` (a rotten orange). Every minute, each fresh orange that shares an edge (up, down, left or right) with a rotten orange turns rotten. All the oranges that turn in a given minute turn at the same moment, so an orange that turns this minute can only pass the rot on in the next minute.
