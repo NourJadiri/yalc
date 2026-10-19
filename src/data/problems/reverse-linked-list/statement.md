@@ -1,5 +1,8 @@
 # Reverse Linked List
 
+## In short
+The head of a linked list → the head of that list with its order reversed.
+
 ## The task
 
 You get the `head` of a singly linked list. Reverse the list — every `next` pointer turned to face the other way — and return the new head.

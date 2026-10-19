@@ -1,5 +1,8 @@
 # Word Ladder
 
+## In short
+Two words and a word list → the number of words in the shortest chain of one-letter changes between them, or `0` if none.
+
 ## The task
 
 You're given two words of the same length, `beginWord` and `endWord`, and a dictionary `wordList`. A ladder is a sequence of words that starts with `beginWord` and ends with `endWord`, where each word differs from the one before it in exactly one position. Every word after `beginWord` must be in `wordList`; `beginWord` itself doesn't have to be.

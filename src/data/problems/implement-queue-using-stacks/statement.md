@@ -1,5 +1,8 @@
 # Implement Queue using Stacks
 
+## In short
+A queue built only from stacks → `push` to the back, `pop` or `peek` the front, and `empty` to check whether it's empty.
+
 ## The task
 
 Build a first-in, first-out queue using nothing but stacks. Implement `class MyQueue`:

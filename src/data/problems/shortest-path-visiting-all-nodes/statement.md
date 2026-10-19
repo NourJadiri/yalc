@@ -1,5 +1,8 @@
 # Shortest Path Visiting All Nodes
 
+## In short
+A connected undirected graph → the fewest edges in a walk that visits every node, starting anywhere and revisiting freely.
+
 ## The task
 
 You're given an undirected, connected graph with `n` nodes labelled `0` to `n - 1`, as adjacency lists: `graph[i]` lists the neighbours of node `i`.

@@ -1,5 +1,8 @@
 # Most Common Word
 
+## In short
+A paragraph and a list of banned words → the most frequent word that isn't banned, in lowercase.
+
 ## The task
 
 You're given a piece of text, `paragraph`, and a list of `banned` words. Return the word that appears **most often** in the paragraph without being banned, written in lowercase.

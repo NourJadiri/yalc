@@ -1,5 +1,8 @@
 # Binary Tree Paths
 
+## In short
+A binary tree → every path from the root to a leaf, each written as a string like `"8->3->2"`.
+
 ## The task
 
 Given the `root` of a binary tree, return every path from the root down to a leaf (a node with no children), written as a string: the node values in order, joined by `"->"`. The path through the values `8`, `3`, `2` is `"8->3->2"`.

@@ -1,5 +1,8 @@
 # Open the Lock
 
+## In short
+A four-wheel lock starting at `"0000"`, some forbidden codes and a `target` → the fewest moves to show `target`, or `-1` if impossible.
+
 ## The task
 
 A combination lock has four wheels, each showing one digit from `0` to `9`. One move turns a single wheel by one notch, up or down. The wheels wrap around: `9` turns up to `0`, and `0` turns down to `9`. The lock starts at `"0000"`.

@@ -1,5 +1,8 @@
 # Accounts Merge
 
+## In short
+Accounts, each a name plus emails → one merged account per person, where accounts sharing an email are the same person.
+
 ## The task
 
 A sign-up system hands you a list `accounts`. Each entry is one account: `accounts[i][0]` is the holder's name, and every item after it is an email address registered on that account.

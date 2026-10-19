@@ -1,5 +1,8 @@
 # Perfect Squares
 
+## In short
+A positive integer `n` → the smallest number of perfect squares, repeats allowed, that add up to `n`.
+
 ## The task
 
 Given a positive integer `n`, return the smallest number of perfect squares (`1, 4, 9, 16, …`) that add up to exactly `n`. A square may be used more than once.

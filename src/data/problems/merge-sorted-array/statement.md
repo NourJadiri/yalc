@@ -1,5 +1,8 @@
 # Merge Sorted Array
 
+## In short
+Two sorted lists, the first padded with spare slots → both merged into the first list, sorted and in place.
+
 ## The task
 
 You're given two integer lists, `nums1` and `nums2`, each sorted in non-decreasing order, and two counts, `m` and `n`.

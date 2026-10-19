@@ -1,5 +1,8 @@
 # Trapping Rain Water
 
+## In short
+A row of bar heights → the total units of rain water trapped between the bars.
+
 ## The task
 
 The list `height` describes a row of bars, each `1` unit wide, standing side by side with no gaps: bar `i` is `height[i]` units tall. Rain falls on the row and collects in the dips between bars; any water that isn't walled in on both sides runs off the ends of the row. Return how many units of water stay trapped.

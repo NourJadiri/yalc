@@ -1,5 +1,8 @@
 # Longest Increasing Path in a Matrix
 
+## In short
+A grid of integers → the number of cells in the longest strictly increasing path, moving up, down, left or right.
+
 ## The task
 
 Given an `m x n` matrix of integers `matrix`, return the length of its longest increasing path. A path moves from a cell to an edge-adjacent cell (up, down, left or right; no diagonals, and no wrapping around the edges). It is increasing when every step lands on a strictly larger value. Its length is the number of cells it visits, so a single cell is a path of length 1.

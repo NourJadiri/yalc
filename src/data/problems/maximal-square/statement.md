@@ -1,5 +1,8 @@
 # Maximal Square
 
+## In short
+A grid of `"0"` and `"1"` cells → the area of the largest square containing only `"1"`, or `0` if there is none.
+
 ## The task
 
 `matrix` is an `m × n` grid whose cells are the one-character strings `"0"` and `"1"`. Find the largest square block of cells — sides parallel to the grid — in which every cell is `"1"`, and return its **area**, the number of cells it covers. If the grid has no `"1"` at all, return `0`.

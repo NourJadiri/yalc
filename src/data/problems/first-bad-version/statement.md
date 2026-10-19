@@ -1,5 +1,8 @@
 # First Bad Version
 
+## In short
+Versions `1` to `n`, bad from some point on → the first bad version, in as few `isBadVersion` calls as possible.
+
 ## The task
 
 Your team has shipped versions `1, 2, ..., n` of a product, and one of them introduced a bug. Every version built after a bad version is also bad. So the versions run good, good, ..., good, bad, bad, ..., bad, and at least one of them is bad.

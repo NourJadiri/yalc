@@ -1,5 +1,8 @@
 # Subtree of Another Tree
 
+## In short
+Two binary trees, `root` and `subRoot` → `true` if `subRoot` matches some node of `root` plus everything under it, else `false`.
+
 ## The task
 
 You're given the roots of two binary trees, `root` and `subRoot`. Return `True` if `root` contains a subtree identical to `subRoot`, and `False` otherwise.

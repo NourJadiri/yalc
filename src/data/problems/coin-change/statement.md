@@ -1,5 +1,8 @@
 # Coin Change
 
+## In short
+Coin values (unlimited supply of each) and an `amount` → the fewest coins that add up to exactly `amount`, or `-1` if impossible.
+
 ## The task
 
 You have an unlimited supply of coins of every denomination in `coins`. Return the smallest number of coins whose values add up to exactly `amount`, or `-1` if no combination of coins adds up to it.

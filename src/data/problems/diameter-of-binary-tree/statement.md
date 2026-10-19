@@ -1,5 +1,8 @@
 # Diameter of Binary Tree
 
+## In short
+A binary tree → its diameter: the number of edges on the longest path between any two nodes.
+
 ## The task
 
 You're given the `root` of a binary tree. Return its **diameter**: the length of the longest path between any two nodes.

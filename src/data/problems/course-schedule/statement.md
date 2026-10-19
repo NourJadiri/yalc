@@ -1,5 +1,8 @@
 # Course Schedule
 
+## In short
+A course count and prerequisite pairs → `true` if every course can be taken after its prerequisites, otherwise `false`.
+
 ## The task
 
 You have to take `numCourses` courses, labelled `0` to `numCourses - 1`, one at a time. Some courses have prerequisites: each pair `[a, b]` in `prerequisites` means course `b` must be finished before you can start course `a`.

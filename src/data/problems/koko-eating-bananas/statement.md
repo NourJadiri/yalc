@@ -1,5 +1,8 @@
 # Koko Eating Bananas
 
+## In short
+Piles of bananas and `h` hours → the smallest eating speed `k` (bananas per hour) that finishes every pile within `h` hours.
+
 ## The task
 
 Koko has `h` hours and a row of banana piles, with `piles[i]` bananas in pile `i`. Before starting she fixes an eating speed of `k` bananas per hour, where `k` is a positive integer. Each hour she works on a single pile: she eats `k` bananas from it, or everything left if fewer than `k` remain. Any time left over in that hour is wasted, because she never starts a second pile within the same hour.
