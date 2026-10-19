@@ -1,5 +1,8 @@
 # Valid Parentheses
 
+## In short
+A string of `()[]{}` brackets → whether it is balanced: every opener closed by its matching closer, in the right order.
+
 ## The task
 
 You're given a string `s` made only of the six bracket characters `(`, `)`, `[`, `]`, `{` and `}`. Return `True` if its brackets are balanced and `False` if they aren't.

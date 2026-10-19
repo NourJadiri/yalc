@@ -1,5 +1,8 @@
 # Letter Combinations of a Phone Number
 
+## In short
+A string of phone-keypad digits → every letter combination they can spell, or `[]` if the string is empty.
+
 ## The task
 
 On a classic phone keypad, each digit from `2` to `9` carries a few letters:

@@ -1,5 +1,8 @@
 # Search in Rotated Sorted Array
 
+## In short
+A rotated sorted list of distinct integers and a `target` → the index of `target`, or `-1` if it isn't there.
+
 ## The task
 
 `nums` began as a list of **distinct** integers in increasing order and was then rotated: some prefix was cut off and moved, in order, to the end — `[1,2,3,4,5]` might now read `[4,5,1,2,3]`. The rotation may be zero, leaving the list sorted. You aren't told where the cut was.

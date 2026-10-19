@@ -2,6 +2,9 @@
 
 Stands in for LeetCode 305 (premium). Original statement written for this app — same task, own words and examples.
 
+## In short
+An all-water grid and a list of cells that turn into land, one per step → the number of islands after each step.
+
 ## The task
 
 An `m x n` patch of ocean starts as all water. Volcanic vents push up land one cell at a time: `positions[i] = [r, c]` means cell `(r, c)` becomes land at step `i`. Two land cells belong to the same island when they touch horizontally or vertically.

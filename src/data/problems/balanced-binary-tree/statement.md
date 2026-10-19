@@ -1,5 +1,8 @@
 # Balanced Binary Tree
 
+## In short
+A binary tree → whether every node's left and right subtrees differ in height by at most `1`.
+
 ## The task
 
 You're given the `root` of a binary tree. Return `True` if the tree is **height-balanced**, and `False` otherwise.

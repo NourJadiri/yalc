@@ -1,5 +1,8 @@
 # Longest Substring Without Repeating Characters
 
+## In short
+A string → the length of its longest substring with no repeated character.
+
 ## The task
 
 Given a string `s`, return the length of the longest substring of `s` in which no character occurs more than once.

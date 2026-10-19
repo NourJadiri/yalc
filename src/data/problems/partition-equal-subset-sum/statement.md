@@ -1,5 +1,8 @@
 # Partition Equal Subset Sum
 
+## In short
+A list of positive integers → whether it can be split into two groups with the same sum.
+
 ## The task
 
 Given a list of positive integers `nums`, decide whether it can be split into two groups with equal sums. Every element must go into exactly one of the two groups. Return `True` if such a split exists and `False` otherwise.

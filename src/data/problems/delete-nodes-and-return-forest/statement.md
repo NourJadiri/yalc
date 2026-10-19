@@ -1,5 +1,8 @@
 # Delete Nodes And Return Forest
 
+## In short
+A binary tree and a list of values to delete → the roots of the separate trees left after those nodes are removed.
+
 ## The task
 
 You get the `root` of a binary tree whose values are all distinct, and a list `to_delete`. Remove every node whose value appears in `to_delete`. A removed node is cut off from its parent and from its children, so the tree breaks apart into a forest. A surviving node becomes the root of its own tree when its parent was removed; the original root starts a tree too, if it survives.

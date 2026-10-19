@@ -2,6 +2,9 @@
 
 Stands in for LeetCode 261 (premium). Original statement written for this app — same task, own words and examples.
 
+## In short
+An undirected graph with `n` nodes and a list of edges → whether it is a tree: connected, with no cycle.
+
 ## The task
 
 A technician wired up `n` network switches, labelled `0` to `n - 1`, with undirected cables given as `edges[i] = [a, b]`. Decide whether the result is a **tree**: every switch reachable from every other, and no redundant cable anywhere (no cycle).

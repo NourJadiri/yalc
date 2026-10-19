@@ -1,5 +1,8 @@
 # Minimum Cost For Tickets
 
+## In short
+Travel days and the prices of 1-day, 7-day and 30-day passes → the lowest total cost to cover every travel day.
+
 ## The task
 
 You've planned train trips for the coming year: `days` lists the calendar days you'll travel, strictly increasing, each between `1` and `365`. Three kinds of pass are on sale:

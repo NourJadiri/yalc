@@ -1,5 +1,8 @@
 # Regular Expression Matching
 
+## In short
+A string `s` and a pattern `p` made of letters, `.` and `*` → whether `p` matches the whole of `s`.
+
 ## The task
 
 Write a matcher for a tiny regular-expression language. A pattern `p` is built from:

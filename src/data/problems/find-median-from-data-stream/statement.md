@@ -1,5 +1,8 @@
 # Find Median from Data Stream
 
+## In short
+A growing collection of integers → `addNum` adds one, `findMedian` returns the median of everything added so far.
+
 ## The task
 
 Integers arrive one at a time, and at any moment you may be asked for the median of everything received so far. The median of a sorted list is its middle element when the length is odd, and the mean of its two middle elements when the length is even. So `[1,4,9]` has median `4.0`, and `[1,4,9,10]` has median `6.5`.

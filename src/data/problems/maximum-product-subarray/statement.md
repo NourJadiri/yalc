@@ -1,5 +1,8 @@
 # Maximum Product Subarray
 
+## In short
+A list of integers → the largest product of any non-empty contiguous subarray.
+
 ## The task
 
 Given an integer array `nums`, find the contiguous, non-empty subarray whose elements have the largest product, and return that product.

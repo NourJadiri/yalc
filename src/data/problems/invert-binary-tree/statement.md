@@ -1,5 +1,8 @@
 # Invert Binary Tree
 
+## In short
+A binary tree → its mirror image, flipped left to right.
+
 ## The task
 
 You're given the `root` of a binary tree. Invert it — turn it into its mirror image — and return its root.

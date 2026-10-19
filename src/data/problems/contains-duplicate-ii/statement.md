@@ -1,5 +1,8 @@
 # Contains Duplicate II
 
+## In short
+A list of numbers and `k` → whether two equal values sit at most `k` positions apart.
+
 ## The task
 
 Given a list of integers `nums` and an integer `k`, return `True` if there are two **different** indices `i` and `j` with `nums[i] == nums[j]` and `abs(i - j) <= k`. Otherwise return `False`.

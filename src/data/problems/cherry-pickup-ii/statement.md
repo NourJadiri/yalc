@@ -1,5 +1,8 @@
 # Cherry Pickup II
 
+## In short
+A grid of cherry counts → the most cherries two robots can collect moving down from the two top corners.
+
 ## The task
 
 An orchard is a `rows × cols` grid, and `grid[r][c]` is the number of cherries in that cell. Two robots start in the top row: robot A in the top-left corner `(0, 0)` and robot B in the top-right corner `(0, cols - 1)`.

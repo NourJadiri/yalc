@@ -1,5 +1,8 @@
 # Task Scheduler
 
+## In short
+Tasks and a cooldown `n` between tasks with the same label → the fewest time units to finish them all, idle time included.
+
 ## The task
 
 A single worker must get through a list of `tasks`, each labelled with an uppercase letter. Time is divided into units, and in each unit the worker either completes exactly one task or sits idle. Tasks may be done in any order.

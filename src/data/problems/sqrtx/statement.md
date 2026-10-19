@@ -1,5 +1,8 @@
 # Sqrt(x)
 
+## In short
+A non-negative integer → its square root, rounded down to a whole number.
+
 ## The task
 
 Given a non-negative integer `x`, return its square root rounded down to a whole number. In other words, return the largest integer `k` with `k * k <= x`.
