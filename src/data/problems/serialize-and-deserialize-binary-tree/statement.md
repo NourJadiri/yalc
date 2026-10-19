@@ -1,5 +1,8 @@
 # Serialize and Deserialize Binary Tree
 
+## In short
+A codec for binary trees → `serialize` turns a tree into a string, `deserialize` rebuilds the same tree from that string.
+
 ## The task
 
 Design a way to turn a binary tree into a string and back again. Implement `class Codec`:

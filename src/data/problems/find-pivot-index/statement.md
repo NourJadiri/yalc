@@ -1,5 +1,8 @@
 # Find Pivot Index
 
+## In short
+A list of numbers → the leftmost index with equal sums on its left and right, or `-1` if there is none.
+
 ## The task
 
 Given a list of integers `nums`, find a **pivot index**: an index `i` where the sum of the elements strictly to the left of `i` equals the sum of the elements strictly to the right of it. The element at `i` belongs to neither side, and a side with no elements sums to `0`.

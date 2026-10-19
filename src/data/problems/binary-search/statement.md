@@ -1,5 +1,8 @@
 # Binary Search
 
+## In short
+A sorted list of numbers and a `target` → the index of `target`, or `-1` if it isn't in the list.
+
 ## The task
 
 You're given a list of integers `nums`, sorted in increasing order with no repeated values, and an integer `target`. Return the index where `target` appears in `nums`, or `-1` if it isn't there.

@@ -1,5 +1,8 @@
 # LRU Cache
 
+## In short
+A fixed-size cache → `get` returns a key's value or `-1`; `put` stores a value, evicting the least recently used key when full.
+
 ## The task
 
 Design a fixed-size key-value cache that, when it runs out of room, evicts the **least recently used** key. Implement `class LRUCache`:

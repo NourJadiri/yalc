@@ -1,5 +1,8 @@
 # House Robber II
 
+## In short
+Numbers arranged in a circle → the largest sum you can make without using two neighbouring numbers.
+
 ## The task
 
 The houses on a ring road are numbered `0` to `n - 1`, and house `i` keeps `nums[i]` dollars. Because the road is a loop, house `n - 1` stands next to house `0` as well as next to house `n - 2`. Every pair of next-door houses shares an alarm, so you may never rob two neighbours on the same night. Return the largest total you can take.

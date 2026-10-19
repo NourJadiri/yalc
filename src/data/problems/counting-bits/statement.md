@@ -1,5 +1,8 @@
 # Counting Bits
 
+## In short
+A number `n` → a list of how many `1` bits each number from `0` to `n` has in binary.
+
 ## The task
 
 Given a non-negative integer `n`, return a list `ans` of length `n + 1` where `ans[i]` is the number of `1` bits in the binary form of `i`, for every `i` from `0` to `n`.

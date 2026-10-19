@@ -1,5 +1,8 @@
 # Path Sum II
 
+## In short
+A binary tree and a `targetSum` → every root-to-leaf path whose values add up to `targetSum`.
+
 ## The task
 
 Given the `root` of a binary tree and an integer `targetSum`, return every root-to-leaf path whose values add up to exactly `targetSum`. A path starts at the root and ends at a leaf (a node with no children), and is written as the list of its node values from root to leaf.

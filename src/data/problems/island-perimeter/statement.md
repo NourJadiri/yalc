@@ -1,5 +1,8 @@
 # Island Perimeter
 
+## In short
+A grid of land (`1`) and water (`0`) with one island → that island's perimeter.
+
 ## The task
 
 A map is a grid of square cells, each 1 unit on a side. `grid[r][c]` describes cell `(r, c)`: `1` is land and `0` is water. Everything beyond the edge of the grid is water too.

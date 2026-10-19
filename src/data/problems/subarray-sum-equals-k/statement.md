@@ -1,5 +1,8 @@
 # Subarray Sum Equals K
 
+## In short
+A list of integers and a number `k` → how many contiguous subarrays add up to exactly `k`.
+
 ## The task
 
 Given an integer list `nums` and an integer `k`, count the **subarrays** — contiguous, non-empty runs `nums[i..j]` — whose elements add up to exactly `k`.

@@ -1,5 +1,8 @@
 # Minimum Path Sum
 
+## In short
+A grid of numbers → the smallest sum along a path from the top-left to the bottom-right, moving only right or down.
+
 ## The task
 
 `grid` is an `m × n` grid of non-negative integers. Start on the top-left cell and finish on the bottom-right cell, moving one cell **right** or one cell **down** at each step. A route costs the sum of every cell it visits, including the first and the last. Return the smallest possible cost.

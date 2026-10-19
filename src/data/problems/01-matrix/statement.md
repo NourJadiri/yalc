@@ -1,5 +1,8 @@
 # 01 Matrix
 
+## In short
+A grid of `0`s and `1`s → a grid showing how many steps each cell is from the nearest `0`.
+
 ## The task
 
 You're given an `m x n` matrix `mat` of `0`s and `1`s. For every cell, find its distance to the nearest `0`. One step moves to an edge-adjacent cell (up, down, left or right), and a `0` is at distance 0 from itself. Return a matrix of the same shape holding those distances.

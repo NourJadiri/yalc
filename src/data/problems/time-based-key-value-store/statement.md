@@ -1,5 +1,8 @@
 # Time Based Key-Value Store
 
+## In short
+A key-value store → `set` stores a timestamped value; `get` returns what a key held at a timestamp, or `""` if it held nothing.
+
 ## The task
 
 Build a key-value store that keeps every version of every value, so you can ask what a key held at any moment in the past. Implement `class TimeMap`:

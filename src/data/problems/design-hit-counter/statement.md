@@ -2,6 +2,9 @@
 
 Stands in for LeetCode 362 (premium). Original statement written for this app — same task, own words and examples.
 
+## In short
+A hit counter → `record(t)` logs a hit at second `t`; `count(t)` returns how many hits happened in the last 300 seconds.
+
 ## The task
 
 Design the rate meter for an API gateway. Timestamps are in seconds and arrive in non-decreasing order; several calls may share a timestamp. Implement `class HitCounter`:

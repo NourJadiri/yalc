@@ -1,5 +1,8 @@
 # Remove Duplicates from Sorted Array
 
+## In short
+A sorted list → `k`, the number of distinct values, with the list rewritten in place to start with each value once.
+
 ## The task
 
 You're given a list of integers `nums`, sorted in non-decreasing order, which may contain repeats. Let `k` be the number of distinct values in it.

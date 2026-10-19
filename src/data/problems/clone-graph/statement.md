@@ -1,5 +1,8 @@
 # Clone Graph
 
+## In short
+One node of a connected, undirected graph → a deep copy of the whole graph, returned as that node's copy.
+
 ## The task
 
 You're handed one node of a connected, undirected graph. Every node has an integer `val` and a list `neighbors` of the nodes it shares an edge with. The class is shown, commented out, at the top of the editor. Return a deep copy of the whole graph, by returning the copy of the node you were handed.

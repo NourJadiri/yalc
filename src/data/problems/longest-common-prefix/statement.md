@@ -1,5 +1,8 @@
 # Longest Common Prefix
 
+## In short
+A list of strings → the longest prefix that all of them share, or `""` if there is none.
+
 ## The task
 
 You're given a list of strings `strs`. Return the longest string that **every** string in the list starts with — their longest common prefix. If they don't all start with the same letter, return the empty string `""`.

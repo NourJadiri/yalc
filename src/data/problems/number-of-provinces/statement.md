@@ -1,5 +1,8 @@
 # Number of Provinces
 
+## In short
+A matrix showing which cities are directly connected → the number of separate groups of cities that can reach one another.
+
 ## The task
 
 A country has `n` cities, numbered `0` to `n - 1`, and a road map given as an `n x n` matrix `isConnected`: `isConnected[i][j] == 1` means a road runs directly between city `i` and city `j`, and `0` means it doesn't. Roads go both ways, so the matrix is symmetric, and its diagonal is all `1`s (a city trivially reaches itself).

@@ -1,5 +1,8 @@
 # Merge Intervals
 
+## In short
+A list of intervals → the non-overlapping intervals you get by merging each overlapping group into one.
+
 ## The task
 
 Each entry of `intervals` is a pair `[start, end]` with `start <= end`, standing for every point from `start` to `end`, both ends included. Merge every group of overlapping intervals into one, and return the resulting non-overlapping intervals — together they must cover exactly the same points as the input.

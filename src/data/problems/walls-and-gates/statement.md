@@ -2,6 +2,9 @@
 
 Stands in for LeetCode 286 (premium). Original statement written for this app — same task, own words and examples.
 
+## In short
+A grid of walls, exits and open cells → each open cell overwritten with its distance to the nearest exit, if one is reachable.
+
 ## The task
 
 You are given the floor plan of a data centre as an `m x n` grid of integers:
