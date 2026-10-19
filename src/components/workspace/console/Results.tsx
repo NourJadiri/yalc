@@ -1,4 +1,5 @@
 import type { Spec } from "../../../data/problems";
+import type { Problem } from "../../../types";
 import { useSelectedResult } from "../hooks/useSelectedResult";
 import { caseLabel } from "../lib/caseLabel";
 import { orderLikeCases, type CaseDraft, type RunView } from "../lib/runPlan";
@@ -16,9 +17,12 @@ interface ResultsProps {
   spec: Spec;
   cases: CaseDraft[];
   run: RunView | null;
+  /** The problem after this one, offered once a submit is accepted. */
+  next: Problem | null;
+  onNext: (id: string) => void;
 }
 
-export default function Results({ spec, cases, run }: ResultsProps) {
+export default function Results({ spec, cases, run, next, onNext }: ResultsProps) {
   const [sel, setSel] = useSelectedResult(run);
 
   if (!run) return <ResultsEmpty />;
@@ -27,10 +31,12 @@ export default function Results({ spec, cases, run }: ResultsProps) {
 
   const results = run.mode === "run" ? orderLikeCases(run, cases, o.results) : o.results;
   const chosen = results.find((r) => r.i === sel) ?? results[0];
+  /* A passing Run only tries the cases: the way on is for a pass of the full suite. */
+  const accepted = run.mode === "submit" && run.verdict?.tone === "ok";
 
   return (
     <div className="ws-results">
-      {run.verdict && <VerdictBanner verdict={run.verdict} />}
+      {run.verdict && <VerdictBanner verdict={run.verdict} next={accepted ? next : null} onNext={onNext} />}
 
       {o.compileError && <ErrorBox err={o.compileError} />}
       {o.entryError && !run.verdict && <ResultNote>{o.entryError}</ResultNote>}

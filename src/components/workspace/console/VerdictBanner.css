@@ -4,3 +4,9 @@
 .ws-verdict.ok strong { color: var(--ok-ink); }
 .ws-verdict.bad strong { color: var(--bad-ink); }
 .ws-verdict.warn strong { color: var(--med); }
+/* A long title wraps inside the button rather than pushing it past the pane. */
+.ws-verdict .ws-next { max-width: 100%; height: auto; min-height: 32px; padding-block: 5px; white-space: normal; text-align: left; }
+.ws-verdict .ws-next svg { flex: none; }
+@media (max-width: 899px) {
+  .ws-verdict .ws-next { min-height: 38px; }
+}

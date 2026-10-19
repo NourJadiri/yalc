@@ -18,7 +18,9 @@
 import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { Scenario, runSuite, sleep, isEqual } from "./harness.mjs";
+import { loadData } from "./tabs-data.mjs";
 
 const [BASE, OUT] = process.argv.slice(2);
 if (!BASE || !OUT) {
@@ -26,6 +28,7 @@ if (!BASE || !OUT) {
   process.exit(2);
 }
 const MOCK_LOG = process.env.WS_MOCK_LOG || null;
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 /* ------------------------------ the problem ------------------------------ */
 
@@ -342,6 +345,15 @@ const verdictOf = async (page) => ({
   title: await page.locator(".ws-verdict strong").textContent(),
   detail: await page.locator(".ws-verdict span").textContent(),
 });
+
+/* What the verdict banner offers, as a reader sees it: each button's words, whether it is the primary one, how many icons it carries.
+   Next is the only button it ever has, so [] is a verdict with no way on. */
+const nextButtons = (page) =>
+  page.locator(".ws-verdict button").evaluateAll((els) =>
+    els.map((b) => ({ text: b.textContent.trim(), primary: b.classList.contains("primary"), icons: b.querySelectorAll("svg").length }))
+  );
+const NEXT = (title) => ({ text: "Next: " + title, primary: true, icons: 1 });
+const nextButton = (page) => page.locator(".ws-verdict").getByRole("button", { name: /^Next: / });
 
 const chipsOf = (page) =>
   page.locator('.ws-results [aria-label="Cases"] [role=tab]').evaluateAll((els) =>
@@ -709,9 +721,14 @@ scenario("04-submit", "submit: accepted, XP and badge toasts, passed on the Line
     await setCode(page, CORRECT);
     await s.expect("(setup) the header has no 'passed' mark yet", () => page.locator(".ws-done").count(), 0);
 
+    // a Run that passes only tried the cases: no way on yet
+    await startRun(s, page, "button");
+    await s.expect("a passing Run says 'Passed' and offers no Next button", async () => ({ title: (await verdictOf(page)).title, next: await nextButtons(page) }), { title: "Passed", next: [] });
+
     const n = await startRun(s, page, "submit-button");
     await s.expect("Submit button: exactly one run started", () => n, 1);
     await s.expect("verdict: Accepted, all 23 tests", () => verdictOf(page), (v) => v.tone === "ok" && v.title === "Accepted" && /^All 23 tests passed · \d+ ms$/.test(v.detail));
+    await s.expect("the Accepted verdict offers the next problem on the line: a primary 'Next: Binary Tree Paths' button with an arrow", () => nextButtons(page), [NEXT("Binary Tree Paths")]);
     await s.expect("23 test chips in a grid, numbered 1..23, all green", async () => {
       const chips = await chipsOf(page);
       return { n: chips.length, nums: chips.map((c) => c.text).join(","), tones: [...new Set(chips.map((c) => c.tone))].join(","), grid: await page.locator(".ws-chips.grid").count() };
@@ -739,6 +756,7 @@ scenario("04-submit", "submit: accepted, XP and badge toasts, passed on the Line
     const n2 = await startRun(s, page, "submit-kbd-editor");
     await s.expect("Ctrl+Shift+Enter: exactly one run started", () => n2, 1);
     await s.expect("…accepted again", () => verdictOf(page).then((v) => v.title), "Accepted");
+    await s.expect("…and the button is on its verdict again", () => nextButtons(page), [NEXT("Binary Tree Paths")]);
     await sleep(700);
     await s.expect("…with no new toast (nothing re-awarded)", () => page.locator(".toast").count(), 0);
     await s.expect("Ctrl+Shift+Enter ran the full suite, not the cases", async () => (await chipsOf(page)).length, N_TESTS);
@@ -2266,6 +2284,249 @@ scenario("24-stuck-phone", "390x844 touch: the nudge rides over the pane you are
   } finally {
     await ctx.close();
   }
+});
+
+/* 25 ----------------------------------------------------------------- */
+/* Only an accepted Submit leads on, to the next problem of its own line that isn't ticked and opens here (the timed mocks open on
+   LeetCode), wrapping round from the end. Day 1 of Onsite Express runs TITLE, Binary Tree Paths, Path Sum II, Last Stone Weight. */
+scenario("25-next-problem", "the Next button: an accepted Submit leads straight into the next problem on the line", async (s) => {
+  const BTP = "Binary Tree Paths";
+  const PS2 = "Path Sum II";
+  const KEPT = "# one more idea\n"; // typed after the pass, just before leaving
+  const D = await loadData();
+  const specOf = (p) => p.drill ?? p.slug ?? null;
+  const probs = D.PLAN.flatMap((d) => d.probs);
+  const mocks = probs.filter((p) => !specOf(p)).map((p) => p.id);
+
+  const dialogOf = (title) => `[role=dialog][aria-label="${title}"]`;
+  const rowOf = (page, title) => page.locator(".prow", { has: page.locator(".pname", { hasText: new RegExp("^" + title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$") }) });
+  const focused = (page) => page.evaluate(() => ({ role: document.activeElement?.getAttribute("role"), label: document.activeElement?.getAttribute("aria-label") }));
+  const outcome = async (page) => ({ title: (await verdictOf(page)).title, next: await nextButtons(page) });
+  /* The reference solution of a problem in the bank: what passes it. */
+  const referenceOf = (key) => fs.readFileSync(path.join(REPO, "src/data/problems", key, "solution.py"), "utf8");
+  /* Progress as the app stores it: the Google line with every problem ticked but `left`. */
+  const tickedBut = (left) => ({
+    "onsite-express-v1": JSON.stringify({ v: 2, tracks: { google: { done: Object.fromEntries(probs.filter((p) => !left.includes(p.id)).map((p) => [p.id, true])) } } }),
+  });
+  const toLine = async (page) => {
+    await page.goto(BASE);
+    await press(page, page.getByRole("navigation", { name: "Sections" }).getByRole("button", { name: "Line" }));
+  };
+  const openFromLine = async (page, title) => {
+    await press(page, rowOf(page, title).locator(sel.openBtn));
+    await page.locator(dialogOf(title)).waitFor();
+    await page.locator(sel.editorContent).first().waitFor({ state: "attached" });
+    await waitReady(page);
+  };
+  /* Where the Next button lies: beside the verdict's title or wrapped below it, and (on a phone) wholly inside the console,
+     a thumb tall, with nothing scrolling sideways. */
+  const fitOf = (page) =>
+    page.evaluate(() => {
+      const r = document.querySelector(".ws-verdict button").getBoundingClientRect();
+      const title = document.querySelector(".ws-verdict strong").getBoundingClientRect();
+      const body = document.querySelector(".ws-console-body");
+      const b = body.getBoundingClientRect();
+      return {
+        row: r.top < title.bottom ? "beside" : "below",
+        inside: r.left >= b.left && r.right <= b.right,
+        tall: r.height >= 38,
+        body: body.scrollWidth <= body.clientWidth,
+        page: document.documentElement.scrollWidth <= innerWidth,
+      };
+    });
+  const FITS = { row: "below", inside: true, tall: true, body: true, page: true };
+  const seg = (page) => page.locator(".seg [role=tab]").evaluateAll((els) => els.map((e) => e.textContent.trim() + ":" + e.getAttribute("aria-selected")));
+
+  // ---- the road from the first problem: what has a way on, and where it goes
+  {
+    const { ctx, page } = await newPage(s);
+    try {
+      await openWorkspace(s, page);
+      await setCode(page, WRONG);
+      await startRun(s, page, "button");
+      await s.expect("a Run that fails has no Next button", () => outcome(page), { title: "Wrong Answer", next: [] });
+      await startRun(s, page, "submit-button");
+      await s.expect("a Submit that fails has none either", () => outcome(page), { title: "Wrong Answer", next: [] });
+      await setCode(page, CORRECT);
+      await startRun(s, page, "button");
+      await s.expect("a Run that passes has none: it only tried the cases", () => outcome(page), { title: "Passed", next: [] });
+      await startRun(s, page, "submit-button");
+      await s.expect("an accepted Submit does: a primary 'Next: Binary Tree Paths' button with an arrow, in the verdict banner", () => outcome(page), { title: "Accepted", next: [NEXT(BTP)] });
+      await s.expect("…beside the verdict's title on a desktop-wide console, not wrapped under it", async () => (await fitOf(page)).row, "beside");
+      await s.shot(page, "next-accepted-desktop-light");
+      await dark(page);
+      await s.shot(page, "next-accepted-desktop-dark");
+      await page.emulateMedia({ colorScheme: "light" });
+
+      // leave the tabs somewhere other than where a workspace opens, and change the code after the pass, then go on from the keyboard
+      await page.getByRole("tab", { name: "Solution" }).click();
+      await s.expect("(setup) the Solution tab is open over the Result tab", async () => ({ problem: await problemTab(page), console: await consoleTab(page) }), { problem: "Solution", console: "Result" });
+      await setCode(page, CORRECT + KEPT);
+      await page.evaluate(() => {
+        /* Every DOM change from here on: the dialog's name against the header's title (the title is absent while the problem loads). */
+        window.__mixed = [];
+        new MutationObserver(() => {
+          const name = document.querySelector("[role=dialog]")?.getAttribute("aria-label");
+          const title = document.querySelector(".ws-title h2")?.textContent;
+          if (name && title && name !== title) window.__mixed.push(`${name} over ${title}`);
+        }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["aria-label"] });
+      });
+      await nextButton(page).focus();
+      await page.keyboard.press("Enter");
+      await s.expect("Enter on the button opens Binary Tree Paths: the dialog and the header say so", async () => ({ dialog: await page.locator("[role=dialog]").getAttribute("aria-label"), h2: await page.locator(".ws-title h2").textContent() }), { dialog: BTP, h2: BTP }, { timeout: 5000 });
+      await s.expect("…with no frame on the way that put the new name over the last problem's title", () => page.evaluate(() => window.__mixed), []);
+      await s.expect("keyboard focus is on the dialog, not left on the button that is gone", () => focused(page), { role: "dialog", label: BTP });
+      await s.expect("the header shows its difficulty, station and LeetCode link, and no 'passed' mark", () =>
+        page.locator(".ws-meta").evaluate((el) => ({ diff: el.querySelector(".diff")?.textContent, tag: el.querySelector(".tag")?.textContent, lc: el.querySelector("a.ws-lc")?.textContent, done: !!el.querySelector(".ws-done") })),
+        { diff: "EASY", tag: "Day 1 · Pathfinding", lc: "LC 257", done: false });
+      await s.expect("the Description tab holds its statement, not the last problem's", async () => {
+        const t = await textOf(page.locator(".ws-problem-body"));
+        return { tree: /binary tree/i.test(t), leaf: /leaf/.test(t), graph: /directed graph/.test(t) };
+      }, { tree: true, leaf: true, graph: false });
+      await s.expect("the tabs start over: Description, and Testcase with its own first example", async () => ({
+        problem: await problemTab(page), console: await consoleTab(page), cases: await caseNames(page), field: await page.locator(".ws-field textarea").inputValue(),
+      }), { problem: "Description", console: "Testcase", cases: ["Case 1", "Case 2", "Case 3"], field: "[4,9,0,null,1,6]" });
+      await s.expect("the editor holds its starter, not the code just passed", async () => {
+        const t = await codeOf(page);
+        return { starter: t.includes("def binaryTreePaths"), passed: t.includes("allPathsSourceTarget") };
+      }, { starter: true, passed: false });
+      await s.shot(page, "next-opened-desktop-light");
+
+      // Esc closes it, back on the Line; the first problem's draft was saved on the way out
+      await page.keyboard.press("Escape");
+      await s.expect("Esc closes the workspace", () => page.locator("[role=dialog]").count(), 0, { timeout: 3000 });
+      await s.expect("…and focus goes back to the button that opened the first problem", () => page.evaluate(() => document.activeElement?.getAttribute("aria-label")), `Solve ${TITLE} in the editor`);
+      await s.expect("the first problem's draft holds what was typed after the pass", () => draftOf(page), CORRECT + KEPT);
+      await openFromLine(page, TITLE);
+      await s.expect("reopened from the Line: the code is there", () => codeOf(page), CORRECT + KEPT, { timeout: 3000 });
+      await s.expect("…and Binary Tree Paths, only visited, is not ticked on the Line", () => rowOf(page, BTP).getAttribute("class").then((c) => /\bdone\b/.test(c)), false);
+
+      // a next problem that is ticked is skipped: tick Binary Tree Paths on the Line, and the pass leads to Path Sum II
+      await page.locator(sel.back).click();
+      await press(page, rowOf(page, BTP).locator(".pcheck"));
+      await s.expect("(setup) Binary Tree Paths is ticked on the Line", () => rowOf(page, BTP).getAttribute("class"), /\bdone\b/);
+      await openFromLine(page, TITLE);
+      await startRun(s, page, "submit-button");
+      await s.expect("the same pass now offers Path Sum II: the ticked one is skipped", () => outcome(page), { title: "Accepted", next: [NEXT(PS2)] });
+      // the next problem comes from the progress as it is now: the Line, still mounted behind the dialog, stands in for another device's tick
+      await rowOf(page, BTP).locator(".pcheck").dispatchEvent("click");
+      await s.expect("unticking Binary Tree Paths behind the open workspace brings it back as the next problem, untouched otherwise", () => nextButtons(page), [NEXT(BTP)]);
+      await rowOf(page, BTP).locator(".pcheck").dispatchEvent("click");
+      await s.expect("…and ticking it again names Path Sum II once more", () => nextButtons(page), [NEXT(PS2)]);
+      await nextButton(page).click();
+      await s.expect("the click opens Path Sum II", () => page.locator(".ws-title h2").textContent(), PS2, { timeout: 5000 });
+    } finally {
+      await ctx.close();
+    }
+  }
+
+  // ---- the walk: it wraps round to the start, stays on its own line, and never offers a timed mock
+  {
+    const { ctx, page } = await newPage(s, { storage: tickedBut(["ap", "btp", ...mocks]) });
+    try {
+      await toLine(page);
+      await openFromLine(page, BTP);
+      await setCode(page, referenceOf("binary-tree-paths"));
+      await startRun(s, page, "submit-button");
+      await s.expect("with everything after Binary Tree Paths ticked, the walk wraps round to the start: Next is the first problem", () => outcome(page), { title: "Accepted", next: [NEXT(TITLE)] });
+      await nextButton(page).click();
+      await s.expect("…and it opens it", () => page.locator(".ws-title h2").textContent(), TITLE, { timeout: 5000 });
+      await s.expect("…on a fresh editor, with focus on the dialog", async () => ({ code: await codeOf(page), focus: await focused(page) }), { code: STARTER, focus: { role: "dialog", label: TITLE } });
+      await waitReady(page);
+      await setCode(page, CORRECT);
+      await startRun(s, page, "submit-button");
+      await s.expect("with every other problem ticked there is nothing to offer: the timed mocks open on LeetCode, the Local is another line", () => outcome(page), { title: "Accepted", next: [] });
+      // not even the problem itself, once it is unticked again (on the Line behind the dialog)
+      await rowOf(page, TITLE).locator(".pcheck").dispatchEvent("click");
+      await s.expect("(setup) the problem is unticked on the Line", () => rowOf(page, TITLE).getAttribute("class").then((c) => /\bdone\b/.test(c)), false);
+      await s.expect("…and it is not offered as its own next problem", () => nextButtons(page), []);
+    } finally {
+      await ctx.close();
+    }
+  }
+
+  // ---- a re-drill is a problem of its own that shares a bank problem with an earlier one: the workspace keeps the statement but starts over
+  {
+    const cc = probs.find((p) => p.id === "cc");
+    const again = probs.find((p) => p.id === "rcc");
+    const starter = JSON.parse(fs.readFileSync(path.join(REPO, "src/data/problems", specOf(cc), "spec.json"), "utf8")).starter;
+    const { ctx, page } = await newPage(s, { storage: tickedBut([cc.id, again.id, ...mocks]) });
+    try {
+      await toLine(page);
+      await openFromLine(page, cc.n);
+      await setCode(page, referenceOf(specOf(cc)));
+      await startRun(s, page, "submit-button");
+      await s.expect(`${cc.n} leads to '${again.n}', the same problem in the bank`, () => outcome(page), { title: "Accepted", next: [NEXT(again.n)] });
+      await nextButton(page).click();
+      await s.expect("the click opens the re-drill: its own dialog and station", async () => ({ dialog: await page.locator("[role=dialog]").getAttribute("aria-label"), tag: await page.locator(".ws-meta .tag").textContent() }), { dialog: again.n, tag: "Day 24 · Final Approach" }, { timeout: 5000 });
+      await s.expect("…on a fresh editor and no 'passed' mark, though the problem it shares was just passed", async () => ({ code: await codeOf(page), done: await page.locator(".ws-done").count() }), { code: starter, done: 0 });
+      await s.expect("…with focus on the dialog, and the passed code kept under the first problem only", async () => ({
+        focus: await focused(page), drafts: await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("onsite-express-code-v1") || "{}"))),
+      }), { focus: { role: "dialog", label: again.n }, drafts: [cc.id] });
+    } finally {
+      await ctx.close();
+    }
+  }
+
+  // ---- the Local: the walk runs along the line the problem is on
+  {
+    const [first, second] = D.AWS_PLAN.flatMap((d) => d.probs);
+    const { ctx, page } = await newPage(s, { storage: { "onsite-express-v1": JSON.stringify({ v: 2, track: "aws" }) } });
+    try {
+      await toLine(page);
+      await openFromLine(page, first.n);
+      await setCode(page, referenceOf(specOf(first)));
+      await startRun(s, page, "submit-button");
+      await s.expect(`on the Day One Local, ${first.n} leads to ${second.n}`, () => outcome(page), { title: "Accepted", next: [NEXT(second.n)] });
+      await s.shot(page, "next-accepted-local-console-desktop-light", { locator: page.locator(sel.tests) });
+    } finally {
+      await ctx.close();
+    }
+  }
+
+  // ---- 390x844 touch: in the Tests tab, wrapping rather than overflowing
+  {
+    const { ctx, page } = await newPage(s, { phone: true });
+    try {
+      await openWorkspace(s, page, { check: false });
+      await press(page, page.locator(".seg").getByRole("tab", { name: "Code" }));
+      await setCode(page, CORRECT);
+      await startRun(s, page, "submit-button");
+      await s.expect("a Submit from the Code tab lands on Tests, on Result, Accepted", async () => ({ seg: await seg(page), tab: await consoleTab(page), title: (await verdictOf(page)).title }), { seg: ["Problem:false", "Code:false", "Tests:true"], tab: "Result", title: "Accepted" });
+      await s.expect("the Next button is there, on screen and a thumb tall, and nothing scrolls sideways", async () => ({ next: await nextButtons(page), fit: await fitOf(page) }), { next: [NEXT(BTP)], fit: FITS });
+      await s.shot(page, "next-accepted-phone-light");
+      await dark(page);
+      await s.shot(page, "next-accepted-phone-dark");
+      await page.emulateMedia({ colorScheme: "light" });
+
+      await press(page, nextButton(page));
+      await s.expect("tapping it opens Binary Tree Paths on the Problem pane: the segments start over", async () => ({ h2: await page.locator(".ws-title h2").textContent(), seg: await seg(page) }), { h2: BTP, seg: ["Problem:true", "Code:false", "Tests:false"] }, { timeout: 5000 });
+      await s.expect("…on Description and Testcase, with focus on the dialog", async () => ({ problem: await problemTab(page), console: await consoleTab(page), focus: await focused(page) }), { problem: "Description", console: "Testcase", focus: { role: "dialog", label: BTP } });
+      await s.shot(page, "next-opened-phone-light");
+    } finally {
+      await ctx.close();
+    }
+  }
+
+  // ---- the longest title on the line, on a phone: the label wraps inside the button
+  {
+    const long = probs.filter((p) => specOf(p)).reduce((a, p) => (p.n.length > a.n.length ? p : a));
+    const { ctx, page } = await newPage(s, { phone: true, storage: tickedBut(["ap", long.id, ...mocks]) });
+    try {
+      await openWorkspace(s, page, { check: false });
+      await press(page, page.locator(".seg").getByRole("tab", { name: "Code" }));
+      await setCode(page, CORRECT);
+      await startRun(s, page, "submit-button");
+      await s.expect(`'${long.n}' fits the button: it wraps, and nothing overflows`, async () => ({ next: await nextButtons(page), fit: await fitOf(page) }), { next: [NEXT(long.n)], fit: FITS });
+      await s.shot(page, "next-long-phone-light");
+      await dark(page);
+      await s.shot(page, "next-long-phone-dark");
+      await page.emulateMedia({ colorScheme: "light" });
+    } finally {
+      await ctx.close();
+    }
+  }
+  finish(s);
 });
 
 /* ------------------------------ driver ------------------------------ */

@@ -11,7 +11,7 @@ import "./Workspace.css";
 export default function Workspace({ pid }: { pid: string }) {
   const { actions } = useApp();
   const problemRef = PROB_INDEX[pid];
-  const dialog = useDialogFocus();
+  const dialog = useDialogFocus(pid);
   const content = useProblemContent(problemRef ? specOf(problemRef.prob) : null);
 
   /* An id no line carries (only reachable from a stale session) closes the workspace rather than rendering an empty shell. */
@@ -26,7 +26,8 @@ export default function Workspace({ pid }: { pid: string }) {
   return (
     <div className="ws" role="dialog" aria-modal="true" aria-label={problemRef.prob.n} tabIndex={-1} ref={dialog}>
       {content ? (
-        /* Keyed by problem, so the body unmounting means leaving the problem: it flushes the draft then. */
+        /* Keyed by problem, so the body unmounting means leaving the problem: it flushes the draft then. A re-drill shares its content
+           with an earlier problem, so only the key tells the two apart. */
         <WorkspaceBody key={pid} problemRef={problemRef} content={content} />
       ) : (
         <WorkspaceLoading title={problemRef.prob.n} missing={content === null} onClose={actions.closeWork} />

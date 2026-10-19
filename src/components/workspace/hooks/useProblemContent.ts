@@ -4,23 +4,23 @@ import * as runner from "../../../runner/runner";
 
 /** undefined while loading; null when the problem has no in-app version. Warms the Python runner as the load starts. */
 export function useProblemContent(specId: string | null): ProblemContent | null | undefined {
-  const [content, setContent] = useState<ProblemContent | null | undefined>(undefined);
+  /* Tagged with whose it is, so moving on to another problem never shows the last one's content while the next loads. */
+  const [loaded, setLoaded] = useState<{ specId: string | null; content: ProblemContent | null }>();
 
   useEffect(() => {
     let live = true;
-    setContent(undefined);
     if (!hasProblem(specId)) {
-      setContent(null);
+      setLoaded({ specId, content: null });
       return;
     }
     void runner.warm().catch(() => {});
-    void loadProblem(specId).then((c) => {
-      if (live) setContent(c);
+    void loadProblem(specId).then((content) => {
+      if (live) setLoaded({ specId, content });
     });
     return () => {
       live = false;
     };
   }, [specId]);
 
-  return content;
+  return loaded?.specId === specId ? loaded.content : undefined;
 }

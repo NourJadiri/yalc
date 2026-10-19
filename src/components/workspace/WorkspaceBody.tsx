@@ -24,6 +24,7 @@ import { useWorkspaceShortcuts } from "./hooks/useWorkspaceShortcuts";
 import DesktopLayout from "./layout/DesktopLayout";
 import MobileLayout, { type MobileTab } from "./layout/MobileLayout";
 import { HINTS, nextRung } from "./lib/ladder";
+import { nextProblem } from "./lib/nextProblem";
 import { parseNotes } from "./lib/notes";
 import LazyAssistant from "./LazyAssistant";
 import ProblemPane from "./problem/ProblemPane";
@@ -41,6 +42,8 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
   const progress = state.data.tracks[problemRef.track];
   const done = !!progress.done[pid];
   const accepted = !!progress.accepted[pid];
+  /* From the progress as it stands, so a problem ticked elsewhere in the meantime is not offered. */
+  const next = nextProblem(problemRef, progress.done);
   const wide = useMedia("(min-width: 900px)");
 
   const prefs = useWorkspacePrefs();
@@ -143,6 +146,8 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
       tab={consoleTab}
       onTab={setConsoleTab}
       run={session.run}
+      next={next}
+      onNext={actions.openWork}
     />
   );
   const assistant = (

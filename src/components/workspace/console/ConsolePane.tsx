@@ -1,4 +1,5 @@
 import type { Spec } from "../../../data/problems";
+import type { Problem } from "../../../types";
 import type { CaseDraft, RunView } from "../lib/runPlan";
 import StatusDot from "../../ui/StatusDot";
 import Tab from "../../ui/Tab";
@@ -16,9 +17,12 @@ interface ConsolePaneProps {
   tab: "cases" | "result";
   onTab: (t: "cases" | "result") => void;
   run: RunView | null;
+  /** The problem after this one, if the line has another that opens here. */
+  next: Problem | null;
+  onNext: (id: string) => void;
 }
 
-export default function ConsolePane({ spec, cases, onCases, activeCase, onActiveCase, tab, onTab, run }: ConsolePaneProps) {
+export default function ConsolePane({ spec, cases, onCases, activeCase, onActiveCase, tab, onTab, run, next, onNext }: ConsolePaneProps) {
   const running = run !== null && run.outcome === null;
   const resultDot = running ? <StatusDot tone="pulse" aria-label="running" /> : run?.verdict && <StatusDot tone={run.verdict.tone} aria-hidden="true" />;
 
@@ -37,7 +41,7 @@ export default function ConsolePane({ spec, cases, onCases, activeCase, onActive
         {tab === "cases" ? (
           <CaseEditor spec={spec} cases={cases} onCases={onCases} activeCase={activeCase} onActiveCase={onActiveCase} />
         ) : (
-          <Results spec={spec} cases={cases} run={run} />
+          <Results spec={spec} cases={cases} run={run} next={next} onNext={onNext} />
         )}
       </div>
     </section>
