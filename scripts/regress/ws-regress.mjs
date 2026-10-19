@@ -512,8 +512,8 @@ scenario("01-open", "open the workspace from the Line tab", async (s) => {
       { label: "In short", text: "A directed graph with no cycles → every path from node 0 to node n - 1.", next: "The task" });
     await s.expect("one disclosure, closed: the follow-ups (the hint ladder took the Aim for box's place)", () => page.locator("details.ws-hintbox").evaluateAll((els) => els.map((e) => e.querySelector("summary").textContent.trim() + ":" + e.open)),
       ["Follow-ups an interviewer might ask:false"]);
-    await s.expect("the statement's sections are followed by the hint ladder, then the follow-ups", () => page.locator(".ws-problem-body").evaluate((el) => [...el.children].map((c) => c.className)),
-      ["ws-topics", "ws-sec", "ws-sec", "ws-sec", "ws-ladder", "ws-hintbox"]);
+    await s.expect("the one-line task, the statement's sections, then the hint ladder and the follow-ups", () => page.locator(".ws-problem-body").evaluate((el) => [...el.children].map((c) => c.className)),
+      ["ws-topics", "ws-inshort", "ws-sec", "ws-sec", "ws-sec", "ws-ladder", "ws-hintbox"]);
     await s.expect("the ladder is a group named 'Stuck? One hint at a time.' with no hint out, four empty dots and 'Show the technique'", async () => ({
       group: await page.getByRole("group", { name: "Stuck? One hint at a time." }).count(), hints: await hintsOf(page), dots: await dotsOf(page), button: await rungOf(page),
     }), { group: 1, hints: [], dots: { on: [false, false, false, false], label: "0 of 3 hints shown" }, button: "Show the technique" });
