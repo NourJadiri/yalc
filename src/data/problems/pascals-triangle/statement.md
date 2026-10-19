@@ -1,5 +1,8 @@
 # Pascal's Triangle
 
+## In short
+A row count `numRows` → the first `numRows` rows of Pascal's triangle, each row a list of integers.
+
 ## The task
 
 Return the first `numRows` rows of Pascal's triangle, top row first, as a list of lists of integers.

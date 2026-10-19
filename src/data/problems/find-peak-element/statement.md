@@ -1,5 +1,8 @@
 # Find Peak Element
 
+## In short
+A list of integers with no equal neighbours → the index of any peak: an entry bigger than its neighbours.
+
 ## The task
 
 You get an integer array `nums` in which no two neighbouring entries are equal. Index `i` is a **peak** if `nums[i]` is strictly greater than each neighbour it has. Treat the positions just outside the array as minus infinity: the first and last entries only have to beat their one neighbour, and a one-element array is a peak by itself.

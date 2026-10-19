@@ -1,5 +1,8 @@
 # Climbing Stairs
 
+## In short
+A staircase of `n` steps → the number of different ways to climb it, taking 1 or 2 steps at a time.
+
 ## The task
 
 A staircase has `n` steps. You start on the floor at the bottom and want to finish standing on the top step, step `n`. Each move climbs either **1 step** or **2 steps**. Return the number of different sequences of moves that take you from the floor to exactly step `n`.

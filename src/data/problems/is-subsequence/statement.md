@@ -1,5 +1,8 @@
 # Is Subsequence
 
+## In short
+Two strings `s` and `t` → `True` if you can get `s` by deleting letters from `t` without reordering, else `False`.
+
 ## The task
 
 Given two strings `s` and `t`, return `True` if `s` is a **subsequence** of `t`, and `False` otherwise.

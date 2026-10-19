@@ -1,5 +1,8 @@
 # Linked List Cycle
 
+## In short
+The head of a linked list → `True` if following `next` pointers loops back to an earlier node, `False` if it reaches `None`.
+
 ## The task
 
 Given the `head` of a singly linked list, return `True` if following `next` pointers ever brings you back to a node you've already visited, and `False` if the walk ends at `None`.

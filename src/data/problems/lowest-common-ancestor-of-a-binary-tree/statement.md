@@ -1,5 +1,8 @@
 # Lowest Common Ancestor of a Binary Tree
 
+## In short
+A binary tree and two of its nodes → their lowest common ancestor: the deepest node that has both in its subtree.
+
 ## The task
 
 You get the `root` of a binary tree and two different nodes of it, `p` and `q`. Return their lowest common ancestor: the deepest node that has both `p` and `q` in its subtree. A node counts as part of its own subtree, so if `p` sits somewhere below `q`, the answer is `q` itself.

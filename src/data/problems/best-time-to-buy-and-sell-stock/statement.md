@@ -1,5 +1,8 @@
 # Best Time to Buy and Sell Stock
 
+## In short
+A stock's daily prices → the largest profit from buying on one day and selling later, or `0` if no trade makes money.
+
 ## The task
 
 `prices[i]` is the price of a stock on day `i`. You may make one trade: buy a single share on one day and sell it on a **later** day. Return the largest profit (sell price minus buy price) you can make. If no trade makes money, don't trade, and return `0`.

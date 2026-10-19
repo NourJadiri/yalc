@@ -1,5 +1,8 @@
 # Validate Binary Search Tree
 
+## In short
+A binary tree → `True` if every node's left subtree holds only smaller values and its right subtree only larger ones, else `False`.
+
 ## The task
 
 Given the `root` of a binary tree, return `True` if it is a valid binary search tree and `False` otherwise.

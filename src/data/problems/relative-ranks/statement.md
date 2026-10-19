@@ -1,5 +1,8 @@
 # Relative Ranks
 
+## In short
+A list of athletes' scores → their ranks in the same order: medal names for the top three, then place numbers as strings.
+
 ## The task
 
 `score[i]` is the score of the `i`-th athlete in a competition, and no two scores are equal. Athletes are placed by score, highest first: the best score takes 1st place, the next best 2nd place, and so on.

@@ -2,6 +2,9 @@
 
 Stands in for LeetCode 253 (premium) — by most counts the single most Google-tagged premium problem there is. Original statement written for this app — same task, own words and examples.
 
+## In short
+A list of `[start, end]` meetings → the fewest rooms needed, where overlapping meetings can't share a room.
+
 ## The task
 
 A podcast company rents identical recording studios by the half-open slot `[start, end)`. Given the day's bookings as `intervals[i] = [start_i, end_i]`, return the **minimum number of studios** that lets every booking happen as scheduled.

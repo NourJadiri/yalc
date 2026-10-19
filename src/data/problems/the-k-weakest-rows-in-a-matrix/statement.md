@@ -1,5 +1,8 @@
 # The K Weakest Rows in a Matrix
 
+## In short
+A grid of `1`s and `0`s, and a number `k` → the indices of the `k` rows with the fewest `1`s, fewest first.
+
 ## The task
 
 You're given an `m x n` grid `mat` of `1`s (soldiers) and `0`s (civilians). In every row, all the soldiers stand in front of all the civilians: each row is some `1`s followed by some `0`s.

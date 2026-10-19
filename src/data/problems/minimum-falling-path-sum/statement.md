@@ -1,5 +1,8 @@
 # Minimum Falling Path Sum
 
+## In short
+A square grid of integers → the smallest sum of a top-to-bottom path that steps straight down or diagonally down.
+
 ## The task
 
 You're given an `n × n` grid of integers, `matrix`. A **falling path** starts at any cell of the top row and moves down one row at a time until it reaches the bottom row. From cell `(r, c)` it may step to `(r + 1, c - 1)`, `(r + 1, c)` or `(r + 1, c + 1)`, straight down or diagonally, as long as it stays inside the grid. Columns don't wrap around.

@@ -1,5 +1,8 @@
 # Contains Duplicate
 
+## In short
+A list of integers → `True` if any value appears at least twice, `False` if every value is different.
+
 ## The task
 
 You're given a list of integers `nums`. Return `True` if some value shows up **two or more times**, and `False` if all the values are different.

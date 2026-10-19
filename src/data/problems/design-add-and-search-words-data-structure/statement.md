@@ -1,5 +1,8 @@
 # Design Add and Search Words Data Structure
 
+## In short
+A word store → `addWord` saves a word; `search` says whether a stored word matches a query where `.` can be any one letter.
+
 ## The task
 
 Build the word store behind a crossword helper. It collects words, then answers queries in which `.` stands for any one letter. Implement `class WordDictionary`:

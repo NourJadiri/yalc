@@ -1,5 +1,8 @@
 # Search Insert Position
 
+## In short
+A sorted list of distinct integers and a `target` → the index of `target`, or where it would be inserted to stay sorted.
+
 ## The task
 
 You're given a list of integers `nums`, sorted in increasing order with no repeated values, and an integer `target`. If `target` is in `nums`, return its index. If it isn't, return the index where it would have to be inserted to keep the list sorted. That index is the same as the number of values in `nums` smaller than `target`.

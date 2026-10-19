@@ -1,5 +1,8 @@
 # Happy Number
 
+## In short
+A positive integer `n` → `True` if repeatedly replacing it with the sum of the squares of its digits reaches `1`, else `False`.
+
 ## The task
 
 Start with a positive integer `n`, and keep replacing it with the sum of the squares of its digits. If you eventually reach `1`, the number is **happy**: return `True`. If you never reach `1`, because the numbers start repeating in a loop that doesn't include `1`, return `False`.

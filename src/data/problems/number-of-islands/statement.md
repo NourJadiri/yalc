@@ -1,5 +1,8 @@
 # Number of Islands
 
+## In short
+A grid of land `"1"` and water `"0"` → the number of islands: groups of land cells joined up, down, left or right.
+
 ## The task
 
 You're given a map as an `m x n` grid `grid` of one-character strings: `"1"` is land and `"0"` is water. Two land cells belong to the same island when they share an edge — up, down, left or right. Cells that touch only at a corner are **not** connected. Everything outside the grid is water.

@@ -1,5 +1,8 @@
 # Squares of a Sorted Array
 
+## In short
+A sorted list of integers, possibly negative → a new list of their squares, also sorted.
+
 ## The task
 
 You're given a list of integers `nums`, sorted in non-decreasing order. It may contain negative numbers. Return a new list holding the square of every element, also sorted in non-decreasing order.
