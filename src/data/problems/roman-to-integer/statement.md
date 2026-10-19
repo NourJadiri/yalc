@@ -1,5 +1,8 @@
 # Roman to Integer
 
+## In short
+A Roman numeral → its value as an integer.
+
 ## The task
 
 A Roman numeral is built from seven symbols, each worth a fixed amount:

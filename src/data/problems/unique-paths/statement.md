@@ -1,5 +1,8 @@
 # Unique Paths
 
+## In short
+A grid of `m` rows and `n` columns → how many routes lead from top-left to bottom-right, moving only right or down.
+
 ## The task
 
 A robot starts in the top-left cell of a grid with `m` rows and `n` columns and wants to reach the bottom-right cell. Each move takes it one cell **right** or one cell **down** — never left, never up, never off the grid. Return the number of different routes it can take.

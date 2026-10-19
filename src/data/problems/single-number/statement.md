@@ -1,5 +1,8 @@
 # Single Number
 
+## In short
+A list where every value appears exactly twice, except one → the value that appears only once.
+
 ## The task
 
 The values in the list `nums` come in pairs: each appears **exactly twice** — except one value, which has no partner and appears **exactly once**. Return that value. The list is never empty.

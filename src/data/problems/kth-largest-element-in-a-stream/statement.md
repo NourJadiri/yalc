@@ -1,5 +1,8 @@
 # Kth Largest Element in a Stream
 
+## In short
+A growing list of numbers and a fixed `k` → `add` a number and get back the `k`-th largest so far.
+
 ## The task
 
 A game's leaderboard always shows one number: the score you'd have to beat to break into the top `k`. Design `class KthLargest` to keep that number up to date as scores arrive:

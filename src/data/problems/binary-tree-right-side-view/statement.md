@@ -1,5 +1,8 @@
 # Binary Tree Right Side View
 
+## In short
+A binary tree → the value of the rightmost node on each level, from top to bottom.
+
 ## The task
 
 Stand to the right of a binary tree and look at it level by level. On each level you see exactly one node: the rightmost node of that level. Given the `root` of a binary tree, return the values you see, from the top level down.

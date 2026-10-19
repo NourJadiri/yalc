@@ -1,5 +1,8 @@
 # Pacific Atlantic Water Flow
 
+## In short
+A grid of heights → every cell whose rain can flow to both oceans: the Pacific (top, left) and the Atlantic (bottom, right).
+
 ## The task
 
 An island is mapped as an `m x n` grid of integers `heights`, where `heights[r][c]` is the height of the cell in row `r`, column `c`. The Pacific Ocean touches the island's top and left edges; the Atlantic touches its bottom and right edges.

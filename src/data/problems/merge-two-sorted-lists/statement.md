@@ -1,5 +1,8 @@
 # Merge Two Sorted Lists
 
+## In short
+Two sorted linked lists → one sorted linked list containing all their nodes.
+
 ## The task
 
 You get the heads of two singly linked lists, `list1` and `list2`. Each one is already sorted in non-decreasing order, so every value is at least as big as the one before it. Combine them into a single sorted list and return its head.

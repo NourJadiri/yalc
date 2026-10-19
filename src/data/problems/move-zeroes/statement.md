@@ -1,5 +1,8 @@
 # Move Zeroes
 
+## In short
+A list of numbers → the same list, changed in place: every `0` at the end, everything else in its original order.
+
 ## The task
 
 You're given a list of integers `nums`. Move every `0` to the end of the list, and keep all the other values in the order they started in.

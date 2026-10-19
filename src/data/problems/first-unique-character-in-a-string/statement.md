@@ -1,5 +1,8 @@
 # First Unique Character in a String
 
+## In short
+A string → the index of its leftmost letter that appears exactly once, or `-1` if every letter repeats.
+
 ## The task
 
 The string `s` is made of lowercase English letters. Some letters appear just once in it; others repeat. Return the index (counting from 0) of the **leftmost letter that appears exactly once** in the whole string, or `-1` if every letter repeats.

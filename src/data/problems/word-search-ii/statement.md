@@ -1,5 +1,8 @@
 # Word Search II
 
+## In short
+A letter grid and a word list → every listed word that can be traced along adjacent cells, never reusing a cell.
+
 ## The task
 
 You get a grid of letters `board` (`m` rows, `n` columns) and a list of distinct `words`. Return every word from the list that can be traced on the board.

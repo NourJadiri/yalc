@@ -1,5 +1,8 @@
 # Swim in Rising Water
 
+## In short
+A grid of elevations → the lowest water level that lets you swim from the top-left cell to the bottom-right cell.
+
 ## The task
 
 `grid` is an `n x n` map of a valley: `grid[r][c]` is the elevation of cell `(r, c)`, and the `n * n` elevations are all different. Together they are exactly the numbers `0` to `n * n - 1`. Rain falls steadily, and at time `t` the water everywhere stands at height `t`.

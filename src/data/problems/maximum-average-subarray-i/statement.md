@@ -1,5 +1,8 @@
 # Maximum Average Subarray I
 
+## In short
+A list of numbers and a length `k` → the largest average of any `k` consecutive numbers.
+
 ## The task
 
 You're given a list of integers `nums` and an integer `k`. Look at every run of exactly `k` consecutive elements, and return the largest average any of them has.

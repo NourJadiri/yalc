@@ -1,5 +1,8 @@
 # Longest Increasing Subsequence
 
+## In short
+A list of numbers → the length of its longest strictly increasing subsequence (picked in order, gaps allowed).
+
 ## The task
 
 Given an integer array `nums`, return the length of its longest strictly increasing subsequence.

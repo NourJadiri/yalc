@@ -1,5 +1,8 @@
 # Implement Trie (Prefix Tree)
 
+## In short
+A word store → `insert` adds a word, `search` checks for an exact word, `startsWith` checks for any word with a given prefix.
+
 ## The task
 
 Build the index behind an autocomplete box: a trie (prefix tree) over lowercase words. Implement `class Trie`:

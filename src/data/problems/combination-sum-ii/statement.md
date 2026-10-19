@@ -1,5 +1,8 @@
 # Combination Sum II
 
+## In short
+A list of numbers (duplicates possible) and a `target` → every distinct combination that sums to `target`, using each entry at most once.
+
 ## The task
 
 You're given a list of positive integers `candidates`, which may contain repeated values, and a positive integer `target`. Return every distinct combination of candidates that adds up to exactly `target`.

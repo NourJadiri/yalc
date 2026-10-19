@@ -1,5 +1,8 @@
 # Daily Temperatures
 
+## In short
+A list of daily temperatures → for each day, how many days until a warmer one, or `0` if no warmer day comes.
+
 ## The task
 
 `temperatures[i]` is the temperature on day `i`. For every day, work out how many days you'd have to wait for a **strictly warmer** one. Return a list `answer` of the same length, where `answer[i]` is the number of days from day `i` to the first later day that is warmer, or `0` if no later day is.

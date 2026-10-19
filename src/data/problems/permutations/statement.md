@@ -1,5 +1,8 @@
 # Permutations
 
+## In short
+A list of distinct numbers → every possible ordering of them.
+
 ## The task
 
 Given a list `nums` of **distinct** integers, return every permutation of it: every ordering that uses each element exactly once. The permutations can come in any order; inside a permutation, the order is the whole point.

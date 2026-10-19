@@ -2,6 +2,9 @@
 
 Stands in for LeetCode 351 (premium). Original statement written for this app — same task, own words and examples.
 
+## In short
+Two numbers, `m` and `n` → how many valid 3×3 unlock patterns use between `m` and `n` dots, inclusive.
+
 ## The task
 
 A lock screen shows nine dots in a 3×3 grid, numbered:

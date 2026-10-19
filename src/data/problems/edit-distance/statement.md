@@ -1,5 +1,8 @@
 # Edit Distance
 
+## In short
+Two strings, `word1` and `word2` → the fewest single-character inserts, deletes or replacements that turn `word1` into `word2`.
+
 ## The task
 
 You can change a string with three kinds of single-character edit, each costing 1:
