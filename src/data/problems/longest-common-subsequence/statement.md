@@ -1,5 +1,8 @@
 # Longest Common Subsequence
 
+## In short
+Two strings → the length of the longest string you can get from each of them by deleting letters.
+
 ## The task
 
 Given two strings `text1` and `text2`, return the length of the longest string that is a subsequence of both. If they have no letter in common, return `0`.

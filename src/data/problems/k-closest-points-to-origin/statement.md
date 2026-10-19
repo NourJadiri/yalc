@@ -1,5 +1,8 @@
 # K Closest Points to Origin
 
+## In short
+Points on a plane and a number `k` → the `k` points closest to the origin.
+
 ## The task
 
 You're given points on the plane, `points[i] = [x, y]`, and an integer `k`. Return the `k` points closest to the origin `(0, 0)`, by ordinary straight-line distance: the point `[x, y]` is `sqrt(x^2 + y^2)` away.

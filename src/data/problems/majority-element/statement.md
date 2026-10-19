@@ -1,5 +1,8 @@
 # Majority Element
 
+## In short
+A list of numbers → the value that takes up more than half of the list.
+
 ## The task
 
 You're given a list of integers `nums` of length `n`. One value fills **more than half** of the positions — it appears more than `n / 2` times. Return that value.

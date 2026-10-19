@@ -1,5 +1,8 @@
 # Reorganize String
 
+## In short
+A string → its letters rearranged so no two neighbouring letters are equal, or `""` if that's impossible.
+
 ## The task
 
 Rearrange the letters of `s` so that no two neighbouring characters are equal, and return the result. A rearrangement uses every letter of `s` exactly as often as it appears there — nothing added, nothing dropped. If no rearrangement avoids equal neighbours, return the empty string `""`.

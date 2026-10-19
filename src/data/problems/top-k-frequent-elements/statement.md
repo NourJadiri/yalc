@@ -1,5 +1,8 @@
 # Top K Frequent Elements
 
+## In short
+A list of numbers and `k` → the `k` values that appear most often.
+
 ## The task
 
 You get an integer list `nums` and an integer `k`. A value's *frequency* is how many times it appears in `nums`. Return the `k` distinct values with the highest frequencies, in any order.

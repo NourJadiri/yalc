@@ -1,5 +1,8 @@
 # Course Schedule II
 
+## In short
+Courses and their prerequisites → an order to take all the courses, prerequisites first, or `[]` if none exists.
+
 ## The task
 
 There are `numCourses` courses, labelled `0` to `numCourses - 1`, and you take them one at a time. Each pair `[a, b]` in `prerequisites` means course `b` must be finished before course `a` can start.

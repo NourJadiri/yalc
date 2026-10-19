@@ -1,5 +1,8 @@
 # Merge k Sorted Lists
 
+## In short
+`k` sorted linked lists → one sorted linked list with all of their values.
+
 ## The task
 
 You're given `lists`, an array of `k` singly linked lists, each sorted in non-decreasing order. Merge them into one linked list, also in non-decreasing order, and return its head. Relinking the existing nodes is fine (it's what a good answer does), and so is building new ones.

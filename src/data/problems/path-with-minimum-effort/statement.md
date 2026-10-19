@@ -1,5 +1,8 @@
 # Path With Minimum Effort
 
+## In short
+A grid of heights → the least effort from top-left to bottom-right, where effort is your biggest single climb or drop.
+
 ## The task
 
 You're planning a hike across a terrain map. `heights` is a `rows x cols` grid where `heights[r][c]` is the altitude of cell `(r, c)`. You start at the top-left cell `(0, 0)` and must reach the bottom-right cell `(rows - 1, cols - 1)`, moving one cell at a time up, down, left or right. No diagonal moves, and no stepping off the map. You may revisit cells.

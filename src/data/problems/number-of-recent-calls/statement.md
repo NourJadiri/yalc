@@ -1,5 +1,8 @@
 # Number of Recent Calls
 
+## In short
+A request counter → `ping(t)` records a request at time `t` and returns how many requests arrived in the last 3000 ms.
+
 ## The task
 
 A server wants to know how busy it has been lately. Implement `class RecentCounter`:

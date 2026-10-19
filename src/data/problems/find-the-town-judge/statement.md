@@ -1,5 +1,8 @@
 # Find the Town Judge
 
+## In short
+Who trusts whom among `n` people → the one who trusts nobody but is trusted by everyone else, or `-1` if nobody fits.
+
 ## The task
 
 A town has `n` residents, labelled `1` to `n`, and rumour says one of them is secretly the town judge. A resident is the judge exactly when both of these hold:

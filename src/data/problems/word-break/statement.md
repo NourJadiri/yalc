@@ -1,5 +1,8 @@
 # Word Break
 
+## In short
+A string and a list of words → whether the string can be cut into words from that list, reusing words freely.
+
 ## The task
 
 You're given a string `s` and a list of distinct words `wordDict`. Decide whether `s` can be cut into a sequence of one or more pieces, each of which is a word in `wordDict`. Return `True` if it can and `False` if it can't.

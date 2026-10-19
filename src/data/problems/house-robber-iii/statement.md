@@ -1,5 +1,8 @@
 # House Robber III
 
+## In short
+A binary tree of numbers → the largest total of node values you can pick, never both a node and its parent.
+
 ## The task
 
 House Robber, moved from a street to a tree. Every node of a binary tree is a house holding `Node.val` in cash. You may rob any set of houses, as long as no two of them are directly linked: never a node together with its parent or with one of its children. A grandparent and its grandchild are fine. Given the `root`, return the largest total you can take.

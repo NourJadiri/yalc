@@ -1,5 +1,8 @@
 # Subsets
 
+## In short
+A list of distinct numbers → every possible subset of it, including the empty one and the whole list.
+
 ## The task
 
 Given a list `nums` of **distinct** integers, return all of its subsets: every way of picking zero or more of its elements, from none of them up to all of them. Each subset must appear exactly once. Return the subsets in any order, with the numbers inside each subset in any order too.

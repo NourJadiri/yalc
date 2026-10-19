@@ -1,5 +1,8 @@
 # 3Sum
 
+## In short
+A list of integers → every distinct triple of its numbers that adds up to `0`.
+
 ## The task
 
 Given an integer list `nums`, return every **distinct** triple of values `[a, b, c]` that sums to zero, where the three values come from three different positions of `nums`.

@@ -1,5 +1,8 @@
 # Shortest Path in Binary Matrix
 
+## In short
+An open/blocked grid → the fewest cells on an open path from top-left to bottom-right, diagonals allowed, or `-1` if none.
+
 ## The task
 
 `grid` is an `n x n` matrix of `0`s (open cells) and `1`s (blocked cells). A clear path runs from the top-left cell `[0, 0]` to the bottom-right cell `[n - 1, n - 1]` through open cells only. Each step moves to one of the up to eight surrounding cells, meaning any cell that shares an edge or a corner with the current one.

@@ -1,5 +1,8 @@
 # Coin Change II
 
+## In short
+Coin values, with unlimited coins of each, and an `amount` → how many different combinations of coins add up to it.
+
 ## The task
 
 A till holds an unlimited supply of coins of every denomination in `coins` (the values are distinct). Return how many different **combinations** of coins add up to exactly `amount`.

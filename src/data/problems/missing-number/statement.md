@@ -1,5 +1,8 @@
 # Missing Number
 
+## In short
+A list of `n` different numbers from `0` to `n` → the one number in that range that's missing.
+
 ## The task
 
 The list `nums` holds `n` **different** integers, all between `0` and `n` inclusive. That range has `n + 1` numbers in it, so exactly one of them is absent from the list. Return the absent number.

@@ -2,6 +2,9 @@
 
 An object-oriented design drill, written for this app. There is no LeetCode page for it.
 
+## In short
+A spreadsheet of numbers and sum formulas → `set` fills a cell (`false` if circular) and `get` returns its up-to-date value.
+
 ## The task
 
 Build the core of a spreadsheet. Cells are named by one capital letter and a row number, like `A1` or `Z1000`. Every cell starts empty, and an empty cell reads as `0`. Implement `class Spreadsheet`:

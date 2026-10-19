@@ -1,5 +1,8 @@
 # Binary Tree Maximum Path Sum
 
+## In short
+A binary tree of numbers → the largest sum along any path, which can start and end at any node.
+
 ## The task
 
 A path in a binary tree is a sequence of nodes in which each consecutive pair is joined by a parent-child edge and no node appears twice. It can start and end at any nodes, it doesn't have to pass through the root, and a single node is a path too. Read end to end, a path climbs to its highest node and then comes back down, never branching. Its sum is the total of its nodes' values.
