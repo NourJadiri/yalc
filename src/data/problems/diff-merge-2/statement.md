@@ -7,7 +7,7 @@ A line diff tool → add `unified(a, b, context)`, which groups the changes into
 
 ## The task
 
-**Step 2 of 3.** You're building the diff and merge commands of a small version-control tool. So far, `DiffTool` computes a line diff between two versions of a file. A file is a list of lines (strings without newline characters, possibly empty), and two lines match only if they are exactly the same string. The methods so far:
+**Step 2 of 3.** You're building the diff and merge commands of a small version-control tool. So far, `DiffTool` computes a line diff between two versions of a file. A file is a list of lines, and may have none. A line is a string without newline characters, and may be empty. Two lines match only if they are exactly the same string. The methods so far:
 
 - `DiffTool()`: creates the tool. It keeps no state, so every call stands on its own.
 - `diff(a, b)`: returns the diff from file `a`, the old version, to file `b`, the new one.
@@ -20,7 +20,7 @@ A line diff tool → add `unified(a, b, context)`, which groups the changes into
 
 **New in this step.** `unified(a, b, context)` shows only the parts of `diff(a, b)` around its changes, the way code review tools do. A change is a `-` or `+` entry.
 
-- Changes are grouped into hunks. Two changes go into the same hunk when at most `2 * context` kept entries lie between them. With `context = 0`, that means nothing at all between them.
+- Changes are grouped into hunks, from the top. A change joins the hunk of the change before it when at most `2 * context` kept entries lie between the two; otherwise it starts a new hunk. With `context = 0`, only changes with nothing at all between them share a hunk.
 - A hunk holds the entries from its first change to its last, plus up to `context` kept entries right before its first change and up to `context` right after its last. It has fewer when the diff starts or ends sooner.
 - Each hunk opens with a header `"@@ -s1,n1 +s2,n2 @@"`. `n1` counts the hunk's entries that are lines of `a` (kept and `-`), and `n2` those that are lines of `b` (kept and `+`). `s1` is the line number in `a`, counting from 1, of the hunk's first line of `a`. When the hunk has no lines of `a` (`n1` is 0), `s1` is instead the number of the last line of `a` before the hunk, or 0 if there is none. `s2` is the same for `b`.
 
@@ -60,7 +60,7 @@ args = [[],[["intro","body"],["body","outro"],0]]
                                                     -> [null,["@@ -1,1 +0,0 @@","-intro","@@ -2,0 +2,1 @@","+outro"]]
 ```
 
-The diff is `-intro`, ` body`, `+outro`. With no context, the kept line splits it into two hunks. The first has no lines of `b`, and no line of `b` comes before it, so `s2` is 0. The second has no lines of `a`; the last line of `a` before it is line 2, `body`.
+The diff deletes `intro`, keeps `body` and adds `outro`. With no context, the kept line splits the changes into two hunks. The first has no lines of `b`, and no line of `b` comes before it, so `s2` is 0. The second has no lines of `a`; the last line of `a` before it is line 2, `body`.
 
 ## Constraints
 

@@ -7,7 +7,7 @@ A line diff tool → `diff(a, b)` marks every line as kept, deleted or added, in
 
 ## The task
 
-**Step 1 of 3.** You're building the diff and merge commands of a small version-control tool, one step at a time. This step is the diff. A file is a list of lines: strings without newline characters, possibly empty. Two lines match only if they are exactly the same string. Implement `class DiffTool`:
+**Step 1 of 3.** You're building the diff and merge commands of a small version-control tool, one step at a time. This step is the diff. A file is a list of lines, and may have none. A line is a string without newline characters, and may be empty. Two lines match only if they are exactly the same string. Implement `class DiffTool`:
 
 - `DiffTool()`: creates the tool. It keeps no state, so every call stands on its own.
 - `diff(a, b)`: returns the diff from file `a`, the old version, to file `b`, the new one.
@@ -72,7 +72,7 @@ The files start differently but both end with `ok`, so rule 1 keeps the last `ok
 
 ## Follow-ups
 
-- The table takes `O(p·q)` memory. How would you find the same diff in linear space?
+- The table takes `O(p·q)` memory. How would you find a shortest diff in linear space, and could you keep these exact tie-breaking rules?
 - Real tools use Myers' algorithm, which runs in `O((p + q)·d)` time for a diff with `d` changes. Why is that fast for everyday edits?
 - A moved block shows up as a delete and an add. How would you detect moves?
 - Next step: group the diff into unified hunks, with line numbers and a few lines of context.
