@@ -27,7 +27,7 @@ A dropped packet changes nothing.
 **New in this step**
 
 - A kept packet waits in a buffer until it is played.
-- Playback starts at seq 0 and moves up one seq at a time. `play(t)` returns the data of the buffered packets from the next seq to play onward, in seq order, and stops at the first seq that isn't in the buffer. Those packets leave the buffer and playback moves past them, so the next call carries on from there. If the next seq to play hasn't arrived, `play` returns an empty list, even when later packets are waiting.
+- Playback starts at seq 0 and moves up one seq at a time. `play(t)` returns the data of the buffered packets from the next seq to play onward, in seq order, and stops at the first seq that isn't in the buffer. Those packets leave the buffer and playback moves past them, so the next call carries on from there. If the next seq to play isn't in the buffer, `play` returns an empty list, even when later packets are waiting.
 - `receive` also drops a packet whose `seq` is lower than the next seq to play: it was already played. Rules 3 and 4 already drop every such packet, so this changes no answer from step 1. It does mean a played packet never comes back.
 - A packet that is lost, or that arrives too late to be kept (rule 3), stalls playback for good: everything after it waits in the buffer forever. The next step deals with that.
 

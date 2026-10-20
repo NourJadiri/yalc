@@ -25,7 +25,7 @@ Each packet carries a sequence number `seq` (the sender numbers its packets 0, 1
 
 A dropped packet changes nothing.
 
-**Playing (as before).** A kept packet waits in a buffer until it is played. Playback starts at seq 0 and moves up one seq at a time. `play(t)` goes through the buffered packets from the next seq to play onward, in seq order: each one leaves the buffer and its data goes into the returned list. `receive` also drops any packet whose `seq` is lower than the next seq to play.
+**Playing (as before).** A kept packet waits in a buffer until it is played. Playback starts at seq 0 and moves up one seq at a time. `play(t)` returns the data of the buffered packets from the next seq to play onward, in seq order, up to the first seq that isn't in the buffer. Those packets leave the buffer and playback moves past them. `receive` also drops any packet whose `seq` is lower than the next seq to play.
 
 **New in this step**
 

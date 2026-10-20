@@ -37,5 +37,5 @@ Space: `O(window)` for the ring, plus the buffer, which holds every kept packet 
 ## Pitfalls
 
 - Playing past a gap: returning every buffered packet in seq order skips audio that is only late. When the late packet arrives, it counts as played and is lost for good.
-- Sorting or scanning the buffer in every `play`. It gives the right answers, but costs `O(buffered)` per call. With seq 0 late and 60,000 packets waiting, that's billions of steps.
+- Sorting or scanning the buffer in every `play`. It gives the right answers, but costs `O(buffered)` per call. With seq 0 late and 40,000 packets waiting, that's close to a billion steps.
 - Starting playback at the first packet's seq. Playback starts at seq 0, whatever arrives first: an early seq 5 waits for seqs 0 to 4.

@@ -18,11 +18,11 @@ Only seqs inside the window can be judged, so give each a slot at `seq % window`
 
 Pattern: a **sliding window** over sequence numbers, stored in a **circular buffer**.
 
-The window is the `window` seqs that end at `top`: `top - window + 1` to `top`. A seq above it is new by definition, since nothing that high has been kept. A seq below it can't be checked, because the receiver has stopped remembering that far back. Dropping it is the safe choice: playing old audio twice is worse than losing it. So only the seqs inside the window need any memory.
+The window is the `window` seqs that end at `top`: `top - window + 1` to `top`. A seq above it is new by definition, since nothing that high has been kept. A seq below it can't be checked, because the receiver has stopped remembering that far back. Dropping it is the safe choice: it might be a repeat, and by now it is late anyway. So only the seqs inside the window need any memory.
 
 Those are `window` consecutive numbers, so `seq % window` gives each one its own slot: a ring. The question is what a slot holds.
 
-A yes/no flag ("was this seq kept?") needs care. When the window slides forward, the slots it moves onto still carry the flags of seqs it left behind, and they must be cleared first. Clearing one slot per seq the window moves costs `O(jump)`, and a jump can be `10^9`.
+A yes/no flag ("was this seq kept?") needs care. When the window slides forward, the slots it moves onto still carry the flags of seqs it left behind, and they must be cleared first: one slot per seq the window moves, up to a whole lap of `window` slots when `top` jumps far. That's `O(window)` work on a single packet.
 
 Storing the seq itself removes the clearing. Slot `seq % window` holds the last seq kept there. For a seq inside the window, the slot holds that exact seq only if it was kept. Any other seq that shares the slot differs from it by a multiple of `window`, so it's either below the window or above `top`, and nothing above `top` has been kept. Leftovers never match, so they never need erasing.
 
