@@ -20,6 +20,8 @@ A key-value store with nested transactions → add `crash()` and `recover()`: af
 
 A change is a `set`, or a `delete` that returns `true`. Reads see every change made so far, committed or not. Committing a nested transaction hands its changes to the enclosing one, which can still roll them back. Committing the outermost transaction makes its changes permanent.
 
+Costs so far: `set`, `get`, `delete`, `count` and `begin` run in `O(1)`, `commit` in amortized `O(1)`, and `rollback` in time proportional to the number of changes it undoes.
+
 **New in this step**: the store survives crashes.
 
 - `crash()`: a simulated power cut. Everything the store holds in memory is lost: the data, the counts and every open transaction. Only what the store has made durable survives, as if it had been written to a file on disk.
@@ -29,7 +31,7 @@ The rules:
 
 - A change made while no transaction is open is durable as soon as the call returns.
 - A change made inside a transaction becomes durable only when the outermost transaction commits. Then every change that transaction keeps becomes durable at once. Committing a nested transaction is not enough: its parent can still roll back.
-- After `recover()`, the store holds exactly the committed state at the moment of the crash, no transaction is open, and `count` is right for every value.
+- After `recover()`, the store holds exactly its committed state at the moment of the crash: every durable change, and nothing else. No transaction is open, and `count` is right for every value.
 - After `crash()`, the next call is always `recover()`, and `recover()` is never called at any other time.
 - How you keep durable data is up to you; a list you only ever append to is a fine stand-in for a file. But play it straight: after `crash()`, the object keeps nothing except its durable data, and `recover()` rebuilds everything else from it.
 - Writes stay cheap: making a change durable must not cost time proportional to the size of the store. Committing the outermost transaction may take time proportional to its changes, and `recover()` time proportional to everything made durable so far.

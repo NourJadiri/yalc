@@ -12,13 +12,13 @@ Record each change's previous value in one shared log; a transaction is just the
 5. Before a change inside a transaction, append the key and its current value (`None` if absent) to the log.
 
 ## Cost
-`O(1)` time per call, but `rollback` is `O(k)` for `k` changes undone · `O(k)` extra space
+`O(1)` amortized time per call, `rollback` `O(k)` for `k` changes undone · `O(k)` extra space
 
 ## Approach
 
 Pattern: an **undo log** (a stack of inverse changes) plus a **stack of bookmarks** into it.
 
-The tempting design copies the whole store at `begin` and puts the copy back on `rollback`. It's correct, but every transaction costs `O(n)`. With 50,000 keys and 14,000 short transactions, that's hundreds of millions of copied entries.
+The tempting design copies the whole store at `begin` and puts the copy back on `rollback`. It's correct, but every transaction costs `O(n)`. With 50,000 keys and over 14,000 short transactions, that's hundreds of millions of copied entries.
 
 Remember only what changes instead. Before a `set` or `delete` made while a transaction is open, append `(key, value before)` to the undo log, where the value before is `None` if the key was absent. Undoing that change later is a single `_write(key, value_before)`, and `_write` already moves the key between counts, so `count` stays right with no extra work.
 
@@ -32,7 +32,7 @@ Why it's correct: the log always holds, in order, every change made since the ou
 
 ## Complexity
 
-`begin` and `commit` are `O(1)`. `rollback` is `O(k)` for the `k` changes it undoes; each change is logged once and undone at most once, so that's `O(1)` amortized per change. The step 1 methods stay `O(1)`, plus one append to the log while a transaction is open.
+`begin` is `O(1)`, and so is `commit`, apart from clearing the log when the outermost transaction closes, a cost each logged change pays once. `rollback` is `O(k)` for the `k` changes it undoes; each change is logged once and undone at most once, so that's `O(1)` amortized per change. The step 1 methods stay `O(1)`, plus one append to the log while a transaction is open.
 
 Space: one log entry per change made since the outermost `begin`.
 

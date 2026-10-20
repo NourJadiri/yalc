@@ -2,7 +2,7 @@
 Write-ahead log
 
 ## Key idea
-Only committed changes reach the durable log: changes outside transactions at once, a transaction's in one batch when the outermost commits; recovery replays the log.
+Only committed changes reach the durable log: a change outside transactions at once, a transaction's changes in one batch at its outermost commit; recovery replays the log.
 
 ## Steps
 1. Keep a durable log of `(key, value)` records, `None` meaning deleted; it is the one field `crash` spares.

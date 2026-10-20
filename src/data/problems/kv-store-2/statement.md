@@ -28,7 +28,7 @@ The rules:
 - Committing a nested transaction doesn't make its changes final. They now belong to the enclosing transaction: if that one rolls back, they are undone too.
 - Committing the outermost transaction makes its changes permanent. Once no transaction is open, nothing can be undone.
 - After a rollback, the data and every count are exactly what they were when that transaction began.
-- `begin` and `commit` must run in `O(1)`, and `rollback` in time proportional to the number of changes it undoes. The step 1 methods stay `O(1)`.
+- `begin` and `commit` must run in `O(1)` amortized time, and `rollback` in time proportional to the number of changes it undoes. The other methods stay `O(1)`.
 
 The tests drive the class LeetCode-style: a list of operation names and a matching list of argument lists, with the constructor first. The expected output holds one entry per operation: `null` for the constructor, `set` and `begin`, a number or `null` for `get`, a number for `count`, and `true` or `false` for `delete`, `rollback` and `commit`.
 
@@ -75,7 +75,7 @@ Committing the only open transaction makes both changes permanent. The `rollback
 
 ## Aim for
 
-One undo log shared by all open transactions, plus a stack of bookmarks. Before each change made while a transaction is open, append the key and what it held before ("absent" if nothing). `begin` pushes the log's length. `rollback` pops entries back to that bookmark, newest first, restoring each value through the same write path that keeps the counts. `commit` pops only the bookmark: its entries now lie inside the parent's range, so the parent's rollback still reaches them. Clear the log when the outermost transaction closes. That makes `begin` and `commit` `O(1)` and `rollback` `O(changes undone)`. Copying the store at every `begin` costs `O(n)` per transaction and is too slow.
+One undo log shared by all open transactions, plus a stack of bookmarks. Before each change made while a transaction is open, append the key and what it held before ("absent" if nothing). `begin` pushes the log's length. `rollback` pops entries back to that bookmark, newest first, restoring each value through the same write path that keeps the counts. `commit` pops only the bookmark: its entries now lie inside the parent's range, so the parent's rollback still reaches them. Clear the log when the outermost transaction closes. That makes `begin` and `commit` amortized `O(1)` and `rollback` `O(changes undone)`. Copying the store at every `begin` costs `O(n)` per transaction and is too slow.
 
 ## Follow-ups
 
