@@ -67,11 +67,12 @@ args = [[],["HERB","Basil",2500],["HERB","Basil Pot",199],["HERB",1],["HERB",3],
 - `sku` is 1 to 8 letters and digits. `name` is 1 to 20 letters and spaces.
 - `1 <= price <= 10^5` and `1 <= price_per_kg <= 10^5`
 - `1 <= qty <= 10^4`: units for a unit product, grams for a weighed one.
-- At most `10^5` calls in total.
+- At most `500` calls to `scan` and at most `500` calls to `total`.
+- At most `5000` calls in total.
 
 ## Aim for
 
-Still `O(1)` per call. Price each line once, when it's scanned, and round it there. A running total of the line prices then keeps `total()` at `O(1)`. Round with integers only: `(price_per_kg * grams + 500) // 1000` is the nearest cent with halves going up. Python's `round()` sends an exact half to the even neighbour (448.5 becomes 448), and floating-point division can land a hair below the half. A weighed product is a product that prices its lines differently, which makes it a natural subclass.
+A weighed product is a product that prices its lines differently, which makes it a natural subclass: `WeighedProduct` overrides `line_price`. Nothing else has to change. A line asks its product for its price, so a `total()` that adds up the lines, `O(lines)`, works as it is, and each weighed line is rounded on its own. Round with integers only: `(price_per_kg * grams + 500) // 1000` is the nearest cent with halves going up. Python's `round()` sends an exact half to the even neighbour (448.5 becomes 448), and floating-point division can land a hair below the half.
 
 ## Follow-ups
 

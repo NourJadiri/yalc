@@ -82,15 +82,18 @@ The third coupon would take off more than its threshold, so it's refused. At a s
 - `1 <= qty <= 10^4`: units for a unit product, grams for a weighed one.
 - `add_multibuy`: `0 <= n <= 100` and `1 <= price <= 10^7`.
 - `add_percent_off`: `0 <= percent <= 200`.
-- `add_spend_discount`: `0 <= threshold <= 10^9` and `0 <= amount <= 10^9`. At most 20 calls.
-- At most `10^5` calls in total.
+- `add_spend_discount`: `0 <= threshold <= 10^9` and `0 <= amount <= 10^9`.
+- At most `500` calls to `scan` and at most `500` calls to `total`.
+- At most `50` calls to `add_multibuy` and `add_percent_off` together, and at most `20` calls to `add_spend_discount`.
+- At most `5000` calls in total.
 
 ## Aim for
 
-`O(1)` per `scan`, and `total` in `O(spend discounts)`. Keep a tally per sku in the basket: its lines, plus the sums its promotion needs (the units for a multibuy, the lines' rounded savings for a percent off). Keep a running subtotal. A scan or a new promotion changes the cost of one sku only, so move the subtotal by that sku's change in cost. A promotion that arrives after its sku was scanned re-prices that sku's lines once. Re-pricing the whole basket on every `total()` is `O(lines)`, and the large tests ask for the total after every scan.
+Promotions as small strategy classes. A `Multibuy` and a `PercentOff` each know their product and work out their saving from that sku's lines: the multibuy from the units on them, the percent off line by line. `total()` groups the basket's lines by sku, takes every line's price, subtracts what each promotion saves on its own sku's lines, then subtracts the largest spend discount the subtotal qualifies for. Everything is worked out when it's asked for, so a promotion added after the scans just works. That's `O(lines + spend discounts)` per `total`. Applying a multibuy line by line is the classic bug: two single scans of milk never form "2 for 2.00".
 
 ## Follow-ups
 
+- The till shows the total after every scan, and promotions can arrive at any time. How would you make `total()` `O(1)`? Notice that each call changes the cost of one sku only.
 - Let a sku have several promotions and charge the customer the cheapest result. What changes in how a sku's cost is worked out?
 - "Buy 2, get 1 free" is a multibuy in disguise. Which other common deals fit your promotion classes, and which don't?
 - Next step: voiding a scanned line, and printing the receipt.

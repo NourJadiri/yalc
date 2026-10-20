@@ -5,8 +5,7 @@
 class Checkout:
     def __init__(self):
         self.products = {}                      # sku -> (weighed?, price)
-        self.lines = []
-        self.running = 0
+        self.lines = []                         # (sku, qty) per scan
 
     def add_product(self, sku, name, price):
         if sku in self.products:
@@ -23,11 +22,12 @@ class Checkout:
     def scan(self, sku, qty=1):
         if sku not in self.products:
             return False
-        weighed, price = self.products[sku]
-        cost = round(price * qty / 1000) if weighed else price * qty
-        self.lines.append((sku, qty, cost))
-        self.running += cost
+        self.lines.append((sku, qty))
         return True
 
     def total(self):
-        return self.running
+        cents = 0
+        for sku, qty in self.lines:
+            weighed, price = self.products[sku]
+            cents += round(price * qty / 1000) if weighed else price * qty
+        return cents

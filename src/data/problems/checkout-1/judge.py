@@ -1,5 +1,5 @@
-# Most tests carry their expected outputs. The large ones would need tens of
-# thousands, so they carry null and are checked against this plain model of
+# Most tests carry their expected outputs. The large ones would need more than
+# a thousand each, so they carry null and are checked against this plain model of
 # the checkout instead: a dict of unit prices and a running total.
 
 

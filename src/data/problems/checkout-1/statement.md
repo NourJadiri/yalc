@@ -61,14 +61,16 @@ An empty basket costs 0. `JAM` can't be scanned before it's in the catalog. Once
 - `sku` is 1 to 8 letters and digits. `name` is 1 to 20 letters and spaces.
 - `1 <= price <= 10^5`
 - `1 <= qty <= 10^4`
-- At most `10^5` calls in total.
+- At most `500` calls to `scan` and at most `500` calls to `total`.
+- At most `5000` calls in total.
 
 ## Aim for
 
-`O(1)` per call. Keep the catalog in a hash map from sku to product, and the basket as a list of lines, one per scan. Next to the lines, keep a running total that each scan adds its line's price to, so `total()` never re-adds the basket. Summing the lines inside `total()` is correct but costs `O(lines)` per call, and the large tests ask for the total after nearly every scan.
+Plain objects that mirror the till. A `Product` holds its sku, name and unit price. A `Line` is one scan: a product and a quantity, priced by asking the product. `Checkout` holds the catalog, a hash map from sku to product, and the basket, a list of lines. `add_product` and `scan` are `O(1)`. `total()` adds up the price of every line each time it's called, `O(lines)`: one source of truth, nothing to keep in sync, and quick for a basket of a few hundred lines. Check `sku in catalog` before you write, because a plain dict assignment would quietly overwrite the first price.
 
 ## Follow-ups
 
+- The till shows the total after every scan. How would you make `total()` `O(1)`, and what would every change to the basket then have to keep up to date?
 - Should a line store its price, or look it up from the product when asked? What changes if prices can change during the day?
 - Two tills share one catalog. Which state is shared, and which belongs to each till?
 - Next step: produce sold by weight, priced per kilogram and scanned in grams.

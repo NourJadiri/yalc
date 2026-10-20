@@ -20,16 +20,18 @@ class Line:
     def __init__(self, product, qty):
         self.product = product
         self.qty = qty
-        self.price = product.line_price(qty)    # fixed when the line is scanned
+
+    def price(self):
+        # 2. The product prices its own line, so each weighed line is rounded on its own
+        return self.product.line_price(self.qty)
 
 
 class Checkout:
 
     def __init__(self):
-        # The catalog, the basket's lines, and a running total of their prices
+        # The catalog, keyed by sku, and the basket: one line per scan, in scan order
         self.products = {}                      # sku -> Product (or WeighedProduct)
-        self.lines = []                         # the basket: one Line per scan, in scan order
-        self.running = 0                        # sum of the lines' prices, kept up to date
+        self.lines = []
 
     def add_product(self, sku: str, name: str, price: int) -> bool:
         # A sku that's taken is refused, never overwritten
@@ -39,23 +41,20 @@ class Checkout:
         return True
 
     def add_weighed(self, sku: str, name: str, price_per_kg: int) -> bool:
-        # 2. Same rule for weighed products: one sku, one product, whatever its kind
+        # 3. Same rule for weighed products: one sku, one product, whatever its kind
         if sku in self.products:
             return False
         self.products[sku] = WeighedProduct(sku, name, price_per_kg)
         return True
 
     def scan(self, sku: str, qty: int = 1) -> bool:
-        # Each scan appends its own line and adds its price to the running total
+        # Each successful scan appends its own line
         product = self.products.get(sku)
         if product is None:
             return False                        # unknown sku: the basket is untouched
-        # 3. The product prices the line, so a weighed line is rounded on its own, right here
-        line = Line(product, qty)
-        self.lines.append(line)
-        self.running += line.price
+        self.lines.append(Line(product, qty))
         return True
 
     def total(self) -> int:
-        # total reads the running sum: the work already happened in scan
-        return self.running
+        # Work the total out from the lines whenever it's asked for
+        return sum(line.price() for line in self.lines)

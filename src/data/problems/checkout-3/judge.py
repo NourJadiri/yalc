@@ -1,5 +1,5 @@
-# Most tests carry their expected outputs. The large ones would need tens of
-# thousands, so they carry null and are checked against this plain model of
+# Most tests carry their expected outputs. The large ones would need more than
+# a thousand each, so they carry null and are checked against this plain model of
 # the checkout instead. It keeps, per sku, the few sums a promotion needs, and
 # a running subtotal, so it stays linear however long the test is.
 

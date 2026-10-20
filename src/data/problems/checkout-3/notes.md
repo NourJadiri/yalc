@@ -1,22 +1,22 @@
 ## Pattern
-Per-key aggregates with delta updates
+Strategy pattern for promotions
 
 ## Key idea
-A scan or a new promotion changes one sku's cost only, so make that cost cheap to recompute from a few sums and move the running subtotal by its change.
+Each promotion is an object that prices its own sku's lines, so the checkout just groups lines by sku, asks each promotion for its saving, and recomputes everything when asked.
 
 ## Steps
-1. Give each promotion a `saving(tally)` that runs in `O(1)`: a multibuy reads the sku's unit count, a percent off its lines' summed savings.
-2. Keep a `Tally` per sku in the basket: its lines, their units, their prices and their savings under the sku's promotion.
-3. In `scan`, note the sku's cost, add the line to its tally, and move the running subtotal by the change in cost.
+1. Make each promotion a class that knows its product and works out its saving from that sku's lines: units for a multibuy, line by line for a percent off.
+2. Group the basket's lines by sku, in the order the skus first appear.
+3. Make the subtotal every line's price minus, for each promoted sku, what its promotion saves on that sku's lines.
 4. In `total`, subtract the largest amount among the spend discounts whose threshold the subtotal reaches.
-5. In the new `add_` methods, refuse anything invalid first; a new item promotion re-prices its sku's lines and moves the subtotal by the change.
+5. In the new `add_` methods, refuse anything invalid before changing anything; otherwise store the promotion under its sku, or keep the coupon.
 
 ## Cost
-`O(1)` time per scan, `O(coupons)` per total · `O(products + lines)` space
+`O(lines + coupons)` time per total, `O(1)` per other call · `O(products + lines)` space
 
 ## Approach
 
-Pattern: **aggregates per key** (here, per sku) kept up to date with **delta updates**.
+Pattern: the **strategy pattern**. Each kind of promotion is a small class, and all of them answer the same question: what do you save on these lines?
 
 Look at what each rule needs to know:
 
@@ -24,32 +24,26 @@ Look at what each rule needs to know:
 - A percent off needs each line's own price, because each line's saving is rounded on its own. Two lines of 125 at 10% save 13 + 13 = 26, while 250 at once would save 25.
 - A spend discount needs the subtotal of the whole basket.
 
-So the basket gets a `Tally` per sku: the sku's lines, the units summed, the line prices summed (`gross`), and the lines' savings summed (`line_savings`). Each promotion is a small class with `line_saving(line)` and `saving(tally)`:
+So every promotion gets the same method, `saving(lines)`, and is handed the lines of its own sku:
 
-- `Multibuy`: `line_saving` is 0, and `saving` is `units // n * (n * unit_price - price)`, one saving per complete group.
-- `PercentOff`: `line_saving` is `(line.price * percent + 50) // 100`, the same halves-up trick as in step 2, and `saving` is the tally's `line_savings`.
+- `Multibuy.saving`: count the units on the lines, then `groups * (n * unit_price - price)`, one saving per complete group.
+- `PercentOff.saving`: `(line.price() * percent + 50) // 100` for each line, added up. It's the halves-up trick from step 2.
 
-A sku's cost is `gross - promotion.saving(tally)`, or just `gross` without a promotion. That's `O(1)`.
+The checkout keeps the promotions in a dict by sku, which also makes "at most one item promotion per sku" a single membership test. `_groups()` sorts the basket's lines into a dict from sku to lines. A dict remembers insertion order, so the skus come out in the order they first appear in the basket. `_subtotal()` is every line's price minus each promoted sku's saving on its group. `total()` then takes off the largest qualifying spend discount, with a plain loop over at most 20 coupons.
 
-The running total from the earlier steps becomes a running subtotal: the sum of every tally's cost. Every change touches one sku, so every change follows one pattern. Note the sku's cost, make the change, and add the difference to the subtotal.
-
-- `scan`: the change is `tally.add(line)`. If the sku already has a percent off, the new line's saving goes into `line_savings` right away.
-- A new item promotion: the change is attaching it. Lines scanned before it arrived haven't been priced under it yet, so `reprice` sums their savings once. A sku gets at most one item promotion, so that costs `O(lines)` once per sku at most.
-
-`total` picks the spend discount every time it's called. The subtotal can go down as well as up, because a late promotion lowers it, so a coupon that applied a moment ago may not apply now. There are at most 20 coupons, so a plain scan for the largest qualifying amount is fine.
+Nothing is stored that could go stale. A promotion added after the scans counts at the next `total()`. A promotion that pushes the subtotal below a coupon's threshold switches that coupon off, so the total can go up.
 
 The validation in `add_multibuy` and `add_percent_off` runs before anything is touched. A refused call returns `False` and the checkout is exactly as it was.
 
 ## Complexity
 
-`scan` is `O(1)`: a few additions and two `cost()` calls. `total` is `O(coupons)`, at most 20. Attaching an item promotion costs `O(lines of that sku)` once. Space is `O(products + lines)`.
+`total` is `O(lines + coupons)`: one pass prices the lines, one groups them, and each promotion looks at its own group only. `scan` and the `add_` methods are `O(1)`. Space is `O(products + lines)`.
 
-Re-pricing the whole basket inside `total()` is `O(lines)` per call. Re-pricing a sku from its lines on every scan is `O(lines of that sku)` per scan, which turns quadratic when one sku is scanned thousands of times. The large tests do both.
+The limits (500 lines, 500 calls to `total`, 50 promotions, 20 coupons) keep any plain version quick, even one where each promotion filters the whole basket for its own lines, `O(lines * promotions)` per call. The large tests are scale and correctness checks. Only work that is quadratic in the basket on every call runs out of time, such as collecting each line's sku-mates by scanning the whole basket again for every line.
 
 ## Pitfalls
 
 - Applying a multibuy to each line on its own. Two single scans of milk then never form "2 for 2.00".
 - Rounding the percent-off saving once per sku instead of once per line.
-- Forgetting the lines that were scanned before their promotion was added.
-- Checking a spend discount's threshold against the total before item promotions, or remembering which coupon applied. A promotion added later can push the subtotal back below a threshold, and the total goes up.
+- Checking a spend discount's threshold against the total before item promotions.
 - Changing state before validating, so a refused promotion is half applied.

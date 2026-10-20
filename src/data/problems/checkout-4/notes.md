@@ -1,34 +1,30 @@
 ## Pattern
-Per-key stacks and integer formatting
+Backward search and integer formatting
 
 ## Key idea
-The line to void is always the newest in its sku's tally, so the tally doubles as a stack: pop the line, reverse its sums, and every total stays right.
+Everything is recomputed from the lines, so a void just deletes the sku's newest line, found from the end, and the receipt prints what the same helpers compute.
 
 ## Steps
 1. Write `money(cents)` with integer arithmetic, `f"{cents // 100}.{cents % 100:02d}"`, so 150 prints as `1.50` and 5 as `0.05`.
 2. Let each product and promotion print its own receipt line; a weight prints as `f"{g // 1000}.{g % 1000:03d}"` kilograms.
-3. Give `Tally` a `remove_last()` that pops its newest line and takes it out of every sum, the mirror of `add`.
-4. In `void`, return `False` if the sku has no lines; otherwise pop its newest, flag it voided, and move the subtotal by the change.
-5. In `receipt`, print the lines in scan order, then saving promotions by first appearance, then subtotal, coupon (largest amount, lowest threshold) and total.
+3. Pick the coupon in one place: the qualifying spend discount with the largest amount, and on a tie the lowest threshold.
+4. In `void`, walk back from the newest line to the sku's most recent one and delete it; return `False` if there is none.
+5. In `receipt`, print the lines in scan order, then saving promotions by first appearance, then subtotal, coupon and total.
 
 ## Cost
-`O(1)` time per void, `O(lines + skus)` per receipt · `O(products + lines)` space
+`O(lines)` time per void, `O(lines + coupons)` per receipt or total · `O(products + lines)` space
 
 ## Approach
 
-Pattern: a **stack per key** for the void, and **integer formatting** for the receipt.
+Pattern: a **backward search** for the void, and **integer formatting** for the receipt.
 
-**Void.** The statement asks for the most recent line of the sku that is still in the basket. Each sku's tally from step 3 already keeps its lines oldest first, so that line is always `tally.lines[-1]`: the tally is a stack. `remove_last()` pops it and subtracts exactly what `add` added: its units, its price, and its own saving under the sku's promotion, if it has one. The subtotal gets the same delta update as a scan: note the sku's cost, pop, and add the difference. A multibuy group that loses a unit breaks up by itself, because the saving is computed from the unit count.
-
-The scan-order list still holds the voided line, and taking it out of the middle of a list would cost `O(lines)`. Instead the line is flagged `voided`, and the receipt skips flagged lines. A later scan of the same sku appends a new line at the end, as usual.
-
-The subtotal can now go down, and a coupon that applied a moment ago may not apply now. `total` already chooses the coupon afresh on every call, so nothing else changes.
+**Void.** The statement asks for the most recent line of the sku that is still in the basket. The basket is a list in scan order, so walk it from the end, `range(len(self.lines) - 1, -1, -1)`, and the first line of that sku you meet is the one. Delete it with `del self.lines[i]`, and that's the whole job. Totals and savings are recomputed from the lines every time they're asked for, so there is nothing else to undo. A multibuy group that loses a unit breaks up by itself, a percent-off line takes its saving with it, and a coupon whose threshold is no longer reached stops applying. A later scan of the same sku appends a new line at the end, as usual.
 
 **Receipt.** Its five parts come out in three moves.
 
-1. One pass over the scan-order list. Each live line prints itself: `Product.describe` writes `qty x unit price`, and `WeighedProduct.describe` writes the weight in kilograms. The same pass records each sku the first time it shows up, in a dict, which keeps insertion order.
-2. For each recorded sku, its promotion prints itself if it saves more than 0. A multibuy without a complete group, or a 1% off a 49-cent line, saves nothing and prints nothing.
-3. Then the subtotal, the coupon if one applies, and the total. The coupon is the qualifying spend discount with the largest amount; on a tie, the one with the lowest threshold. `max` with the key `(amount, -threshold)` says exactly that.
+1. One line per basket line, in scan order. Each line is printed by its product: `Product.describe` writes `qty x unit price`, and `WeighedProduct.describe` writes the weight in kilograms.
+2. The same `_groups()` that the subtotal uses, which yields the skus in the order they first appear. For each sku with a promotion, ask for its saving and print the promotion's line if the saving is more than 0. A multibuy without a complete group, or a 1% off a 49-cent line, saves nothing and prints nothing.
+3. Then the subtotal, the coupon if one applies, and the total. `_coupon` picks the qualifying spend discount with the largest amount, and on a tie the lowest threshold: `max` with the key `(amount, -threshold)` says exactly that. `total()` uses `_coupon` too, so the receipt and the total can't disagree.
 
 Each kind of product and promotion formats its own line, so a new kind means one new class and no change to `receipt`.
 
@@ -36,14 +32,13 @@ Each kind of product and promotion formats its own line, so a new kind means one
 
 ## Complexity
 
-`void` is `O(1)`: a pop, three subtractions and two `cost()` calls. `receipt` is `O(scans + skus)`, voided scans included. `total` stays `O(coupons)`, at most 20. Space is `O(products + scans)`.
+`void` is `O(lines)`: a backward search and one deletion. `receipt` is `O(lines + coupons)`, like `total`. Space is `O(products + lines)`.
 
-Searching the scan-order list backwards for the sku's latest line works, but costs `O(lines)` per void. Re-pricing the sku from all its lines after a void costs `O(lines of that sku)`. The large tests void lines that sit behind 20,000 others, thousands of times.
+With at most 500 lines, 500 voids, 500 totals and 20 receipts, the plain design runs in well under a second. The large tests are scale and correctness checks. At these sizes nothing natural is quadratic per void or per receipt, so they can't tell a backward search from anything cleverer. The tests carried over from the earlier steps still fail a `total` that does quadratic work per call.
 
 ## Pitfalls
 
 - Voiding the sku's first line instead of its most recent one.
-- Forgetting to take the voided line out of the promotion's sums: its units for a multibuy, its own saving for a percent off.
 - Printing money through floats: `1.5` instead of `1.50`, `0.5` instead of `0.50`.
 - Printing a promotion that saves nothing.
 - Ordering promotion lines by when the promotion was added instead of by the sku's first appearance among the remaining lines. A sku voided away and scanned again moves to the end.

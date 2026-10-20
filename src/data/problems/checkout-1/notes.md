@@ -1,42 +1,44 @@
 ## Pattern
-Hash map plus a running total
+Hash map catalog, list of lines
 
 ## Key idea
-The total only changes when a line is added, so add each line's price to a running sum as it is scanned; `total()` then just reads that number.
+Model the till as it is: a catalog mapping skus to products, a basket of lines, one per scan, and a total that adds up the lines when asked.
 
 ## Steps
-1. Keep a dict from sku to product, a list of lines for the basket, and a running total starting at 0.
+1. Keep a dict from sku to product, and a list of lines for the basket.
 2. In `add_product`, return `False` if the sku is already in the dict; otherwise store the new product.
-3. In `scan`, look the sku up (missing: `False`), append a line of `qty` units, and add its price to the running total.
-4. Make `total` return the running total.
+3. In `scan`, look the sku up (missing: `False`) and append a line of `qty` units.
+4. In `total`, add up the price of every line.
 
 ## Cost
-`O(1)` time per call · `O(products + lines)` space
+`O(1)` time per add and scan, `O(lines)` per total · `O(products + lines)` space
 
 ## Approach
 
-Pattern: a **hash map** for the catalog and a **running total** as a cache over the basket.
+Pattern: a **hash map** for the catalog and a plain **list** for the basket.
 
 Three small classes keep the model plain:
 
 - `Product`: sku, name and unit price. It knows how to price `qty` units: `line_price(qty)`.
-- `Line`: one scan. It points at its product, holds `qty`, and stores its price, worked out once when the line is scanned.
-- `Checkout`: the catalog (`sku -> Product`), the basket (a list of `Line`s in scan order) and the running total.
+- `Line`: one scan. It holds its product and its quantity, and `price()` asks the product.
+- `Checkout`: the catalog (`sku -> Product`) and the basket (a list of `Line`s in scan order).
 
 `add_product` checks before it writes. A dict assignment silently replaces the old value, so `products[sku] = Product(...)` on its own would overwrite the first price. Test `sku in self.products` first and return `False` without touching anything.
 
-`scan` looks the sku up. A missing sku returns `False` and adds nothing. Otherwise it builds a `Line`, appends it, and adds `line.price` to the running total. Repeated scans of one sku stay separate lines: the statement says each scan is its own line, and the basket is the record of what happened at the till.
+`scan` looks the sku up. A missing sku returns `False` and adds nothing. Otherwise it appends a new `Line`. Repeated scans of one sku stay separate lines: the statement says each scan is its own line, and the basket is the record of what happened at the till.
 
-`total` returns the running total. The invariant: after every call, the running total equals the sum of the prices of the lines in the basket. Only `scan` adds lines, and it updates the sum in the same step, so the invariant always holds.
+`total` adds up the lines' prices every time it's called. Nothing is cached, so nothing can go stale: whatever the basket holds, the total is right. That pays off as the build grows. Weights, promotions and voids only change how lines are priced or which lines are there, and the total follows by itself.
 
 ## Complexity
 
-Every call is `O(1)`: dict lookups, one append and one addition. Space is `O(products + lines)`.
+`add_product` and `scan` are `O(1)`. `total` is `O(lines)`. Space is `O(products + lines)`.
 
-Summing the lines inside `total()` is also correct, but each call costs `O(lines)`. With a total after every scan, `n` scans cost `O(n^2)` in all. The large tests do exactly that.
+With at most 500 lines and 500 calls to `total`, a test prices at most 250,000 lines, a fraction of a second. The large tests are scale checks: anything that does a constant amount of work per line on each call passes. Only a `total` that does quadratic work per call, such as re-pricing the whole basket once for every line, runs out of time on them.
+
+Keeping a running total so that `total()` is `O(1)` is a follow-up, not something these tests ask for.
 
 ## Pitfalls
 
-- Overwriting a product when its sku is added again. The return value can still be right while the price is wrong: the bug shows up only on the next scan of that sku.
-- Recomputing the total from the lines on every call. Fine for a small basket, too slow for the large tests.
-- Adding a line, or its price, for a scan that failed.
+- Overwriting a product when its sku is added again. The return value can still be right while the price is wrong.
+- Adding a line for a scan that failed.
+- Merging repeated scans into one line. The total doesn't change, but the basket stops being one line per scan.

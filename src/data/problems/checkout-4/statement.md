@@ -82,16 +82,19 @@ args = [[],["WINE","Wine",1250],["CHEESE","Cheese",2490],["CHEESE",20],[2000,500
 - `1 <= qty <= 10^4`: units for a unit product, grams for a weighed one.
 - `add_multibuy`: `0 <= n <= 100` and `1 <= price <= 10^7`.
 - `add_percent_off`: `0 <= percent <= 200`.
-- `add_spend_discount`: `0 <= threshold <= 10^9` and `0 <= amount <= 10^9`. At most 20 calls.
-- At most 20 calls to `receipt`.
-- At most `10^5` calls in total.
+- `add_spend_discount`: `0 <= threshold <= 10^9` and `0 <= amount <= 10^9`.
+- At most `500` calls to `scan` and at most `500` calls to `total`.
+- At most `50` calls to `add_multibuy` and `add_percent_off` together, and at most `20` calls to `add_spend_discount`.
+- At most `500` calls to `void` and at most `20` calls to `receipt`.
+- At most `5000` calls in total.
 
 ## Aim for
 
-`void` in `O(1)`. If you keep each sku's lines oldest first, as a per-sku tally does, the line to void is always the last one: the tally is already a stack. Pop the line, take it back out of the tally's sums (the mirror of adding it), flag it so the receipt skips it, and move the subtotal by the change in that sku's cost. Searching the whole basket backwards for the sku's latest line costs `O(lines)` per void, and the large tests void lines that sit behind 20,000 others. `receipt` is `O(lines + skus)`: one pass over the lines in scan order also records the order in which the skus first appear. Print money with integers, `f"{cents // 100}.{cents % 100:02d}"`, not `str(cents / 100)`, which prints `1.5` for 150.
+Both new methods stay small when the checkout works everything out from its lines. `void` walks the basket backwards from the newest line to the sku's most recent one and deletes it, `O(lines)`. Because totals and savings are worked out from the lines whenever they're asked for, deleting the line is all a void has to do. `receipt` is `O(lines + spend discounts)`: each line in scan order, printed by its own product, then each promotion that saves money, from the same grouping by sku that the subtotal uses (a dict keeps the order in which the skus first appear), then the subtotal, the coupon and the total. Print money with integers, `f"{cents // 100}.{cents % 100:02d}"`, not `str(cents / 100)`, which prints `1.5` for 150.
 
 ## Follow-ups
 
+- The till shows the total after every scan, and lines get voided. How would you make `total()` and `void` `O(1)`, and what would a void then have to undo?
 - Each product gets a tax category with its own rate, and the receipt lists the tax per category. Which classes change, and where does the rounding happen?
 - Loyalty points: one point per whole 1.00 paid, double points on some skus. Which object should know about points?
 - A meal deal across skus: a sandwich, a drink and a snack for 5.00. Which classes change, and how do you choose the groups when a basket can form them in several ways?
