@@ -14,8 +14,8 @@ export const SECTIONS = ["Line", "Metro", "Dojo", "Me"];
 export const H1 = { Line: "Onsite Express", Metro: "Metro mode", Dojo: "The dojo", Me: "Your line" };
 export const GLYPH_OF_TAB = { Line: "route", Metro: "train", Dojo: "code", Me: "chart" };
 
-export const planOf = (track) => (track === "aws" ? D.AWS_PLAN : D.PLAN);
-export const unitOf = (track) => (track === "aws" ? "Stop" : "Day");
+export const planOf = (track) => (track === "aws" ? D.AWS_PLAN : track === "eng" ? D.ENG_PLAN : D.PLAN);
+export const unitOf = (track) => (track === "aws" ? "Stop" : track === "eng" ? "Build" : "Day");
 const allDone = (t, day) => day.probs.every((p) => t.done[p.id]);
 export const focusOf = (blob, track = blob.track) => {
   const plan = planOf(track);

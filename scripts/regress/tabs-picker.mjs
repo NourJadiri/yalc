@@ -26,6 +26,7 @@ const pickerModel = (blob) => ({
   picks: [
     { track: "google", bullet: "G", name: "Onsite Express", company: "Google" },
     { track: "aws", bullet: "A", name: "Day One Local", company: "Amazon" },
+    { track: "eng", bullet: "E", name: "Engineering Works", company: "ElevenLabs · SIG" },
   ].map((p) => ({
     role: "radio",
     checked: String(blob.track === p.track),
@@ -42,15 +43,15 @@ const pick = (page, track) => page.locator(`.linepick[data-track="${track}"]`);
 const html = (page) => page.evaluate(() => document.documentElement.dataset.track);
 
 export default function register(scenario) {
-  scenario("05-line-picker", "the line picker: both lines and their numbers, switching, which stations open, scroll, saved track, accents, keyboard", async (s) => {
+  scenario("05-line-picker", "the line picker: the three lines and their numbers, switching, which stations open, scroll, saved track, accents, keyboard", async (s) => {
     const A = await s.device({ motion: true });
     await A.open();
     const page = A.page;
     let blob = F.fresh;
 
     // ---- the picker at rest
-    await s.expect("the picker is a radio group named 'Choose a line' with the two lines: Onsite Express (G, Google) and Day One Local (A, Amazon); the Google one is on", () => picker(page), pickerModel(blob));
-    await s.expect("…in words: 'Google · 0/24' and 'Amazon · 0/13' under the names", async () => (await picker(page)).picks.map((p) => `${p.bullet} ${p.name} / ${p.sub}`), ["G Onsite Express / Google · 0/24", "A Day One Local / Amazon · 0/13"]);
+    await s.expect("the picker is a radio group named 'Choose a line' with the three lines: Onsite Express (G, Google), Day One Local (A, Amazon) and Engineering Works (E, ElevenLabs · SIG); the Google one is on", () => picker(page), pickerModel(blob));
+    await s.expect("…in words: 'Google · 0/24', 'Amazon · 0/13' and 'ElevenLabs · SIG · 0/7' under the names", async () => (await picker(page)).picks.map((p) => `${p.bullet} ${p.name} / ${p.sub}`), ["G Onsite Express / Google · 0/24", "A Day One Local / Amazon · 0/13", "E Engineering Works / ElevenLabs · SIG · 0/7"]);
     await s.expect("the Google line is showing: data-track google, its hero and the first station open", async () => ({ track: await html(page), title: (await heroLine(page)).title, open: await openStations(page) }), { track: "google", title: "Onsite Express", open: ["Day 1 · Pathfinding"] });
     await s.expect("the on pick is outlined in its line's colour, with its bullet filled and white; the off pick keeps the grey outline and an orange letter on a pale ground", async () => ({
       on: await A.props(pick(page, "google"), ["border-top-color"]).then((p) => p["border-top-color"]),
@@ -125,7 +126,7 @@ export default function register(scenario) {
     const M = await s.device({ seed: F.awsMid, motion: true });
     await M.open();
     await s.expect("seeded on the Local: its counts under each name (Google 2/24 stations, Amazon 2/13), the Local on", () => picker(M.page), pickerModel(F.awsMid));
-    await s.expect("…and 2/24, 2/13 spelled out", async () => (await picker(M.page)).picks.map((p) => p.sub), ["Google · 2/24", "Amazon · 2/13"]);
+    await s.expect("…and 2/24, 2/13 spelled out, the Works still at 0/7", async () => (await picker(M.page)).picks.map((p) => p.sub), ["Google · 2/24", "Amazon · 2/13", "ElevenLabs · SIG · 0/7"]);
     await s.expect("it boots with the Local's focus stop (3) open", () => openStations(M.page), ["Stop 3 · Ballard Locks"]);
     await pick(M.page, "google").click();
     const toG = edit(F.awsMid, (b) => { b.track = "google"; });

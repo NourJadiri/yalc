@@ -12,7 +12,7 @@ export const TODAY = "2026-03-10";
 export const YESTERDAY = "2026-03-09";
 
 export function fixtures(D) {
-  const { PLAN, AWS_PLAN, Q, probXP, RITUAL_XP } = D;
+  const { PLAN, AWS_PLAN, ENG_PLAN, Q, probXP, RITUAL_XP } = D;
 
   const idsOf = (plan, from, to) => plan.slice(from, to).flatMap((d) => d.probs.map((p) => p.id));
   const ritualsOf = (plan, n) => Object.fromEntries(plan.slice(0, n).map((d, i) => [d.id, `2026-03-0${Math.min(i + 1, 9)}`]));
@@ -22,8 +22,9 @@ export function fixtures(D) {
   const blank = () => ({ xp: 0, done: {}, rituals: {}, accepted: {} });
   const quizBlank = () => ({ answered: 0, correct: 0, perQ: {}, missed: [], bestStreak: 0, sessions: 0, perfect: 0, bugRight: 0 });
 
-  /* `g`: the Google line as { done: [ids], rituals: {dayId: date}, accepted: [ids], xp? }, `a` likewise for the Local. */
-  function blob({ track = "google", g = {}, a = {}, quiz = {}, badges = {}, streak = { last: "", cur: 0, best: 0 } }) {
+  /* `g`: the Google line as { done: [ids], rituals: {dayId: date}, accepted: [ids], xp? }, `a` likewise for the Local,
+     `e` for the Engineering Works. */
+  function blob({ track = "google", g = {}, a = {}, e = {}, quiz = {}, badges = {}, streak = { last: "", cur: 0, best: 0 } }) {
     const line = (plan, x) => {
       const done = x.done ?? [];
       const rituals = x.rituals ?? {};
@@ -35,9 +36,13 @@ export function fixtures(D) {
       };
     };
     return {
-      v: 2,
+      v: 3,
       track,
-      tracks: { google: g === null ? blank() : line(PLAN, g), aws: a === null ? blank() : line(AWS_PLAN, a) },
+      tracks: {
+        google: g === null ? blank() : line(PLAN, g),
+        aws: a === null ? blank() : line(AWS_PLAN, a),
+        eng: e === null ? blank() : line(ENG_PLAN, e),
+      },
       quiz: { ...quizBlank(), ...quiz },
       badges: Object.fromEntries(Object.entries(badges).map(([id, n]) => [id, at(n)])),
       streak,

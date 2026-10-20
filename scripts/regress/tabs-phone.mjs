@@ -120,7 +120,7 @@ export default function register(scenario) {
 
     // ---- the shell
     await P.tab("Line");
-    await s.expect("the four tabs and the line picker's two pills are at least 44px tall", async () => ({ tabs: await page.locator("nav.tabs .tab").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 44)), picks: await page.locator(".linepick").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 44)), days: await page.locator(".dayhead").evaluateAll((els) => els.every((e) => e.getBoundingClientRect().height >= 44)) }), { tabs: [true, true, true, true], picks: [true, true], days: true });
+    await s.expect("the four tabs and the line picker's three pills are at least 44px tall", async () => ({ tabs: await page.locator("nav.tabs .tab").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 44)), picks: await page.locator(".linepick").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 44)), days: await page.locator(".dayhead").evaluateAll((els) => els.every((e) => e.getBoundingClientRect().height >= 44)) }), { tabs: [true, true, true, true], picks: [true, true, true], days: true });
     s.pin("sizes of the big controls", { tab: (await P.rect(page.locator("nav.tabs .tab").first())).h, pick: (await P.rect(page.locator(".linepick").first())).h, day: (await P.rect(page.locator(".dayhead").first())).h });
     finish(s);
   });

@@ -2529,6 +2529,117 @@ scenario("25-next-problem", "the Next button: an accepted Submit leads straight 
   finish(s);
 });
 
+scenario("26-build-steps", "a build's steps: tagged rows, the step track, each step opening on the code of the one before, Next step, Reset back to it", async (s) => {
+  const D = await loadData();
+  const station = D.ENG_PLAN[0];
+  const [one, two, three] = station.probs;
+  const N = station.probs.length;
+  const drill = (p) => p.drill;
+
+  const dialogOf = (title) => `[role=dialog][aria-label="${title}"]`;
+  const rowOf = (page, title) => page.locator(".prow", { has: page.locator(".pname", { hasText: new RegExp("^" + title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$") }) });
+  const referenceOf = (key) => fs.readFileSync(path.join(REPO, "src/data/problems", key, "solution.py"), "utf8");
+  /* The step track as a reader sees it: each stop's name, whether it is done, and which one is open. */
+  const track = (page) =>
+    page.locator(".ws-buildstop").evaluateAll((els) => els.map((e) => ({ name: e.querySelector(".ws-buildstop-name").textContent, done: e.classList.contains("done"), open: !!e.querySelector("[aria-current=step]") })));
+  const trackModel = (open, done) => station.probs.map((p, k) => ({ name: p.n, done: done.includes(k), open: k === open }));
+  const note = (page) => page.locator(".ws-buildtrack-note").allTextContents();
+  const outcome = async (page) => ({ title: (await verdictOf(page)).title, next: await nextButtons(page) });
+  const NEXT_STEP = (title) => ({ text: "Next step: " + title, primary: true, icons: 1 });
+  const reset = (page) => page.locator(`${sel.code} .ws-toolbar .linkbtn`);
+  const opened = async (page, title) => {
+    await page.locator(dialogOf(title)).waitFor();
+    await page.locator(sel.editorContent).first().waitFor({ state: "attached" });
+    await waitReady(page);
+  };
+
+  const { ctx, page } = await newPage(s, { storage: { "onsite-express-v1": JSON.stringify({ v: 3, track: "eng" }) } });
+  try {
+    await page.goto(BASE);
+
+    // ---- the station: one build, its rows tagged with their steps
+    await s.expect(`the Works opens on its first build, ${station.stn}, which says it is one build in steps`, async () => ({
+      hero: await page.locator(".hero h1").textContent(),
+      hint: await page.locator(".stn.open .daysteps").textContent(),
+    }), { hero: "Engineering Works", hint: `One build in ${N} steps. Each step opens on your code from the one before.` });
+    await s.expect("…each row carries its step instead of the 'original' tag", () =>
+      Promise.all(station.probs.map((p) => rowOf(page, p.n).locator(".tag").allTextContents())),
+      station.probs.map((_, k) => [`step ${k + 1}/${N}`]));
+
+    // ---- step 1: the track, the stub, the reference passes and leads to step 2
+    await press(page, rowOf(page, one.n).locator(sel.openBtn));
+    await opened(page, one.n);
+    await s.expect("step 1 opens with the track above its statement: every step, the first one open, nothing done", () => track(page), trackModel(0, []));
+    await s.expect("…its station on the header, and no word about carried code", async () => ({ tag: await page.locator(".ws-meta .tag").textContent(), note: await note(page) }), { tag: `Build 1 · ${station.stn}`, note: [] });
+    await s.expect("…and Reset goes back to the starter", () => reset(page).getAttribute("title"), "Back to the starter code");
+    await s.shot(page, "steps-first-desktop-light");
+    await setCode(page, referenceOf(drill(one)));
+    await startRun(s, page, "submit-button");
+    await s.expect(`step 1's reference is Accepted, and the way on is 'Next step: ${two.n}'`, () => outcome(page), { title: "Accepted", next: [NEXT_STEP(two.n)] });
+
+    // ---- step 2 opens on step 1's code
+    await press(page, page.locator(".ws-verdict button"));
+    await opened(page, two.n);
+    await s.expect("Next step opens step 2 on the step 1 code, and says so", async () => ({ code: await codeOf(page), note: await note(page) }), { code: referenceOf(drill(one)), note: ["Your step 1 code is in the editor. Build on it."] });
+    await s.expect("…the track shows step 1 done and step 2 open", () => track(page), trackModel(1, [0]));
+    await s.expect("…and Reset now goes back to that code", () => reset(page).getAttribute("title"), "Back to your step 1 code");
+    await s.shot(page, "steps-carried-desktop-light");
+    await dark(page);
+    await s.shot(page, "steps-carried-desktop-dark");
+    await page.emulateMedia({ colorScheme: "light" });
+    await startRun(s, page, "submit-button");
+    await s.expect("step 1's code alone doesn't pass step 2", async () => (await verdictOf(page)).title !== "Accepted", true);
+    await setCode(page, referenceOf(drill(two)));
+    await startRun(s, page, "submit-button");
+    await s.expect(`step 2's reference is Accepted, leading to '${three.n}'`, () => outcome(page), { title: "Accepted", next: [NEXT_STEP(three.n)] });
+
+    // ---- the track goes back and forth; each step keeps its own code
+    await press(page, page.getByRole("button", { name: `Open step 1: ${one.n}` }));
+    await opened(page, one.n);
+    await s.expect("the track's first stop reopens step 1, on its own code, with no carried-code note", async () => ({ code: await codeOf(page), note: await note(page), track: await track(page) }), { code: referenceOf(drill(one)), note: [], track: trackModel(0, [0, 1]) });
+    await press(page, page.getByRole("button", { name: `Open step 3: ${three.n}` }));
+    await opened(page, three.n);
+    await s.expect("step 3 opens on the step 2 code", () => codeOf(page), referenceOf(drill(two)));
+
+    // ---- Reset on a step: back to the step before's code, after asking
+    await setCode(page, "class Scratch:\n    pass\n");
+    s.acceptDialogs = true;
+    await press(page, reset(page));
+    await s.expect("Reset asks to start the step again from the step 2 code", () => s.dialogs, ["confirm: Start this step again from your step 2 code? Your changes to this step are cleared."]);
+    await s.expect("…and puts the step 2 code back", () => codeOf(page), referenceOf(drill(two)), { timeout: 3000 });
+    s.acceptDialogs = false;
+
+    // ---- the line counts the passes
+    await press(page, page.locator(sel.back));
+    await s.expect("back on the line, steps 1 and 2 are passed and ticked", async () => ({
+      passed: await Promise.all(station.probs.map((p) => rowOf(page, p.n).locator(".tag.passed").count())),
+      done: await Promise.all(station.probs.map((p) => rowOf(page, p.n).getAttribute("class").then((c) => /\bdone\b/.test(c)))),
+    }), { passed: station.probs.map((_, k) => (k < 2 ? 1 : 0)), done: station.probs.map((_, k) => k < 2) });
+  } finally {
+    await ctx.close();
+  }
+
+  // ---- 390x844 touch: the track fits the Problem pane
+  {
+    const { ctx, page } = await newPage(s, { phone: true, storage: { "onsite-express-v1": JSON.stringify({ v: 3, track: "eng" }) } });
+    try {
+      await page.goto(BASE);
+      await press(page, rowOf(page, one.n).locator(sel.openBtn));
+      await opened(page, one.n);
+      await s.expect("on a phone the track sits inside the pane, and nothing scrolls sideways", () =>
+        page.evaluate(() => {
+          const t = document.querySelector(".ws-buildtrack").getBoundingClientRect();
+          const pane = document.querySelector(".ws-problem-body").getBoundingClientRect();
+          return { inside: t.left >= pane.left && t.right <= pane.right, sideways: document.documentElement.scrollWidth > window.innerWidth };
+        }), { inside: true, sideways: false });
+      await s.shot(page, "steps-first-phone-light");
+    } finally {
+      await ctx.close();
+    }
+  }
+  finish(s);
+});
+
 /* ------------------------------ driver ------------------------------ */
 
 runSuite({

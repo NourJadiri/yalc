@@ -26,7 +26,7 @@ import { chromium } from "playwright";
 import path from "node:path";
 import { runSuite } from "./harness.mjs";
 import { MeScenario, T0, codeOf, linkOf, configure, d1, finish, launchOptions } from "./me-lib.mjs";
-import { SEED, SEED_AWS, SEED_B, SEED_C, LEGACY_V1, LEGACY_V1_UPGRADED, BLANK, FUTURE, qrModules, writeQrClip } from "./me-fixtures.mjs";
+import { SEED, SEED_AWS, SEED_B, SEED_B_V2, SEED_C, LEGACY_V1, LEGACY_V1_UPGRADED, BLANK, FUTURE, qrModules, writeQrClip } from "./me-fixtures.mjs";
 
 const [BASE, OUT] = process.argv.slice(2);
 if (!BASE || !OUT) {
@@ -295,7 +295,7 @@ scenario("01-render", "the Me tab: stats, rank ladder, badges, data and sync pan
 
 /* 2 ------------------------------------------------------------------ */
 scenario("02-data", "Data panel: Export, Import (v2, legacy v1, refusals), Reset with its confirm", async (s) => {
-  const WIPE = "Wipe all progress, XP and badges — on both lines?";
+  const WIPE = "Wipe all progress, XP and badges — on every line?";
   const REFUSED = ["That didn't parse — paste a full export"];
   const A = await s.device({ seed: SEED });
   await A.openMe();
@@ -346,16 +346,16 @@ scenario("02-data", "Data panel: Export, Import (v2, legacy v1, refusals), Reset
   await u.box.fill("this is not json {");
   await A.shot("import-refused");
 
-  // ---- Import: a v2 export
+  // ---- Import: a v2 export (from before the Engineering Works line)
   await A.clearToasts();
-  await u.box.fill(JSON.stringify(SEED_B));
+  await u.box.fill(JSON.stringify(SEED_B_V2));
   await u.import.click();
   await s.expect("Import of a v2 export: gold 'Progress imported'", () => A.toasts(), ["* Progress imported"]);
   await s.expect("…the tiles, ladder and header now show the imported progress", async () => ({ stats: await stats(page), rank: (await headerRank(page)).rank }), {
     stats: ["8/115 problems", "2/24 stations", "2/24 rituals", "40 cards", "70% accuracy", "3 best streak"], rank: "Memoizer",
   });
-  await s.expect("…and it is saved (after the 350 ms debounce), exactly as imported", () => A.blob(), SEED_B);
-  await s.expect("…the box keeps what was pasted", async () => JSON.parse(await u.box.inputValue()), SEED_B);
+  await s.expect("…and it is saved (after the 350 ms debounce) as imported, upgraded to v3 with an empty Works line", () => A.blob(), SEED_B);
+  await s.expect("…the box keeps what was pasted", async () => JSON.parse(await u.box.inputValue()), SEED_B_V2);
 
   // ---- Import: the original app's v1 export
   await A.clearToasts();
@@ -363,7 +363,7 @@ scenario("02-data", "Data panel: Export, Import (v2, legacy v1, refusals), Reset
   await u.import.click();
   await s.expect("Import of a v1 export (the original app's): gold 'Progress imported'", () => A.toasts(), ["* Progress imported"]);
   await s.expect("…its xp, problems and rituals land on the Google line", () => stats(page), ["5/115 problems", "1/24 stations", "2/24 rituals", "12 cards", "75% accuracy", "2 best streak"]);
-  await s.expect("…and the saved blob is the v2 upgrade (the Local starts empty)", () => A.blob(), LEGACY_V1_UPGRADED);
+  await s.expect("…and the saved blob is the v3 upgrade (the Local and the Works start empty)", () => A.blob(), LEGACY_V1_UPGRADED);
   await s.expect("…rank Pathfinder (215 XP)", async () => (await headerRank(page)).rank, "Pathfinder");
   await A.shot("import-legacy");
 
@@ -381,7 +381,7 @@ scenario("02-data", "Data panel: Export, Import (v2, legacy v1, refusals), Reset
   await s.expect("a garbled v2 export is still accepted", () => A.toasts(), ["* Progress imported"]);
   await s.expect("…and only what holds up is kept: one tick, one ritual, one badge, card stats as whole counts, the streak's day dropped", () => A.blob(), {
     ...BLANK,
-    tracks: { google: { xp: 40, done: { ap: true }, rituals: { d1: "2026-03-01" }, accepted: {} }, aws: BLANK.tracks.aws },
+    tracks: { google: { xp: 40, done: { ap: true }, rituals: { d1: "2026-03-01" }, accepted: {} }, aws: BLANK.tracks.aws, eng: BLANK.tracks.eng },
     quiz: { ...BLANK.quiz, answered: 3, correct: 1, perQ: { q2: { seen: 0, right: 1 }, q3: { seen: 2, right: 0 } } },
     badges: { streak3: T0 },
     streak: { last: "", cur: 0, best: 2 },
@@ -400,14 +400,14 @@ scenario("02-data", "Data panel: Export, Import (v2, legacy v1, refusals), Reset
   });
   await s.expect("…the saved blob is the vetted one: stale ids kept but not counted, the non-numeric stamp dropped, a key it does not know carried along", () => A.blob(), {
     ...BLANK,
-    tracks: { google: { xp: 13, done: { ap: true, "two-sum": true, zzz: true }, rituals: { d1: "2026-03-01" }, accepted: { ap: 5 } }, aws: BLANK.tracks.aws },
+    tracks: { google: { xp: 13, done: { ap: true, "two-sum": true, zzz: true }, rituals: { d1: "2026-03-01" }, accepted: { ap: 5 } }, aws: BLANK.tracks.aws, eng: BLANK.tracks.eng },
     extra: "from somewhere",
   });
 
   // ---- Reset: decline, then accept
   await A.clearToasts();
   const declined = await A.answering(false, () => u.reset.click());
-  await s.expect("Reset asks first, naming both lines", () => declined, [`confirm: ${WIPE}`]);
+  await s.expect("Reset asks first, naming every line", () => declined, [`confirm: ${WIPE}`]);
   await s.expect("…declining it changes nothing: no toast, same tiles, same saved blob", async () => ({ toasts: await A.toasts(), stats: await stats(page), blob: canonOf(await A.blob()).tracks.google.xp }), {
     toasts: [], stats: ["1/115 problems", "0/24 stations", "1/24 rituals", "0 cards", "0% accuracy", "0 best streak"], blob: 13,
   });
@@ -420,14 +420,14 @@ scenario("02-data", "Data panel: Export, Import (v2, legacy v1, refusals), Reset
   await s.expect("…and a blank blob is what gets saved", () => A.blob(), BLANK);
   await A.shot("reset-done");
 
-  // ---- Reset on the Local: both lines go, the reader stays where they were
+  // ---- Reset on the Local: every line goes, the reader stays where they were
   const L = await s.device({ seed: SEED_AWS });
   await L.openMe();
   const lu = ui(L.page);
   await L.clearToasts();
   await L.answering(true, () => lu.reset.click());
   await s.expect("Reset on the Local: 'Fresh start. Stop 1 awaits.' (its unit is Stop)", () => L.toasts(), ["Fresh start. Stop 1 awaits."]);
-  await s.expect("…both lines are wiped but the Local stays the line shown", async () => ({ blob: await L.blob(), hero: (await hero(L.page)).p }), { blob: { ...BLANK, track: "aws" }, hero: "The numbers, the ranks, the hardware — Day One Local." });
+  await s.expect("…every line is wiped but the Local stays the line shown", async () => ({ blob: await L.blob(), hero: (await hero(L.page)).p }), { blob: { ...BLANK, track: "aws" }, hero: "The numbers, the ranks, the hardware — Day One Local." });
 
   // ---- the clipboard says no
   const D = await s.device({ seed: SEED, clipboardStub: "denied" });
@@ -469,7 +469,7 @@ scenario("03-sync-on", "turn on sync: the code, the status card, Sync now, copy,
   await A.openMe();
   const page = A.page;
   const u = ui(page);
-  const asUpdate = (x) => ({ updatedAt: x, v: 2, track: "google", data: x });
+  const asUpdate = (x) => ({ updatedAt: x, v: 3, track: "google", data: x });
 
   // ---- turn on, with the push held so the working state can be looked at
   const release = A.net.hold();
@@ -495,7 +495,7 @@ scenario("03-sync-on", "turn on sync: the code, the status card, Sync now, copy,
   const cfg1 = await A.cfg();
   await s.expect("the stamp was acknowledged: serverAt equals editedAt, okAt is set", () => A.cfg(), (c) => c.serverAt === c.editedAt && c.editedAt > 0 && c.okAt >= c.editedAt);
   const row1 = await d1.get(code);
-  await s.expect("D1 now holds the seeded progress under that code: v2, Google line, this device's stamp", () => ({ status: row1.status, v: row1.body.v, track: row1.body.track, at: row1.body.updatedAt === cfg1.editedAt, data: row1.body.data }), { status: 200, v: 2, track: "google", at: true, data: SEED });
+  await s.expect("D1 now holds the seeded progress under that code: v3, Google line, this device's stamp", () => ({ status: row1.status, v: row1.body.v, track: row1.body.track, at: row1.body.updatedAt === cfg1.editedAt, data: row1.body.data }), { status: 200, v: 3, track: "google", at: true, data: SEED });
   await s.expect("what was PUT is exactly { updatedAt, data } for that stamp", () => ({ ...A.net.list("PUT", code)[0].sent, updatedAt: A.net.list("PUT", code)[0].sent.updatedAt === cfg1.editedAt }), { updatedAt: true, data: SEED });
   await s.expect("no echo: one PUT in all, no GET", async () => ({ put: A.net.count("PUT"), get: A.net.count("GET") }), { put: 1, get: 0 });
   await A.shot("sync-synced", { bottom: true });
@@ -1324,7 +1324,7 @@ scenario("10-held", "a cloud copy this build cannot read: sync parks instead of 
   /* Stamped an hour before any device's clock, so that when a device writes to it only the schema guard can refuse. */
   await d1.put(H, T0 - 3_600_000, FUTURE);
   const held = await d1.get(H);
-  await s.expect("a blob from a build that does not exist yet can be put in the Worker: it keeps its version and stamp", () => ({ status: held.status, v: held.body.v, at: held.body.updatedAt, data: held.body.data }), { status: 200, v: 3, at: T0 - 3_600_000, data: FUTURE });
+  await s.expect("a blob from a build that does not exist yet can be put in the Worker: it keeps its version and stamp", () => ({ status: held.status, v: held.body.v, at: held.body.updatedAt, data: held.body.data }), { status: 200, v: 4, at: T0 - 3_600_000, data: FUTURE });
 
   // ---- joining it from a device with progress
   const B = await s.device({ seed: SEED_B });
@@ -1353,7 +1353,7 @@ scenario("10-held", "a cloud copy this build cannot read: sync parks instead of 
   await edit(B, SEED_C);
   await B.advance(8_000);
   await B.settle();
-  await s.expect("an edit while parked stays on this device: no PUT, the cloud row unchanged, the card still in error", async () => ({ put: B.net.count("PUT"), row: (await d1.get(H)).body.v, title: (await card(B.page)).title, saved: canonOf(await saved(B)).tracks.google.xp }), { put: 0, row: 3, title: "Update needed", saved: 710 });
+  await s.expect("an edit while parked stays on this device: no PUT, the cloud row unchanged, the card still in error", async () => ({ put: B.net.count("PUT"), row: (await d1.get(H)).body.v, title: (await card(B.page)).title, saved: canonOf(await saved(B)).tracks.google.xp }), { put: 0, row: FUTURE.v, title: "Update needed", saved: 710 });
   await B.clearToasts();
   await u.syncNow.click();
   await s.expect("Sync now tries the exchange, gets the same answer, and says the copy is from a newer app", async () => ({ toasts: await B.toasts(), get: B.net.count("GET") - gets, put: B.net.count("PUT") }), { toasts: ["The cloud copy is from a newer version of the app — reload to update"], get: 1, put: 0 });
@@ -1403,7 +1403,7 @@ scenario("10-held", "a cloud copy this build cannot read: sync parks instead of 
   await s.expect("a v1 blob in the cloud is adopted like an import: it lands on the Google line", async () => ({ stats: await stats(D.page), title: (await card(D.page)).title }), { stats: ["5/115 problems", "1/24 stations", "2/24 rituals", "12 cards", "75% accuracy", "2 best streak"], title: "All changes synced" });
   await edit(D, SEED_B);
   await D.advance(4500);
-  await s.expect("…and D's next edit replaces it as a v2 row (a newer schema may overwrite an older one)", async () => { const r = (await d1.get(L)).body; return { v: r.v, xp: r.data.tracks.google.xp }; }, { v: 2, xp: 480 });
+  await s.expect("…and D's next edit replaces it as a v3 row (a newer schema may overwrite an older one)", async () => { const r = (await d1.get(L)).body; return { v: r.v, xp: r.data.tracks.google.xp }; }, { v: 3, xp: 480 });
   finish(s);
 });
 
@@ -1699,7 +1699,7 @@ scenario("13-motion", "with motion allowed: confetti only where two devices actu
   await K.open(`#sync=${heldCode}&do=send`);
   await K.page.getByRole("button", { name: "Send & link" }).click();
   await K.settle();
-  await s.expect("a send link to a copy this build cannot read is refused by the Worker: no confetti, and the toast says nothing was sent", async () => ({ confetti: await K.confettiLog(), toasts: await K.toasts(), row: (await d1.get(heldCode)).body.v }), { confetti: [], toasts: ["Not sent: the cloud copy is from a newer version of the app — reload to update"], row: 3 });
+  await s.expect("a send link to a copy this build cannot read is refused by the Worker: no confetti, and the toast says nothing was sent", async () => ({ confetti: await K.confettiLog(), toasts: await K.toasts(), row: (await d1.get(heldCode)).body.v }), { confetti: [], toasts: ["Not sent: the cloud copy is from a newer version of the app — reload to update"], row: FUTURE.v });
 
   // ---- the sheet's arrival
   const F = await s.device({ motion: true });

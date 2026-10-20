@@ -17,7 +17,7 @@ const flags = (ids) => Object.fromEntries(ids.map((id) => [id, true]));
    1240 XP is "Pattern Oracle", the sixth rung of ten: a ladder with checks above the
    marker and dim dots below it. */
 export const SEED = {
-  v: 2,
+  v: 3,
   track: "google",
   tracks: {
     google: {
@@ -32,6 +32,7 @@ export const SEED = {
       rituals: {},
       accepted: { "two-sum": at(60) },
     },
+    eng: { xp: 0, done: {}, rituals: {}, accepted: {} },
   },
   quiz: {
     answered: 134,
@@ -65,16 +66,21 @@ export const SEED_AWS = {
 
 /* A different, smaller history: the "other device" in the join and link scenarios. */
 export const SEED_B = {
-  v: 2,
+  v: 3,
   track: "google",
   tracks: {
     google: { xp: 480, done: flags(["ap", "btp", "ps2", "lsw", "sub", "perm", "cs2", "kls"]), rituals: { d1: "2026-03-07", d2: "2026-03-08" }, accepted: { ap: at(70) } },
     aws: { xp: 0, done: {}, rituals: {}, accepted: {} },
+    eng: { xp: 0, done: {}, rituals: {}, accepted: {} },
   },
   quiz: { answered: 40, correct: 28, perQ: { q3: { seen: 1, right: 1 } }, missed: [], bestStreak: 5, sessions: 4, perfect: 0, bugRight: 3 },
   badges: { first: at(71) },
   streak: { last: "2026-03-08", cur: 2, best: 3 },
 };
+
+/* SEED_B as a build before the Engineering Works line wrote it (export format v2): import upgrades it to SEED_B. */
+const { eng: _eng, ...SEED_B_TRACKS_V2 } = SEED_B.tracks;
+export const SEED_B_V2 = { ...SEED_B, v: 2, tracks: SEED_B_TRACKS_V2 };
 
 /* A third history, for the second edit in the last-write-wins scenarios. */
 export const SEED_C = {
@@ -97,11 +103,12 @@ export const LEGACY_V1 = {
 
 /* What import turns LEGACY_V1 into. */
 export const LEGACY_V1_UPGRADED = {
-  v: 2,
+  v: 3,
   track: "google",
   tracks: {
     google: { xp: 215, done: LEGACY_V1.done, rituals: LEGACY_V1.rituals, accepted: {} },
     aws: { xp: 0, done: {}, rituals: {}, accepted: {} },
+    eng: { xp: 0, done: {}, rituals: {}, accepted: {} },
   },
   quiz: LEGACY_V1.quiz,
   badges: LEGACY_V1.badges,
@@ -109,11 +116,12 @@ export const LEGACY_V1_UPGRADED = {
 };
 
 export const BLANK = {
-  v: 2,
+  v: 3,
   track: "google",
   tracks: {
     google: { xp: 0, done: {}, rituals: {}, accepted: {} },
     aws: { xp: 0, done: {}, rituals: {}, accepted: {} },
+    eng: { xp: 0, done: {}, rituals: {}, accepted: {} },
   },
   quiz: { answered: 0, correct: 0, perQ: {}, missed: [], bestStreak: 0, sessions: 0, perfect: 0, bugRight: 0 },
   badges: {},
@@ -122,7 +130,7 @@ export const BLANK = {
 
 /* An export from a build that does not exist yet: the Worker stores it (it only reads `v`),
    the app cannot read it. */
-export const FUTURE = { v: 3, track: "google", tracks: {}, note: "written by a newer build" };
+export const FUTURE = { v: 4, track: "google", tracks: {}, note: "written by a newer build" };
 
 /* ------------------------------ the QR, in pixels ------------------------------ */
 
