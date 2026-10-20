@@ -7,7 +7,7 @@ A file system with folder sizes → add `rm`, which deletes a file or a whole fo
 
 ## The task
 
-**Step 3 of 4.** `FileSystem` keeps an in-memory tree of folders and text files under the root folder `"/"`, and knows the size of everything in it. Any other path is `/` followed by one or more names joined with `/`, like `"/docs/plan.txt"`, and the tests only use valid paths (see Constraints). So far it has:
+**Step 3 of 4.** `FileSystem` keeps an in-memory tree of folders and text files, and knows the size of everything in it. The root folder's path is `"/"`; any other path is `/` followed by one or more names joined with `/`, like `"/docs/plan.txt"`, and the tests only use valid paths (see Constraints). So far it has:
 
 - `FileSystem()`: a file system holding only the empty root folder.
 - `mkdir(path)`: makes the folder and every missing folder above it. Returns `true` if a folder exists at `path` afterwards (also when it already did, and for `"/"`); returns `false` and changes nothing if `path` or any name on the way to it is a file.
@@ -76,7 +76,7 @@ Deleting `/tmp/cache` deletes its file too, and the 5 characters leave every fol
 
 ## Aim for
 
-**Re-link, don't copy.** Everything inside a folder hangs off its node, so `mv` takes the node out of the old parent's dictionary and puts it into the new parent's under the new name: one delete and one insert, whatever the folder holds. For the sizes, subtract the node's size from every folder on the old path and add it to every folder on the new one. `rm` is the first half of that. Check every refusal before changing anything; the "inside itself" test is `dst.startswith(src + "/")`, and the slash is what keeps `/a` to `/ab` legal. Each call is `O(L)` for paths of total length `L`.
+**Re-link, don't copy.** Everything inside a folder hangs off its node, so `mv` takes the node out of the old parent's dictionary and puts it into the new parent's under the new name: one delete and one insert, whatever the folder holds. For the sizes, subtract the node's size from every folder on the old path and add it to every folder on the new one. `rm` is the first half of that. Check every refusal before changing anything; the "inside itself" test is `dst.startswith(src + "/")`, and the slash is what lets `/a` become `/ab`. Each call is `O(L)` for paths of total length `L`.
 
 ## Follow-ups
 

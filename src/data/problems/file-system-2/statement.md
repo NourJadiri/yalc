@@ -7,7 +7,7 @@ A file system of folders and text files → add `size(path)`: a file's length, o
 
 ## The task
 
-**Step 2 of 4.** `FileSystem` keeps an in-memory tree of folders and text files under the root folder `"/"`. Any other path is `/` followed by one or more names joined with `/`, like `"/docs/plan.txt"`, and the tests only use valid paths (see Constraints). So far it has:
+**Step 2 of 4.** `FileSystem` keeps an in-memory tree of folders and text files. The root folder's path is `"/"`; any other path is `/` followed by one or more names joined with `/`, like `"/docs/plan.txt"`, and the tests only use valid paths (see Constraints). So far it has:
 
 - `FileSystem()`: a file system holding only the empty root folder.
 - `mkdir(path)`: makes the folder and every missing folder above it. Returns `true` if a folder exists at `path` afterwards (also when it already did, and for `"/"`); returns `false` and changes nothing if `path` or any name on the way to it is a file.
@@ -71,6 +71,6 @@ Store a `size` on every node and keep it current. A file counts toward exactly t
 ## Follow-ups
 
 - Each folder should also report how many files it holds. What changes in `write`?
-- Now `write` is constant and `size` is rare, in a tree 1,000 folders deep. Would you still keep totals current, or compute them lazily?
+- Now there are many writes and few `size` calls, in a tree 1,000 folders deep. Would you still keep totals current, or compute them lazily?
 - Two threads write files in the same folder at once. What can go wrong with the totals, and how would you prevent it?
 - Next step: `rm` and `mv`, which delete or move a whole folder without walking what's inside it.
