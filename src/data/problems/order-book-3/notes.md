@@ -34,7 +34,7 @@ Why not change the old entry's key in place? The heap would have to find it firs
 
 `amend` is a dictionary lookup, plus one push when it raises: `O(log n)`. Every entry is pushed once and popped at most once, so stale entries add amortised `O(log n)` per raise to the costs from before. Space is one heap entry per resting order or raise until it surfaces: `O(n)` in the number of calls.
 
-The large test makes 30,000 amends on a book of about 30,000 orders. Searching the heap for the entry and re-keying it is `O(n)` per raise and times out there.
+The large test makes 22,000 amends on a book of about 22,000 orders. Searching the heap for the entry and re-keying it is `O(n)` per raise and times out there.
 
 ## Pitfalls
 

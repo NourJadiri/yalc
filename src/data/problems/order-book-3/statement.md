@@ -19,7 +19,7 @@ How orders match:
 - Each price on each side has its own line. A resting order joins the back of the line for its price, and a partly filled one keeps its place.
 - An incoming buy trades with the asks priced at or below its own price: the lowest price first, and within a price, the line from the front. Each trade happens at the resting order's price, for the smaller of the two remaining quantities. When the buy is filled, or no ask is cheap enough, whatever is left rests as a bid.
 - An incoming sell is the mirror image. It trades with the bids priced at or above its own price, the highest price first, then the line from the front, at the resting order's price. Whatever is left rests as an ask.
-- `buy` and `sell` return their trades in the order they happened, each as `[buy_id, sell_id, price, qty]`, or `[]` if there were none. `trader` doesn't change anything yet.
+- `buy` and `sell` return their trades in the order they happened, each as `[buy_id, sell_id, price, qty]`, or `[]` if there were none. `trader` doesn't change anything yet, because no order is ever priced to trade with a resting order of its own trader (see Constraints).
 
 **New in this step**
 
@@ -65,7 +65,7 @@ args = [[],["ann",25,10],["bob",25,3],["cat",25,4],[1,8],["dan",25,5],[2,3],[9,1
                                         -> [null,[],[],[[1,3,25,4]],true,[[2,4,25,3],[1,4,25,2]],false,false]
 ```
 
-After order 3, order 1 has 6 shares left, so 8 is a raise even though it first asked for 10. It moves behind order 2. Order 4 then fills order 2, which can no longer be amended, and no order has id 9.
+After order 3, order 1 has 6 shares left, so 8 is a raise even though the order was placed for 10. It moves behind order 2. Order 4 then fills order 2, which can no longer be amended, and no order has id 9.
 
 ## Constraints
 

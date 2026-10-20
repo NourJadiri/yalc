@@ -38,7 +38,7 @@ The book is never crossed between calls: an arrival keeps trading until the othe
 
 Each order is pushed at most once and popped at most once, `O(log n)` each, where `n` is the number of resting orders. Every fill but the last one of an arrival empties a resting order and pays for that pop. The last fill may leave a resting order partly filled, which costs `O(1)`. So an arrival costs `O(log n)` for each order it removes and for resting, plus `O(1)` per fill. `top()` reads two heap tops: `O(1)`. Space is `O(n)`.
 
-For comparison, scanning a list of resting orders for the best match is `O(n)` per fill. The large tests make that time out: one keeps about 20,000 orders resting while arrivals cross constantly, and another sweeps through 10,000 one-share orders at a time. A list kept sorted with `bisect.insort` finds each spot in `O(log n)` but shifts up to `n` entries per insert. It runs fast in practice, but it's still linear.
+For comparison, scanning a list of resting orders for the best match is `O(n)` per fill. The large tests make that time out: one keeps about 15,000 orders resting while arrivals cross constantly, and another sweeps through 10,000 one-share orders at a time. A list kept sorted with `bisect.insort` finds each spot in `O(log n)` but shifts up to `n` entries per insert. It runs fast in practice, but it's still linear.
 
 ## Pitfalls
 

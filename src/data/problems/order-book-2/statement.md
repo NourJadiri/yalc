@@ -18,7 +18,7 @@ How orders match:
 - An incoming buy trades with the asks priced at or below its own price: the lowest price first, and among equal prices the one that arrived first. Each trade happens at the resting order's price, for the smaller of the two remaining quantities. When the buy is filled, or no ask is cheap enough, whatever is left rests as a bid.
 - An incoming sell is the mirror image. It trades with the bids priced at or above its own price, the highest price first, then the earliest arrival, at the resting order's price. Whatever is left rests as an ask.
 - A partly filled resting order keeps its place in line.
-- `buy` and `sell` return their trades in the order they happened, each as `[buy_id, sell_id, price, qty]`, or `[]` if there were none. `trader` doesn't change anything yet.
+- `buy` and `sell` return their trades in the order they happened, each as `[buy_id, sell_id, price, qty]`, or `[]` if there were none. `trader` doesn't change anything yet, because no order is ever priced to trade with a resting order of its own trader (see Constraints).
 
 **New in this step**
 

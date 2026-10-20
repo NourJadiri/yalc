@@ -27,7 +27,7 @@ A dead entry deeper in the heap does no harm. It never decides which live entry 
 
 `cancel` is one dictionary pop: `O(1)`. Every heap entry is pushed once and popped at most once, either when its order fills or when it surfaces dead, so the pops add amortised `O(log n)` per order to step 1's costs. Dead entries wait in the heap until they surface, so space is `O(n)` in the number of orders that ever rested.
 
-The alternative, searching the heap for the entry on every cancel, costs `O(n)` per cancel. The large test rests 36,000 orders and then cancels 30,000 of them in random order, which makes that time out.
+The alternative, searching the heap for the entry on every cancel, costs `O(n)` per cancel. The large test rests 30,000 orders and then cancels 25,000 of them in random order, which makes that time out.
 
 ## Pitfalls
 

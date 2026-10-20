@@ -43,7 +43,7 @@ args = [[],["ann",50,4],["bob",50,6],["cat",50,3],["dan",49,5],[]]
                                         -> [null,[],[],[[1,3,50,3]],[[1,4,50,1],[2,4,50,4]],[50,0]]
 ```
 
-Both bids are at 50, and order 1 arrived first. Order 3 takes 3 of its 4 shares. Order 1 keeps its place with 1 share left, so order 4 fills that share before it reaches order 2. Order 4 sells at 50, not 49: a trade is always at the resting order's price.
+Both bids are at 50, and order 1 arrived first, so order 3 takes 3 of order 1's 4 shares. Order 1 keeps its place with 1 share left, so order 4 fills that share before it reaches order 2. Order 4 sells at 50, not 49: a trade is always at the resting order's price.
 
 **Example 3**
 
