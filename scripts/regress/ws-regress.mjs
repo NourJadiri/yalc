@@ -2547,6 +2547,16 @@ scenario("26-build-steps", "a build's steps: tagged rows, the step track, each s
   const outcome = async (page) => ({ title: (await verdictOf(page)).title, next: await nextButtons(page) });
   const NEXT_STEP = (title) => ({ text: "Next step: " + title, primary: true, icons: 1 });
   const reset = (page) => page.locator(`${sel.code} .ws-toolbar .linkbtn`);
+  /* The editor draws only the lines in view; a reference solution is longer, so read it through a window tall enough to show it all. */
+  const wholeCodeOf = async (page) => {
+    const vp = page.viewportSize();
+    await page.setViewportSize({ width: vp.width, height: 6000 });
+    await settle(page, false);
+    const code = await codeOf(page);
+    await page.setViewportSize(vp);
+    await settle(page, false);
+    return code;
+  };
   const opened = async (page, title) => {
     await page.locator(dialogOf(title)).waitFor();
     await page.locator(sel.editorContent).first().waitFor({ state: "attached" });
@@ -2580,7 +2590,7 @@ scenario("26-build-steps", "a build's steps: tagged rows, the step track, each s
     // ---- step 2 opens on step 1's code
     await press(page, page.locator(".ws-verdict button"));
     await opened(page, two.n);
-    await s.expect("Next step opens step 2 on the step 1 code, and says so", async () => ({ code: await codeOf(page), note: await note(page) }), { code: referenceOf(drill(one)), note: ["Your step 1 code is in the editor. Build on it."] });
+    await s.expect("Next step opens step 2 on the step 1 code, and says so", async () => ({ code: await wholeCodeOf(page), note: await note(page) }), { code: referenceOf(drill(one)), note: ["Your step 1 code is in the editor. Build on it."] });
     await s.expect("…the track shows step 1 done and step 2 open", () => track(page), trackModel(1, [0]));
     await s.expect("…and Reset now goes back to that code", () => reset(page).getAttribute("title"), "Back to your step 1 code");
     await s.shot(page, "steps-carried-desktop-light");
@@ -2596,17 +2606,17 @@ scenario("26-build-steps", "a build's steps: tagged rows, the step track, each s
     // ---- the track goes back and forth; each step keeps its own code
     await press(page, page.getByRole("button", { name: `Open step 1: ${one.n}` }));
     await opened(page, one.n);
-    await s.expect("the track's first stop reopens step 1, on its own code, with no carried-code note", async () => ({ code: await codeOf(page), note: await note(page), track: await track(page) }), { code: referenceOf(drill(one)), note: [], track: trackModel(0, [0, 1]) });
+    await s.expect("the track's first stop reopens step 1, on its own code, with no carried-code note", async () => ({ code: await wholeCodeOf(page), note: await note(page), track: await track(page) }), { code: referenceOf(drill(one)), note: [], track: trackModel(0, [0, 1]) });
     await press(page, page.getByRole("button", { name: `Open step 3: ${three.n}` }));
     await opened(page, three.n);
-    await s.expect("step 3 opens on the step 2 code", () => codeOf(page), referenceOf(drill(two)));
+    await s.expect("step 3 opens on the step 2 code", () => wholeCodeOf(page), referenceOf(drill(two)));
 
     // ---- Reset on a step: back to the step before's code, after asking
     await setCode(page, "class Scratch:\n    pass\n");
     s.acceptDialogs = true;
     await press(page, reset(page));
     await s.expect("Reset asks to start the step again from the step 2 code", () => s.dialogs, ["confirm: Start this step again from your step 2 code? Your changes to this step are cleared."]);
-    await s.expect("…and puts the step 2 code back", () => codeOf(page), referenceOf(drill(two)), { timeout: 3000 });
+    await s.expect("…and puts the step 2 code back", () => wholeCodeOf(page), referenceOf(drill(two)), { timeout: 3000 });
     s.acceptDialogs = false;
 
     // ---- the line counts the passes
