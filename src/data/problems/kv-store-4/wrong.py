@@ -1,18 +1,17 @@
-# The tempting shortcut: a checkpoint saves a copy of the live data. That is
-# the committed state whenever no transaction is open. With one open, the copy
-# holds its uncommitted changes, and after a crash they come back.
+# The tempting shortcut: a checkpoint writes the live data as the snapshot.
+# That is the committed state whenever no transaction is open. With one open,
+# the snapshot holds its uncommitted changes, and after a crash they come back.
 import collections
 
 
 class KVStore:
 
-    def __init__(self):
+    def __init__(self, disk=None):
         self.data = {}
         self.holders = collections.Counter()
         self.undo = []
         self.starts = []
-        self.log = []
-        self.snapshot = {}
+        self.disk = disk
 
     def set(self, key, value):
         self._change(key, value)
@@ -46,33 +45,27 @@ class KVStore:
             return False
         self.starts.pop()
         if not self.starts:
-            touched = dict.fromkeys(key for key, _ in self.undo)
-            self.log.extend((key, self.data.get(key)) for key in touched)
+            for key in dict.fromkeys(key for key, _ in self.undo):
+                self._persist(key, self.data.get(key))
             self.undo.clear()
         return True
 
-    def crash(self):
-        self.data = {}
-        self.holders = collections.Counter()
-        self.undo = []
-        self.starts = []
-
     def recover(self):
-        self.data = dict(self.snapshot)
+        self.data = self.disk.read_snapshot() or {}
         self._replay(self.data)
         self.holders = collections.Counter(self.data.values())
         return len(self.data)
 
     def checkpoint(self):
-        self.snapshot = dict(self.data)         # the live data: open transactions included
-        self.log.clear()
-        return len(self.snapshot)
+        self.disk.write_snapshot(self.data)     # the live data: open transactions included
+        self.disk.clear_log()
+        return len(self.data)
 
     def _change(self, key, value):
         if self.starts:
             self.undo.append((key, self.data.get(key)))
         else:
-            self.log.append((key, value))
+            self._persist(key, value)
         self._write(key, value)
 
     def _write(self, key, value):
@@ -85,8 +78,12 @@ class KVStore:
             self.data[key] = value
             self.holders[value] += 1
 
+    def _persist(self, key, value):
+        if self.disk is not None:
+            self.disk.append((key, value))
+
     def _replay(self, into):
-        for key, value in self.log:
+        for key, value in self.disk.read_log():
             if value is None:
                 into.pop(key, None)
             else:

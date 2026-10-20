@@ -70,8 +70,12 @@ def run_design(cls, ops, args):
                 res = getattr(store, op)(*args[k])
                 out.append(res if type(res) in _ATOMS else plain(res))
         except Exception as e:
-            what = "KVStore(disk)" if k == 0 else "a new KVStore(disk) after the crash" if op == "crash" else op
-            e.add_note("Raised during call #" + str(k) + " (" + what + ").")
+            if k == 0:
+                e.add_note("Raised during call #0, KVStore(disk): the store is built with the disk.")
+            elif op == "crash":
+                e.add_note("Raised during call #" + str(k) + ", building a new KVStore(disk) after the crash.")
+            else:
+                e.add_note("Raised during call #" + str(k) + " (" + op + ").")
             raise
     return out
 

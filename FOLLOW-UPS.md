@@ -287,6 +287,13 @@ is the way to pick up a fix made there.
 cover steps 1 and 2 as well. Locking would only get in the way of someone who already knows
 the core.
 
+**The Key-Value Store's crash throws the object away, not the module.** In steps 3 and 4 the
+judge builds the store on a disk it owns, and a crash discards the object and builds a new one
+on the same disk, so nothing in an instance survives. A class attribute or a module global still
+would: an accidental one is caught by the tests (its leftovers show in the answers), a deliberate
+one isn't. Closing it means re-executing the reader's module on every crash, which the step-4
+test with thousands of crashes would pay for.
+
 **A later step's tests include every earlier step's.** That's what stops a feature from quietly
 breaking an old one, and it makes step 4's suite the biggest of its build. Every step's spec
 is validated on its own, so a typo in a carried test would show up as a failure there.
