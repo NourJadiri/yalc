@@ -11,9 +11,11 @@ interface EditorToolbarProps {
   fontSize: number;
   onFontStep: (delta: number) => void;
   onReset: () => void;
+  /** What Reset goes back to, as its tooltip says it. */
+  resetTitle: string;
 }
 
-export default function EditorToolbar({ fontSize, onFontStep, onReset }: EditorToolbarProps) {
+export default function EditorToolbar({ fontSize, onFontStep, onReset, resetTitle }: EditorToolbarProps) {
   const { phase } = useRunnerStatus();
 
   return (
@@ -25,7 +27,7 @@ export default function EditorToolbar({ fontSize, onFontStep, onReset }: EditorT
       <IconButton size="sm" icon="minus" label="Smaller text" title="Smaller text" onClick={() => onFontStep(-1)} />
       <span className="ws-font">{fontSize}px</span>
       <IconButton size="sm" icon="plus" label="Larger text" title="Larger text" onClick={() => onFontStep(1)} />
-      <LinkButton onClick={onReset} title="Back to the starter code">
+      <LinkButton onClick={onReset} title={resetTitle}>
         <Icon name="rotate-ccw" size={12} />
         Reset
       </LinkButton>

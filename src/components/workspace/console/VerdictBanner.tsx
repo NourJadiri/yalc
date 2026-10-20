@@ -8,17 +8,19 @@ interface VerdictBannerProps {
   verdict: Verdict;
   /** Offered as a button: where an accepted submit leads on. Left null for every other verdict. */
   next: Problem | null;
+  /** The next problem is the following step of the same build. */
+  nextIsStep?: boolean;
   onNext: (id: string) => void;
 }
 
-export default function VerdictBanner({ verdict, next, onNext }: VerdictBannerProps) {
+export default function VerdictBanner({ verdict, next, nextIsStep, onNext }: VerdictBannerProps) {
   return (
     <div className={"ws-verdict " + verdict.tone}>
       <strong>{verdict.title}</strong>
       <span>{verdict.detail}</span>
       {next && (
         <Button variant="primary" className="ws-next" onClick={() => onNext(next.id)}>
-          {"Next: " + next.n}
+          {(nextIsStep ? "Next step: " : "Next: ") + next.n}
           <Icon name="arrow-right" size={13} />
         </Button>
       )}

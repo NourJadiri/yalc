@@ -1,4 +1,4 @@
-import type { Ref } from "react";
+import type { ReactNode, Ref } from "react";
 import type { ProblemContent } from "../../../data/problems";
 import { useCopied } from "../../../hooks/useCopied";
 import Tab from "../../ui/Tab";
@@ -25,9 +25,11 @@ interface ProblemPaneProps {
   onClimb: () => void;
   ladderRef: Ref<HTMLDivElement>;
   fontSize: number;
+  /** A build's step track, above the statement. */
+  steps?: ReactNode;
 }
 
-export default function ProblemPane({ content, notes, tab, onTab, open, onReveal, hints, onClimb, ladderRef, fontSize }: ProblemPaneProps) {
+export default function ProblemPane({ content, notes, tab, onTab, open, onReveal, hints, onClimb, ladderRef, fontSize, steps }: ProblemPaneProps) {
   /* Held here, not in the solution, so the flash survives a trip to the other tab. */
   const [copied, copy] = useCopied(1800);
   const ladder = notes && <HintLadder notes={notes} hints={hints} open={open} onClimb={onClimb} ref={ladderRef} />;
@@ -45,7 +47,10 @@ export default function ProblemPane({ content, notes, tab, onTab, open, onReveal
 
       <div className="ws-problem-body">
         {tab === "desc" ? (
-          <Statement statement={content.statement} topics={content.spec.topics ?? []} ladder={ladder} />
+          <>
+            {steps}
+            <Statement statement={content.statement} topics={content.spec.topics ?? []} ladder={ladder} />
+          </>
         ) : !open ? (
           <SolutionVeil ladder={ladder} onReveal={onReveal} />
         ) : (

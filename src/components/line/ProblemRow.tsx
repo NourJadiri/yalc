@@ -8,6 +8,8 @@ import "./ProblemRow.css";
 
 interface ProblemRowProps {
   prob: Problem;
+  /** "step 2/4" on a build's station. */
+  step?: string;
   done: boolean;
   /** Every test went green in the editor, as opposed to a tick by hand. */
   passed: boolean;
@@ -15,7 +17,7 @@ interface ProblemRowProps {
   onOpenEditor: () => void;
 }
 
-export default function ProblemRow({ prob, done, passed, onToggle, onOpenEditor }: ProblemRowProps) {
+export default function ProblemRow({ prob, step, done, passed, onToggle, onOpenEditor }: ProblemRowProps) {
   return (
     <li className={cx("prow", done && "done")}>
       <button
@@ -28,7 +30,7 @@ export default function ProblemRow({ prob, done, passed, onToggle, onOpenEditor 
       </button>
       <div className="pmain">
         <span className="pname">{prob.n}</span>
-        <ProblemTags prob={prob} passed={passed} />
+        <ProblemTags prob={prob} step={step} passed={passed} />
       </div>
       <ProblemAction prob={prob} onOpenEditor={onOpenEditor} />
     </li>

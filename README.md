@@ -5,6 +5,9 @@ Python editor in every problem.
 
 - **Onsite Express** (Google): a 24-day study plan, five problems a day, ending in timed mocks.
 - **Day One Local** (Amazon): thirteen stops through Seattle, one idea per stop, LeetCode Easy only.
+- **Engineering Works** (ElevenLabs · SIG): seven systems you'd actually ship (an order book, a rate
+  limiter, a key-value store, a voice stream receiver, a checkout, a file system, diff and merge), each
+  built in steps: the core first, then one feature at a time until it's whole.
 
 Every problem opens in a workspace with its own statement, a CodeMirror editor and tests
 that run in the browser on real CPython (Pyodide). No LeetCode account needed.
@@ -17,6 +20,10 @@ that run in the browser on real CPython (Pyodide). No LeetCode account needed.
   multiply the XP, and missed cards come back in the Redemption deck.
 - **Dojo**: 15 algorithm templates, blurred until you've written them from memory.
 - **Me**: stats, the rank ladder, badges, export/import and cloud sync.
+- **Builds**: on the Engineering Works every station is one system in three or four steps. Each
+  step is a full problem whose tests re-run the earlier steps', and it opens on your code from the
+  step before, so the build reads as one program growing. A track above the statement shows the
+  steps; passing one offers the next.
 - **Workspace**: every problem opens with its task in one line, above the story. Run the
   examples, Submit the full hidden suite; passing it ticks the problem and offers the next
   one in the plan. Drafts are saved per problem. When you're stuck, a hint ladder gives

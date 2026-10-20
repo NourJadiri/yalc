@@ -26,8 +26,10 @@ import MobileLayout, { type MobileTab } from "./layout/MobileLayout";
 import { HINTS, nextRung } from "./lib/ladder";
 import { nextProblem } from "./lib/nextProblem";
 import { parseNotes } from "./lib/notes";
+import { carriedCode, stepPlace } from "./lib/steps";
 import LazyAssistant from "./LazyAssistant";
 import ProblemPane from "./problem/ProblemPane";
+import StepTrack from "./problem/StepTrack";
 import StuckNudge from "./problem/StuckNudge";
 
 interface WorkspaceBodyProps {
@@ -44,10 +46,14 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
   const accepted = !!progress.accepted[pid];
   /* From the progress as it stands, so a problem ticked elsewhere in the meantime is not offered. */
   const next = nextProblem(problemRef, progress.done);
+  const place = stepPlace(problemRef);
+  const nextIsStep = !!next && place?.steps[place.at + 1]?.id === next.id;
   const wide = useMedia("(min-width: 900px)");
 
   const prefs = useWorkspacePrefs();
-  const draft = useDraft(pid, spec.starter);
+  /* Read once, on opening: a step with no draft of its own starts from the step before. */
+  const [carried] = useState(() => carriedCode(place));
+  const draft = useDraft(pid, spec.starter, carried);
   const caseDrafts = useCaseDrafts(spec);
   const [problemTab, setProblemTab] = useState<"desc" | "solution">("desc");
   const [consoleTab, setConsoleTab] = useState<"cases" | "result">("cases");
@@ -89,6 +95,11 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
 
   const runCases = () => session.start("run");
   const submit = () => session.start("submit");
+  /* Saved first: the next problem reads this draft as it opens, before this body unmounts and saves on its own. */
+  const openOther = (id: string) => {
+    draft.save();
+    actions.openWork(id);
+  };
 
   /* The ladder's button and the nudge's: the next hint, then the solution; once that is open, just its tab. */
   const climb = () => {
@@ -118,6 +129,17 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
       onClimb={climb}
       ladderRef={ladder}
       fontSize={prefs.font}
+      steps={
+        place && (
+          <StepTrack
+            steps={place.steps}
+            at={place.at}
+            done={progress.done}
+            carriedFrom={draft.carriedFrom}
+            onOpen={openOther}
+          />
+        )
+      }
     />
   );
   const editorPane = (
@@ -132,6 +154,7 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
       fontSize={prefs.font}
       onFontStep={prefs.stepFont}
       onReset={draft.reset}
+      resetTitle={draft.resetTitle}
       snapshot={editorSnapshot}
       handle={editorHandle}
     />
@@ -147,7 +170,8 @@ export default function WorkspaceBody({ problemRef, content }: WorkspaceBodyProp
       onTab={setConsoleTab}
       run={session.run}
       next={next}
-      onNext={actions.openWork}
+      nextIsStep={nextIsStep}
+      onNext={openOther}
     />
   );
   const assistant = (

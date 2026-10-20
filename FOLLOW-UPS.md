@@ -268,6 +268,35 @@ moving it to the Solution tab's first heading would be kinder to keyboard users.
 **Bana's line numbers point into the code she was sent.** "line 7" is line 7 of her
 snapshot; edit above it before clicking and the jump lands on what is line 7 now.
 
+## Builds
+
+The Engineering Works line builds each system in steps. What that deliberately doesn't do
+yet, and the edges that are real:
+
+**The carried code is per browser, like every draft.** Step N opens on the draft of the latest
+earlier step that has one (normally step N−1) in this browser's storage. On another device, or
+after clearing site data, step N opens on its own stub instead: the class as of that step with
+every body `pass`. The step still works; you just write the earlier steps again (or copy them
+from the earlier steps' Solution tabs).
+
+**It's read once, when the step opens.** If step 2 already has a draft of its own, going back
+to change step 1 doesn't touch it. Reset on step 2 brings in step 1's code as it is now, which
+is the way to pick up a fix made there.
+
+**Steps aren't locked.** You can open step 3 first; it starts from its stub, and its tests
+cover steps 1 and 2 as well. Locking would only get in the way of someone who already knows
+the core.
+
+**A later step's tests include every earlier step's.** That's what stops a feature from quietly
+breaking an old one, and it makes step 4's suite the biggest of its build. Every step's spec
+is validated on its own, so a typo in a carried test would show up as a failure there.
+
+**v3 rides on the v1 → v2 machinery, edges included.** An older build refuses a v3 blob and
+parks sync rather than writing back a copy without the Works, and the Worker refuses a v2
+write over a v3 row. The deploy's own race (above, under Sync) applies one version up: a tab
+that edited offline across the deploy upgrades its v2 blob with an empty Works line, and if
+its stamp wins, LWW replaces the cloud copy, Works progress included.
+
 ## Sharper edges
 
 **Streaks use the device's local calendar day.**

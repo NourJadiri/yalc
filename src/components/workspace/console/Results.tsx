@@ -19,10 +19,11 @@ interface ResultsProps {
   run: RunView | null;
   /** The problem after this one, offered once a submit is accepted. */
   next: Problem | null;
+  nextIsStep?: boolean;
   onNext: (id: string) => void;
 }
 
-export default function Results({ spec, cases, run, next, onNext }: ResultsProps) {
+export default function Results({ spec, cases, run, next, nextIsStep, onNext }: ResultsProps) {
   const [sel, setSel] = useSelectedResult(run);
 
   if (!run) return <ResultsEmpty />;
@@ -36,7 +37,7 @@ export default function Results({ spec, cases, run, next, onNext }: ResultsProps
 
   return (
     <div className="ws-results">
-      {run.verdict && <VerdictBanner verdict={run.verdict} next={accepted ? next : null} onNext={onNext} />}
+      {run.verdict && <VerdictBanner verdict={run.verdict} next={accepted ? next : null} nextIsStep={nextIsStep} onNext={onNext} />}
 
       {o.compileError && <ErrorBox err={o.compileError} />}
       {o.entryError && !run.verdict && <ResultNote>{o.entryError}</ResultNote>}

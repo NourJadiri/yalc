@@ -344,3 +344,64 @@ checks with everything else.
 **The walkthrough** (Approach, Complexity, Pitfalls) is the long form.
 `## Approach` and `## Complexity` are required. Teach — this is what the
 reader opens after struggling.
+
+## Multi-step builds
+
+Some problems are one system built in steps: the core first, then a feature,
+then another, until it's whole (`order-book-1` … `order-book-4`). Each step is
+a complete problem of its own (every file above, validated on its own), and a
+station on the Engineering Works line lists the steps in order. When a reader
+opens step N with no draft of their own, the workspace starts the editor from
+their code for the step before (or the latest earlier step they wrote), so the
+build reads as one program growing.
+
+That only works if every step **extends** the one before and changes nothing
+it promised:
+
+- **Same class, same calls.** The class name, the constructor and every
+  earlier method keep their signatures. A new parameter on an old method has a
+  default that reproduces the old behaviour (`allow(client, t, cost=1)`). A
+  later step may add methods and rules, never change what an earlier test
+  expects.
+- **Directory names** are `<build>-<n>`: `order-book-1`, `order-book-2`, …
+  The title is `<Build>: <Step>` ("Order Book: Cancel Orders"); the line's
+  row shows just the step ("Cancel orders").
+
+### statement.md for a step
+
+- `## In short` says what this step adds, arrow and all: "An order book that
+  matches on arrival → add `cancel(order_id)`, which pulls a resting order out
+  of the book."
+- `## The task` opens with `**Step N of M.**` and a sentence or two on what
+  the class does so far, then a bullet list of every method so far (one line
+  each), then `**New in this step**` and the new rules in full. Every step
+  must be solvable cold, by someone who never saw the earlier ones: restate
+  any earlier rule the new feature touches, precisely. End with "Every test
+  from the earlier steps still runs."
+- `## Examples` show the new feature (they are this step's shown tests).
+- `## Constraints` cover every call so far.
+- `## Follow-ups`: for every step but the last, the final bullet points at the
+  next one ("Next step: …").
+
+### spec.json for a step
+
+- `tests` holds this step's own tests first (2–4 shown, the rest labelled,
+  15–25 in all), then **every test of the step before**, unchanged except:
+  `show` removed and the label prefixed with the step it came from
+  (`"step 1: refill keeps the remainder"`, `"step 1: example 2"` for a
+  formerly shown test). Labels that already carry a prefix keep it. So step 4
+  re-runs steps 1–3 and a feature can't quietly break an old one.
+- `starter` stubs the whole class as of this step: every method so far,
+  bodies `pass`.
+
+### solution.py, brute.py, wrong.py, notes.md for a step
+
+- `solution.py` is the complete reference as of this step, written as the
+  previous step's reference plus the new feature (same names, same shape), so
+  a reader can diff the two. Its `# N.` markers point at **this step's** work
+  only; earlier steps' markers become plain comments (a comment like
+  `# 3. something` anywhere counts as a marker).
+- `notes.md` is about this step's feature: its pattern, key idea, steps and
+  cost, and in the walkthrough how it fits into what was already there.
+- `brute.py` covers everything as of this step; `wrong.py` breaks this
+  step's feature, and this step's own tests must catch it.

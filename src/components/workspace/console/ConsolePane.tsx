@@ -19,10 +19,12 @@ interface ConsolePaneProps {
   run: RunView | null;
   /** The problem after this one, if the line has another that opens here. */
   next: Problem | null;
+  /** The next problem is the following step of the same build. */
+  nextIsStep?: boolean;
   onNext: (id: string) => void;
 }
 
-export default function ConsolePane({ spec, cases, onCases, activeCase, onActiveCase, tab, onTab, run, next, onNext }: ConsolePaneProps) {
+export default function ConsolePane({ spec, cases, onCases, activeCase, onActiveCase, tab, onTab, run, next, nextIsStep, onNext }: ConsolePaneProps) {
   const running = run !== null && run.outcome === null;
   const resultDot = running ? <StatusDot tone="pulse" aria-label="running" /> : run?.verdict && <StatusDot tone={run.verdict.tone} aria-hidden="true" />;
 
@@ -41,7 +43,7 @@ export default function ConsolePane({ spec, cases, onCases, activeCase, onActive
         {tab === "cases" ? (
           <CaseEditor spec={spec} cases={cases} onCases={onCases} activeCase={activeCase} onActiveCase={onActiveCase} />
         ) : (
-          <Results spec={spec} cases={cases} run={run} next={next} onNext={onNext} />
+          <Results spec={spec} cases={cases} run={run} next={next} nextIsStep={nextIsStep} onNext={onNext} />
         )}
       </div>
     </section>

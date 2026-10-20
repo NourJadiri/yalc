@@ -31,7 +31,7 @@ function tick(c: Ctx, ref: ProblemRef): void {
     confetti(c, 12);
     return;
   }
-  toast(c, day.stn + " cleared", true);
+  toast(c, day.stn + (day.steps ? " shipped" : " cleared"), true);
   confetti(c, 50);
   const cleared = line.plan.filter((d) => dayDone(t, d)).length;
   if (cleared >= Math.ceil(line.plan.length / 2)) award(c, line.award.half);

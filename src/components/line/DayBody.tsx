@@ -14,6 +14,9 @@ export default function DayBody({ day }: { day: Day }) {
   return (
     <div className="daybody">
       <p className="daynote">{day.note}</p>
+      {day.steps && (
+        <p className="daysteps">{`One build in ${day.probs.length} steps. Each step opens on your code from the one before.`}</p>
+      )}
       {day.ritual && (
         <RitualRow
           ritual={day.ritual}
@@ -23,10 +26,11 @@ export default function DayBody({ day }: { day: Day }) {
         />
       )}
       <ul className="plist">
-        {day.probs.map((p) => (
+        {day.probs.map((p, k) => (
           <ProblemRow
             key={p.id}
             prob={p}
+            step={day.steps ? `step ${k + 1}/${day.probs.length}` : undefined}
             done={!!progress.done[p.id]}
             passed={!!progress.accepted[p.id]}
             onToggle={() => actions.toggleProb(p.id)}

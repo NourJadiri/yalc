@@ -16,14 +16,15 @@ interface EditorPaneProps {
   fontSize: number;
   onFontStep: (delta: number) => void;
   onReset: () => void;
+  resetTitle: string;
   snapshot: RefObject<EditorSnapshot | null>;
   handle: RefObject<EditorHandle | null>;
 }
 
-export default function EditorPane({ title, code, docKey, onChange, onRun, onSubmit, run, fontSize, onFontStep, onReset, snapshot, handle }: EditorPaneProps) {
+export default function EditorPane({ title, code, docKey, onChange, onRun, onSubmit, run, fontSize, onFontStep, onReset, resetTitle, snapshot, handle }: EditorPaneProps) {
   return (
     <section className="ws-code" aria-label="Code">
-      <EditorToolbar fontSize={fontSize} onFontStep={onFontStep} onReset={onReset} />
+      <EditorToolbar fontSize={fontSize} onFontStep={onFontStep} onReset={onReset} resetTitle={resetTitle} />
       <div className="ws-editor">
         <Editor
           value={code}
