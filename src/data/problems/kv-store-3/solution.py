@@ -1,14 +1,15 @@
 class KVStore:
 
-    def __init__(self):
+    def __init__(self, disk=None):
         # The data, and beside it how many keys hold each value
         self.data = {}                          # key -> value
         self.holders = collections.Counter()    # value -> number of keys holding it
         # One undo log shared by every open transaction, and where each one starts in it
         self.undo = []                          # (key, its value before the change, or None if absent)
         self.starts = []                        # undo-log length at each open begin, innermost last
-        # 1. The durable log: (key, value) records, None meaning deleted. Only it survives a crash.
-        self.log = []
+        # 1. The disk outlives this object. Its log holds (key, value) records,
+        # None meaning deleted, and replaying them rebuilds the committed state.
+        self.disk = disk
 
     def set(self, key: str, value: int) -> None:
         self._change(key, value)
@@ -49,20 +50,14 @@ class KVStore:
         if not self.starts:
             # 2. The outermost commit makes the whole transaction durable at once:
             # one record per key it changed, holding that key's final value.
-            touched = dict.fromkeys(key for key, _ in self.undo)
-            self.log.extend((key, self.data.get(key)) for key in touched)
+            for key in dict.fromkeys(key for key, _ in self.undo):
+                self._persist(key, self.data.get(key))
             self.undo.clear()
         return True
 
-    def crash(self) -> None:
-        # 3. Power cut: everything except the durable log is gone
-        self.data = {}
-        self.holders = collections.Counter()
-        self.undo = []
-        self.starts = []
-
     def recover(self) -> int:
-        # 4. Rebuild from the log alone, oldest record first: a key's last record wins
+        # 3. A fresh object on the old disk: rebuild from the log alone, oldest
+        # record first, so a key's last record wins
         self.data = {}
         self._replay(self.data)
         self.holders = collections.Counter(self.data.values())
@@ -73,8 +68,8 @@ class KVStore:
             # Inside a transaction, write down what the key held before changing it
             self.undo.append((key, self.data.get(key)))
         else:
-            # 5. With no transaction open, the change is durable as soon as it's made
-            self.log.append((key, value))
+            # 4. With no transaction open, the change is durable as soon as it's made
+            self._persist(key, value)
         self._write(key, value)
 
     def _write(self, key, value):
@@ -89,9 +84,14 @@ class KVStore:
             self.data[key] = value
             self.holders[value] += 1
 
+    def _persist(self, key, value):
+        # Append a record to the disk. A store built without one keeps nothing.
+        if self.disk is not None:
+            self.disk.append((key, value))
+
     def _replay(self, into):
-        # Apply the durable log to the dict `into`, oldest record first
-        for key, value in self.log:
+        # Apply the disk's log to the dict `into`, oldest record first
+        for key, value in self.disk.read_log():
             if value is None:
                 into.pop(key, None)
             else:

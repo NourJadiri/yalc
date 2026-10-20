@@ -1,17 +1,18 @@
-# The tempting shortcut: log every write the moment it happens, by putting the
-# append inside the one write path. Rollbacks even look right, since undoing a
-# change writes (and logs) the old value back. But a transaction that is still
-# open at the crash has its changes in the log, and they come back on recovery.
+# The tempting shortcut: put the disk write inside the one write path, so every
+# write is logged the moment it happens. Rollbacks even come out right, since
+# undoing a change writes (and logs) the old value back. But a transaction that
+# is still open at the crash already has its changes on the disk, and they come
+# back on recovery.
 import collections
 
 
 class KVStore:
-    def __init__(self):
+    def __init__(self, disk=None):
         self.data = {}
         self.holders = collections.Counter()
         self.undo = []
         self.starts = []
-        self.log = []
+        self.disk = disk
 
     def set(self, key, value):
         self._change(key, value)
@@ -48,14 +49,9 @@ class KVStore:
             self.undo.clear()
         return True
 
-    def crash(self):
-        self.data = {}
-        self.holders = collections.Counter()
-        self.undo = []
-        self.starts = []
-
     def recover(self):
-        for key, value in self.log:
+        self.data = {}
+        for key, value in self.disk.read_log():
             if value is None:
                 self.data.pop(key, None)
             else:
@@ -69,7 +65,8 @@ class KVStore:
         self._write(key, value)
 
     def _write(self, key, value):
-        self.log.append((key, value))           # durable at once, committed or not
+        if self.disk is not None:
+            self.disk.append((key, value))      # durable at once, committed or not
         old = self.data.get(key)
         if old is not None:
             self.holders[old] -= 1
