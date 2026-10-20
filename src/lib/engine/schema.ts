@@ -24,7 +24,7 @@ const eachTrack = <T>(f: (id: TrackId) => T): Record<TrackId, T> =>
   Object.fromEntries(TRACK_IDS.map((id) => [id, f(id)])) as Record<TrackId, T>;
 
 export const blank = (): PersistedData => ({
-  v: 2,
+  v: 3,
   track: "google",
   tracks: eachTrack(blankTrack),
   quiz: blankQuiz(),
@@ -107,7 +107,7 @@ export function normalize(loaded: unknown): PersistedData {
   if (loaded["v"] === 1) {
     // v1 predates lines: its top-level xp, done and rituals were the Google line's.
     return {
-      v: 2,
+      v: 3,
       track: "google",
       tracks: {
         ...eachTrack(blankTrack),
@@ -119,14 +119,15 @@ export function normalize(loaded: unknown): PersistedData {
     };
   }
 
-  if (loaded["v"] !== 2) return blank();
+  // v2 is v3 without the Engineering Works line, which starts blank.
+  if (loaded["v"] !== 2 && loaded["v"] !== 3) return blank();
 
   // Keys this build doesn't know (a newer build's) survive, so a round trip loses nothing.
   const raw = { ...(blank() as unknown as Loose), ...loaded };
   const tracks = isObj(raw["tracks"]) ? raw["tracks"] : {};
   return {
     ...(raw as unknown as PersistedData),
-    v: 2,
+    v: 3,
     track: isTrackId(raw["track"]) ? raw["track"] : "google",
     tracks: eachTrack((id) => normTrack(tracks[id])),
     quiz: normQuiz(raw["quiz"]),
@@ -136,7 +137,7 @@ export function normalize(loaded: unknown): PersistedData {
 }
 
 export const isExport = (x: unknown): boolean =>
-  isObj(x) && (x["v"] === 1 || x["v"] === 2);
+  isObj(x) && (x["v"] === 1 || x["v"] === 2 || x["v"] === 3);
 
 const cloneTrack = (t: TrackData): TrackData => ({
   ...t,

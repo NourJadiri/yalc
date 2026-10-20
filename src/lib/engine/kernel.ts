@@ -77,5 +77,5 @@ export function addXP(c: Ctx, track: TrackId, n: number, why?: string, quiet?: b
     confetti(c, 60);
     if (after === line.ranks.length - 1) award(c, line.award.top);
   }
-  touchStreak(c); // the streak is shared by both lines
+  touchStreak(c); // the streak is shared by every line
 }

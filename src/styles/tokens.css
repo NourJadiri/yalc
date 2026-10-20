@@ -16,6 +16,9 @@
   /* The Local's palette: smile orange, lagoon teal, squid ink, rust. */
   --aws-orange: #d9690b; --aws-teal: #0b7a87; --aws-ink: #232f3e; --aws-rust: #b6461f;
 
+  /* The Works' palette: signal violet, magenta, hi-vis lime, rail steel. */
+  --eng-violet: #6741d9; --eng-magenta: #c2255c; --eng-lime: #5c940d; --eng-steel: #495057;
+
   /* The one colour that says which line you're on: tabs, focus rings, the workspace's primary button. */
   --accent: var(--blue);
 
@@ -36,6 +39,7 @@
     --shadow: 0 1px 3px rgba(0,0,0,.5);
 
     --aws-orange: #ff9900; --aws-teal: #45c2cf; --aws-ink: #b6c2cc; --aws-rust: #f2875f;
+    --eng-violet: #b197fc; --eng-magenta: #f783ac; --eng-lime: #a9e34b; --eng-steel: #adb5bd;
 
     --ed-bg: #1f2023; --ed-gutter: #1b1c1f;
     --ed-active: rgba(138,180,248,.06); --ed-sel: rgba(138,180,248,.24); --ed-err: rgba(242,139,130,.16);
@@ -46,3 +50,4 @@
 
 /* Riding the Local turns the accent orange; useTrackTheme sets data-track on <html>. */
 :root[data-track="aws"] { --accent: var(--aws-orange); }
+:root[data-track="eng"] { --accent: var(--eng-violet); }

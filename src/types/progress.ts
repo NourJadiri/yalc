@@ -45,8 +45,10 @@ export interface TrackData {
   uncleared?: Record<string, true>;
 }
 
+/** v3 added the Engineering Works line. A v2 blob is the same shape without it; older builds
+ *  refuse v3, so they park sync instead of writing back a copy that has lost the line. */
 export interface PersistedData {
-  v: 2;
+  v: 3;
   /** The line showing. Synced: it is where you are, not a setting. */
   track: TrackId;
   tracks: Record<TrackId, TrackData>;

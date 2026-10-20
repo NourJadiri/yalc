@@ -1,6 +1,7 @@
 import { PLAN } from "./plan";
 import { AWS_PLAN } from "./aws";
-import { AWS_RANKCOL, AWS_RANKS, RANKCOL, RANKS } from "./meta";
+import { ENG_PLAN } from "./eng";
+import { AWS_RANKCOL, AWS_RANKS, ENG_RANKCOL, ENG_RANKS, RANKCOL, RANKS } from "./meta";
 import type { Day, Problem, Track, TrackId } from "../types";
 
 export const TRACKS: Record<TrackId, Track> = {
@@ -52,11 +53,35 @@ export const TRACKS: Record<TrackId, Track> = {
           " stops behind you. There's no timetable on the Local — ride when you can.",
     perfectCopy: "Perfect run. Day One is getting closer.",
   },
+  eng: {
+    id: "eng",
+    name: "Engineering Works",
+    company: "ElevenLabs · SIG",
+    bullet: "E",
+    title: ["Engineering", "Works"],
+    blurb: "Seven systems you'd actually ship, each built in steps: the core first, then one feature at a time until it's whole. Every step opens on your code from the last one. Tuned for ElevenLabs and SIG.",
+    terminus: "SHIPPED",
+    unit: "Build",
+    plan: ENG_PLAN,
+    ranks: ENG_RANKS,
+    rankCol: ENG_RANKCOL,
+    badges: [
+      "eng1", "ritual5", "metro100", "perfect", "bugs20", "streak3", "streak7",
+      "engHalf", "engLine", "engTop", "green", "green25",
+    ],
+    award: { first: "eng1", half: "engHalf", line: "engLine", top: "engTop" },
+    terminusCopy: (cleared) =>
+      cleared === ENG_PLAN.length
+        ? "All " + ENG_PLAN.length + " builds shipped. Bring any of them to the interview and talk it through."
+        : cleared + " of " + ENG_PLAN.length +
+          " builds shipped. Every step you pass is code you can explain out loud.",
+    perfectCopy: "Perfect run. Ship it.",
+  },
 };
 
-export const TRACK_IDS: readonly TrackId[] = ["google", "aws"];
+export const TRACK_IDS: readonly TrackId[] = ["google", "aws", "eng"];
 
-export const isTrackId = (x: unknown): x is TrackId => x === "google" || x === "aws";
+export const isTrackId = (x: unknown): x is TrackId => TRACK_IDS.some((id) => id === x);
 
 export interface ProblemRef {
   prob: Problem;

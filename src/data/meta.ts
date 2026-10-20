@@ -25,6 +25,10 @@ export const BADGES: Badge[] = [
   { id:"awsHalf",  ic:"🧭", n:"Halfway House",  d:"Clear 7 stations on the Local" },
   { id:"awsLine",  ic:"🏙️", n:"Doors Open",     d:"Clear every station on the Local" },
   { id:"awsTop",   ic:"🎖️", n:"Day One",        d:"Reach the top rank on the Local" },
+  { id:"eng1",     ic:"🔩", n:"Breaking Ground", d:"Clear your first step on the Works" },
+  { id:"engHalf",  ic:"🏗️", n:"Halfway Built",  d:"Clear 4 builds on the Works" },
+  { id:"engLine",  ic:"🚀", n:"Shipped",        d:"Clear every build on the Works" },
+  { id:"engTop",   ic:"🏅", n:"Fellow",         d:"Reach the top rank on the Works" },
 ];
 
 export const AWS_RANKS: NonEmpty<Rank> = [
@@ -36,6 +40,16 @@ export const AWS_RANKS: NonEmpty<Rank> = [
 export const AWS_RANKCOL: string[] = [
   "var(--aws-orange)", "var(--aws-teal)", "var(--aws-ink)", "var(--aws-rust)",
   "var(--aws-orange)", "var(--aws-teal)", "var(--aws-orange)",
+];
+
+export const ENG_RANKS: NonEmpty<Rank> = [
+  ["Apprentice", 0], ["Junior", 60], ["Engineer", 150], ["Senior", 270],
+  ["Staff", 400], ["Principal", 540], ["Fellow", 680],
+];
+
+export const ENG_RANKCOL: string[] = [
+  "var(--eng-violet)", "var(--eng-magenta)", "var(--eng-lime)", "var(--eng-steel)",
+  "var(--eng-violet)", "var(--eng-magenta)", "var(--eng-lime)",
 ];
 
 export const RANKCOL: string[] = [

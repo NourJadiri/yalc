@@ -14,7 +14,8 @@
  * otherwise overwrite a v2 blob — and every line but Google with it — just by
  * being newer. The same WHERE clause refuses any write whose schema is older
  * than the row's; the stale tab gets the v2 row back, can't read it, and parks
- * (sync's `held`) until it reloads into a build that can.
+ * (sync's `held`) until it reloads into a build that can. The v2 -> v3 bump
+ * (the Engineering Works line) rides on the same clause.
  *
  * Runs in the Worker (index.ts sends /api/state/<code> here) against a D1
  * binding named DB. The schema maintains itself: the table creates itself on

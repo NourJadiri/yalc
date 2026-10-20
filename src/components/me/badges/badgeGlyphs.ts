@@ -18,4 +18,8 @@ export const BADGE_GLYPHS: Record<string, IconName> = {
   awsHalf: "milestone",
   awsLine: "flag",
   awsTop: "graduation-cap",
+  eng1: "terminal",
+  engHalf: "milestone",
+  engLine: "flag",
+  engTop: "graduation-cap",
 };

@@ -43,7 +43,7 @@ export function useProgressTransfer() {
   }
 
   function resetProgress() {
-    if (!window.confirm("Wipe all progress, XP and badges — on both lines?")) return;
+    if (!window.confirm("Wipe all progress, XP and badges — on every line?")) return;
     actions.reset();
   }
 

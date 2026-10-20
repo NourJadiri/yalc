@@ -40,6 +40,8 @@ export interface Day {
   note: string;
   /** Morning template drill. The Local has none: no ritual row. */
   ritual?: string;
+  /** The station is one build: its problems are the steps, in order, each extending the code of the one before. */
+  steps?: true;
   probs: Problem[];
 }
 
@@ -88,9 +90,9 @@ export interface Deck {
   n: string;
 }
 
-export type TrackId = "google" | "aws";
+export type TrackId = "google" | "aws" | "eng";
 
-/** Everything that differs between riding to Google and riding to Amazon. */
+/** Everything that differs between the lines: riding to Google, to Amazon, or through the Engineering Works. */
 export interface Track {
   id: TrackId;
   name: string;

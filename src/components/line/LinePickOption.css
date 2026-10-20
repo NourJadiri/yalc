@@ -7,6 +7,7 @@
 .linepick:active { transform: scale(.98); }
 .linepick { --lc: var(--blue); }
 .linepick[data-track="aws"] { --lc: var(--aws-orange); }
+.linepick[data-track="eng"] { --lc: var(--eng-violet); }
 .linepick.on { border-color: var(--lc); background: color-mix(in srgb, var(--lc) 8%, var(--surface)); }
 .lbullet {
   width: 28px; height: 28px; border-radius: 50%; flex: none; display: grid; place-items: center;
