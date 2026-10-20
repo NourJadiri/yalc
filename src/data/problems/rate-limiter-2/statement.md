@@ -1,7 +1,7 @@
 # Rate Limiter: Costs and Stacked Limits
 
 ## In short
-The token-bucket limiter → requests may cost several tokens, and `add_limit` stacks more buckets; a request passes only if every bucket can pay.
+The token-bucket limiter → add request costs and `add_limit`, which stacks more buckets; a request passes only if every bucket can pay.
 
 ## The task
 
@@ -72,7 +72,7 @@ The second limit's bucket never holds more than 5 tokens, so a request for 6 is 
 
 ## Aim for
 
-`O(L)` per call for `L` limits, integers only. Keep step 1's milliseconds of credit, now one level per limit: a token of a limit is that limit's `interval` ms, so `cost` tokens are `cost * interval`. One `last` per client serves every limit, since all its buckets refill over the same elapsed time. On a request, refill every level, then check them all, and only then charge them all. Charging as you check is the classic bug.
+`O(L)` per call for `L` limits, integers only. Count each bucket in milliseconds of credit, one level per limit: a token of a limit is that limit's `interval` ms, so `cost` tokens are `cost * interval`, and a full bucket is `capacity * interval`. One `last` per client serves every limit, since all its buckets refill over the same elapsed time. On a request, refill every level, then check them all, and only then charge them all. Charging as you check is the classic bug.
 
 ## Follow-ups
 
