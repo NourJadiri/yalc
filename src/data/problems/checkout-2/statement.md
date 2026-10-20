@@ -26,7 +26,9 @@ A weighed line costs `price_per_kg * grams / 1000` cents, rounded to the nearest
 
 Each line is rounded on its own, and the total adds up the rounded lines. So two 500 g lines can cost one cent more than a single 1000 g line of the same product.
 
-Unit products work as before. Every test from the earlier steps still runs.
+Unit products work as before.
+
+The tests drive the class LeetCode-style: a list of operation names and a matching list of argument lists, with the constructor first. The expected output holds one entry per operation: `null` for the constructor, `true` or `false` for `add_product`, `add_weighed` and `scan`, a number for `total`. Every test from the earlier steps still runs.
 
 ## Examples
 
@@ -69,7 +71,7 @@ args = [[],["HERB","Basil",2500],["HERB","Basil Pot",199],["HERB",1],["HERB",3],
 
 ## Aim for
 
-Still `O(1)` per call. Price each line once, when it's scanned, and round it there, so the running total from step 1 keeps working. Round with integers only: `(price_per_kg * grams + 500) // 1000` is the nearest cent with halves going up. Python's `round()` sends an exact half to the even neighbour (448.5 becomes 448), and floating-point division can land a hair below the half. A weighed product is a product that prices its lines differently, which makes it a natural subclass.
+Still `O(1)` per call. Price each line once, when it's scanned, and round it there. A running total of the line prices then keeps `total()` at `O(1)`. Round with integers only: `(price_per_kg * grams + 500) // 1000` is the nearest cent with halves going up. Python's `round()` sends an exact half to the even neighbour (448.5 becomes 448), and floating-point division can land a hair below the half. A weighed product is a product that prices its lines differently, which makes it a natural subclass.
 
 ## Follow-ups
 

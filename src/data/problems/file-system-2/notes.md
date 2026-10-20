@@ -31,7 +31,7 @@ Parent pointers work too: walk up from the file to the root adding `delta`. The 
 
 `write`: one walk down to the parent and one pass over the same nodes, `O(L)` for a path of `L` characters. `size`: one walk, `O(L)`. The other calls are unchanged. Space: one integer per node.
 
-Walking the subtree on each `size` call costs `O(n)` for `n` entries below the path. The large test calls `size("/")` after each of 8,000 writes in a tree that grows past 5,000 files, which is tens of millions of node visits that way.
+Walking the subtree on each `size` call costs `O(n)` for `n` entries below the path. The large test calls `size("/")` right after each of 5,000 writes, in a tree of about 9,900 folders and 2,500 files: tens of millions of node visits that way.
 
 ## Pitfalls
 

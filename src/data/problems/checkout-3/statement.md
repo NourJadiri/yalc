@@ -31,7 +31,7 @@ The multibuy and the percent off are item promotions, and a sku can have at most
 - a multibuy is for a weighed product, has `n < 2`, or has `price >= n * unit price` (it would save nothing);
 - a percent is outside `1` to `100`.
 
-`add_spend_discount` returns `false` unless `1 <= amount <= threshold`, so a total never goes below 0. Any number of valid spend discounts can be added.
+`add_spend_discount` returns `false` unless `1 <= amount <= threshold`, so a total never goes below 0. Several spend discounts can be added.
 
 How `total()` is worked out:
 
@@ -39,7 +39,9 @@ How `total()` is worked out:
 2. Among the spend discounts whose `threshold` the subtotal reaches, only the one with the largest `amount` applies.
 3. `total()` is the subtotal minus that amount, or the subtotal itself if no spend discount applies.
 
-Promotions can be added before or after the items are scanned. `total()` always reflects the basket and the promotions as they stand at that moment. Every test from the earlier steps still runs.
+Promotions can be added before or after the items are scanned. `total()` always reflects the basket and the promotions as they stand at that moment.
+
+The tests drive the class LeetCode-style: a list of operation names and a matching list of argument lists, with the constructor first. The expected output holds one entry per operation: `null` for the constructor, `true` or `false` for `scan` and the `add_` methods, a number for `total`. Every test from the earlier steps still runs.
 
 ## Examples
 

@@ -25,7 +25,7 @@ Why not the obvious tools:
 - `round(x)` uses round-half-to-even. It sends 448.5 to 448 and 149.5 to 150, so it's right only half of the time on exact halves.
 - Floats. `price / 1000 * grams` divides first, and `145 / 1000 * 1500` comes out as `217.49999999999997`, so adding 0.5 and flooring gives 217 instead of 218. Converting to currency first (`1.15 * 0.5 * 100`) drifts the same way.
 
-Each line is rounded when it's scanned and stored on the line. Grouping the grams of one product and rounding once gives a different total: three 500 g lines at 1 per kg cost 1 + 1 + 1 = 3, while 1500 g at once would cost 2.
+Each line is rounded when it's scanned and stored on the line. Grouping the grams of one product and rounding once gives a different total: three 500 g lines at 1 cent per kg cost 1 + 1 + 1 = 3, while 1500 g at once would cost 2.
 
 ## Complexity
 

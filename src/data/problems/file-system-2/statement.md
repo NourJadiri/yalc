@@ -19,7 +19,7 @@ A file system of folders and text files → add `size(path)`: a file's length, o
 
 - `size(path)`: the size of what `path` points at. A file's size is the length of its content. A folder's size is the total size of every file beneath it, at any depth. An empty folder has size `0`, and so does an empty file. If `path` doesn't exist, return `-1`.
 
-Sizes are read far more often than files change. `size` must not walk the folder's contents: keep each folder's total up to date as files are written, so that a call costs about the length of its path. One large test calls `size("/")` after every one of thousands of writes in a deep tree.
+Sizes are read far more often than files change. `size` must not walk the folder's contents: keep each folder's total up to date as files are written, so that a call costs about the length of its path. One large test calls `size("/")` thousands of times, each right after a write, in a tree of about 10,000 folders.
 
 The tests drive the class LeetCode-style: a list of operation names and a matching list of argument lists, with the constructor first. The expected output holds one entry per operation: `null` for the constructor, `true` or `false` for `mkdir` and `write`, a string or `null` for `read`, a list of names for `ls`, a number for `size`.
 

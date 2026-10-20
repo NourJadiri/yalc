@@ -109,7 +109,9 @@ class Checkout:
         line = Line(product, qty)
         self.lines.append(line)
         # 3. Only this sku's cost can change: move the subtotal by the difference
-        tally = self.tallies.setdefault(sku, Tally(product))
+        tally = self.tallies.get(sku)
+        if tally is None:
+            tally = self.tallies[sku] = Tally(product)
         before = tally.cost()
         tally.add(line)
         self.running += tally.cost() - before
