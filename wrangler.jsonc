@@ -17,5 +17,10 @@
       "binding": "DB",
       "database_id": "a572e8b5-a6e2-446c-9066-4d268607b69a"
     }
-  ]
+  ],
+  // Workers Logs. It has to live here and not only in the dashboard:
+  // `wrangler deploy` turns it off when this file doesn't mention it.
+  "observability": {
+    "enabled": true
+  }
 }
