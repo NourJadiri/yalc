@@ -17,5 +17,8 @@
       "binding": "DB",
       "database_id": "a572e8b5-a6e2-446c-9066-4d268607b69a"
     }
-  ]
+  ],
+  "observability": {
+    "enabled": true
+  }
 }
