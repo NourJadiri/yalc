@@ -24,7 +24,7 @@ export default function ReferenceSolution({ content, notes, fontSize, copied, on
       <div className="ws-sol-head">
         <ProblemHeading>Reference solution</ProblemHeading>
         <LinkButton onClick={onCopy}>
-          <Icon name={copied ? "check" : "copy"} size={13} />
+          <Icon name={copied ? "check" : "copy"} size={16} />
           {copied ? "Copied" : "Copy"}
         </LinkButton>
       </div>

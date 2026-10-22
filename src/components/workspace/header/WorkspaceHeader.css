@@ -1,14 +1,14 @@
 .ws-head {
-  flex: none; display: flex; align-items: center; gap: 10px;
-  padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
-  background: var(--surface); border-bottom: 1px solid var(--line);
+  flex: none; display: flex; align-items: center; gap: var(--space-3);
+  padding: calc(var(--space-2) + env(safe-area-inset-top)) var(--space-3) var(--space-2) var(--space-2);
+  background: var(--surface); border-bottom: var(--hairline) solid var(--rule);
 }
 .ws-title { min-width: 0; flex: 1; }
 .ws-title h2 {
-  margin: 0; font-size: 15.5px; font-weight: 650; letter-spacing: -.2px; line-height: 1.25;
+  margin: 0; color: var(--ink); font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); font-weight: 700;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-@media (max-width: 899px) {
-  .ws-head { gap: 6px; padding-left: 6px; padding-right: 8px; }
-  .ws-title h2 { font-size: 14.5px; }
+@media (max-width: 599px) {
+  .ws-head { gap: var(--space-1); padding-right: var(--space-2); padding-left: var(--space-1); }
+  .ws-title h2 { font: var(--t-ui); letter-spacing: var(--t-ui-ls); font-weight: 700; }
 }

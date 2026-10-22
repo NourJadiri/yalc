@@ -1,6 +1,12 @@
-.ws-dots { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; }
+/* A short route: one stop per hint and a last one for the solution, joined by a line; the stops reached so far filled. */
+.ws-dots { display: inline-flex; align-items: center; margin-left: auto; }
 .ws-dots i {
-  width: 7px; height: 7px; border-radius: 50%; box-sizing: border-box;
-  border: 1.5px solid color-mix(in srgb, var(--ink2) 55%, var(--line)); transition: background-color .2s ease, border-color .2s ease;
+  position: relative; width: var(--space-3); height: var(--space-3); border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-full);
+  background: var(--surface-raised); transition: background-color 120ms ease-out, border-color 120ms ease-out;
 }
-.ws-dots i.on { background: var(--accent); border-color: var(--accent); }
+.ws-dots i + i { margin-left: var(--space-2); }
+.ws-dots i + i::before {
+  content: ""; position: absolute; top: calc(50% - var(--stroke-bold) / 2); right: calc(100% + var(--stroke-bold)); width: var(--space-2); height: var(--stroke-bold); background: var(--border);
+}
+.ws-dots i.on { border-color: var(--ink); background: var(--ink); }
+.ws-dots i.on + i.on::before { background: var(--ink); }

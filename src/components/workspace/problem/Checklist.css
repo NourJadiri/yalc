@@ -1,5 +1,16 @@
-.ws-checklist { list-style: none; margin: 0 0 10px; padding: 0; }
-.ws-checklist label { display: flex; align-items: flex-start; gap: 10px; padding: 5px 0; cursor: pointer; }
-.ws-checklist input { flex: none; width: 16px; height: 16px; margin: 4px 0 0; accent-color: var(--accent); cursor: pointer; }
-.ws-checklist .md { transition: opacity .15s ease; }
-.ws-checklist .done .md { opacity: .55; text-decoration: line-through; }
+.ws-checklist { list-style: none; margin: 0 0 var(--space-3); padding: 0; }
+.ws-checklist label { display: flex; align-items: flex-start; gap: var(--space-3); min-height: var(--control-height); padding: var(--space-2) 0; cursor: pointer; }
+/* Platform's Checkbox, drawn on the native box itself: a firm 2px edge, and the sign fill with a check when ticked. */
+.ws-checklist input {
+  position: relative; flex: none; display: grid; place-items: center; width: var(--target-min); height: var(--target-min); margin: 0;
+  border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-sm); background: var(--surface-raised);
+  appearance: none; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out;
+}
+.ws-checklist input:checked { border-color: var(--sign); background: var(--sign); }
+.ws-checklist input:checked::before {
+  content: ""; width: calc(var(--space-1) * 1.5); height: var(--space-3); margin-top: calc(-1 * var(--space-1) / 2);
+  border: solid var(--on-sign); border-width: 0 var(--stroke-bold) var(--stroke-bold) 0; transform: rotate(45deg);
+}
+@media (hover: hover) { .ws-checklist label:hover input:not(:checked) { border-color: var(--ink); } }
+.ws-checklist .md { transition: color 120ms ease-out; }
+.ws-checklist .done .md { color: var(--ink-muted); text-decoration: line-through; }

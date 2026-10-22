@@ -1,21 +1,23 @@
-/* Under the assistant (6) when the two meet. Bottom left, where the assistant is not. */
+/* Platform's Notice, information tone, floating: under the assistant (6) when the two meet. Bottom left, where the
+   assistant is not. */
 .ws-nudge {
-  position: fixed; z-index: 5; left: 16px; bottom: 16px; width: 300px; max-width: calc(100vw - 32px);
-  display: flex; flex-direction: column; gap: 10px; padding: 12px 14px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(32,33,36,.16), 0 2px 6px rgba(32,33,36,.1);
+  position: fixed; z-index: 5; left: var(--space-4); bottom: var(--space-4); width: 24rem; max-width: calc(100vw - 2 * var(--space-4));
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--space-4); padding: var(--space-4);
+  border: var(--hairline) solid var(--rule); border-radius: var(--radius-md); background: var(--surface-raised); color: var(--ink);
+  box-shadow: var(--shadow-float);
 }
-.ws-nudge p { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 13px; font-weight: 600; }
-.ws-nudge p svg { flex: none; color: var(--ink2); }
-.ws-nudge-actions { display: flex; align-items: center; gap: 6px; }
+.ws-nudge-tile {
+  display: grid; place-items: center; width: calc(var(--space-8) + var(--space-2)); height: calc(var(--space-8) + var(--space-2));
+  border-radius: var(--radius-sm); background: var(--sign); color: var(--on-sign);
+}
+.ws-nudge-body { display: flex; flex-direction: column; gap: var(--space-3); padding-top: var(--space-2); }
+.ws-nudge p { margin: 0; font: var(--t-ui); letter-spacing: var(--t-ui-ls); font-weight: 700; }
+.ws-nudge-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.ws-nudge-actions .btn { max-width: 100%; }
 @media (max-width: 899px) {
-  .ws-nudge { left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); width: auto; max-width: none; }
-  .ws-nudge .btn { height: 38px; }
-}
-@media (prefers-color-scheme: dark) {
-  .ws-nudge { box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.35); }
+  .ws-nudge { left: var(--space-2); right: var(--space-2); bottom: calc(var(--space-2) + env(safe-area-inset-bottom)); width: auto; max-width: none; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .ws-nudge { animation: nudgein .2s cubic-bezier(.05, .7, .1, 1); }
+  .ws-nudge { animation: nudgein 160ms ease-out; }
 }
-@keyframes nudgein { from { opacity: 0; transform: translateY(8px); } }
+@keyframes nudgein { from { opacity: 0; transform: translateY(var(--space-2)); } }

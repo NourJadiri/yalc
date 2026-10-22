@@ -14,7 +14,7 @@ interface StepStopProps {
 export default function StepStop({ n, prob, current, done, onOpen }: StepStopProps) {
   const inner = (
     <>
-      <span className="ws-buildstop-dot">{done ? <Icon name="check" size={12} strokeWidth={3} /> : n}</span>
+      <span className="ws-buildstop-dot">{done ? <Icon name="check" size={16} /> : n}</span>
       <span className="ws-buildstop-name">{prob.n}</span>
     </>
   );

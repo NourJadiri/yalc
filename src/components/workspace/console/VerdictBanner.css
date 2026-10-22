@@ -1,12 +1,11 @@
-.ws-verdict { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin: 2px 0 12px; }
-.ws-verdict strong { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
-.ws-verdict span { font-size: 12.5px; color: var(--ink2); }
-.ws-verdict.ok strong { color: var(--ok-ink); }
-.ws-verdict.bad strong { color: var(--bad-ink); }
-.ws-verdict.warn strong { color: var(--med); }
+/* The verdict as a status: its word and pictogram in go, stop or caution, the tally after it. */
+.ws-verdict { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); margin: 0 0 var(--space-3); }
+.ws-verdict strong { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink); font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); font-weight: 700; }
+.ws-verdict strong > svg { flex: none; }
+.ws-verdict span { color: var(--ink-muted); font: var(--t-body); letter-spacing: var(--t-body-ls); font-variant-numeric: tabular-nums; }
+.ws-verdict.ok strong { color: var(--go); }
+.ws-verdict.bad strong { color: var(--stop); }
+.ws-verdict.warn strong { color: var(--caution); }
 /* A long title wraps inside the button rather than pushing it past the pane. */
-.ws-verdict .ws-next { max-width: 100%; height: auto; min-height: 32px; padding-block: 5px; white-space: normal; text-align: left; }
+.ws-verdict .ws-next { max-width: 100%; height: auto; min-height: var(--control-height); padding-block: var(--space-2); white-space: normal; text-align: left; }
 .ws-verdict .ws-next svg { flex: none; }
-@media (max-width: 899px) {
-  .ws-verdict .ws-next { min-height: 38px; }
-}
