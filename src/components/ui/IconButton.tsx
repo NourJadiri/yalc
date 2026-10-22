@@ -10,7 +10,7 @@ interface IconButtonProps extends Omit<ComponentProps<"button">, "children" | "a
   iconSize?: number;
 }
 
-export default function IconButton({ icon, label, size, iconSize = size === "sm" ? 13 : 18, className, ...rest }: IconButtonProps) {
+export default function IconButton({ icon, label, size, iconSize = size === "sm" ? 16 : 20, className, ...rest }: IconButtonProps) {
   return (
     <button className={cx("iconbtn", size, className)} aria-label={label} {...rest}>
       <Icon name={icon} size={iconSize} />

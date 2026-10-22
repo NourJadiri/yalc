@@ -1,7 +1,31 @@
 .iconbtn {
-  flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
-  color: var(--ink2); transition: background .15s, color .15s, transform .12s;
+  position: relative; flex: none; display: grid; place-items: center;
+  width: var(--control-height); height: var(--control-height); border-radius: var(--radius-md); color: var(--ink);
+  transition: background-color 120ms ease-out, color 120ms ease-out;
 }
-.iconbtn.sm { width: 26px; height: 26px; }
-.iconbtn:active { transform: scale(.94); }
-@media (hover: hover) { .iconbtn:hover { background: var(--sunken); color: var(--ink); } }
+.iconbtn.sm { width: var(--target-min); height: var(--target-min); border-radius: var(--radius-sm); }
+.iconbtn:not(:disabled):active { transform: translateY(1px); }
+.iconbtn:disabled { cursor: not-allowed; border: var(--stroke-bold) dashed var(--border); color: var(--ink-muted); }
+@media (hover: hover) { .iconbtn:not(:disabled):hover { background: var(--surface-sunk); } }
+
+/* A button with its own title already gets the browser's tooltip on hover, so it shows this sign on focus only. */
+.iconbtn::before, .iconbtn::after { position: absolute; left: 50%; z-index: var(--layer-tooltip); pointer-events: none; transform: translateX(-50%); }
+.iconbtn::before { top: calc(100% + var(--space-2) - var(--space-3) / 2); width: var(--space-3); height: calc(var(--space-3) / 2); background: var(--sign); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.iconbtn::after {
+  top: calc(100% + var(--space-2)); padding: calc(var(--space-1) * 1.5) var(--space-2); border-radius: var(--radius-sm);
+  background: var(--sign); color: var(--on-sign); box-shadow: var(--shadow-float);
+  font: var(--t-caption); letter-spacing: var(--t-caption-ls); white-space: nowrap;
+}
+.iconbtn:first-child::after { left: 0; transform: none; }
+.iconbtn:last-child:not(:first-child)::after { left: auto; right: 0; transform: none; }
+.iconbtn:focus-visible::before { content: ""; animation: iconbtn-tip 120ms ease-out both; }
+.iconbtn:focus-visible::after { content: attr(aria-label); animation: iconbtn-tip 120ms ease-out both; }
+@media (hover: hover) {
+  .iconbtn:not([title]):not(:focus-visible):hover::before { content: ""; animation: iconbtn-tip 120ms ease-out 300ms both; }
+  .iconbtn:not([title]):not(:focus-visible):hover::after { content: attr(aria-label); animation: iconbtn-tip 120ms ease-out 300ms both; }
+}
+@keyframes iconbtn-tip { from { opacity: 0; } }
+/* base.css's reduced-motion rule doesn't reach pseudo-elements. */
+@media (prefers-reduced-motion: reduce) {
+  .iconbtn::before, .iconbtn::after { animation: none !important; }
+}

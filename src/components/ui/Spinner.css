@@ -1,5 +1,20 @@
+/* Platform's Loader from one element: the stops are gradients whose fills are custom properties the animation flips. */
 .spinner {
-  width: 18px; height: 18px; border-radius: 50%; flex: none;
-  border: 2.5px solid var(--line); border-top-color: var(--accent); animation: spin .75s linear infinite;
+  --spinner-1: transparent; --spinner-2: transparent; --spinner-3: transparent;
+  flex: none; width: calc(3 * var(--space-4) + 2 * var(--space-3)); height: var(--space-4);
+  background-image:
+    radial-gradient(circle closest-side, var(--spinner-1) calc(100% - var(--space-1) - var(--hairline) / 2), currentColor calc(100% - var(--space-1)) calc(100% - var(--hairline) / 2), transparent),
+    radial-gradient(circle closest-side, var(--spinner-2) calc(100% - var(--space-1) - var(--hairline) / 2), currentColor calc(100% - var(--space-1)) calc(100% - var(--hairline) / 2), transparent),
+    radial-gradient(circle closest-side, var(--spinner-3) calc(100% - var(--space-1) - var(--hairline) / 2), currentColor calc(100% - var(--space-1)) calc(100% - var(--hairline) / 2), transparent),
+    linear-gradient(currentColor, currentColor), linear-gradient(currentColor, currentColor);
+  background-position: 0 0, 50% 0, 100% 0, var(--space-4) 50%, calc(2 * var(--space-4) + var(--space-3)) 50%;
+  background-size: var(--space-4) var(--space-4), var(--space-4) var(--space-4), var(--space-4) var(--space-4), var(--space-3) var(--space-1), var(--space-3) var(--space-1);
+  background-repeat: no-repeat;
+  animation: spinner-lit 1200ms linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spinner-lit {
+  0%, 20% { --spinner-1: transparent; --spinner-2: transparent; --spinner-3: transparent; }
+  26%, 45% { --spinner-1: currentColor; --spinner-2: transparent; --spinner-3: transparent; }
+  51%, 70% { --spinner-1: currentColor; --spinner-2: currentColor; --spinner-3: transparent; }
+  76%, 100% { --spinner-1: currentColor; --spinner-2: currentColor; --spinner-3: currentColor; }
+}
