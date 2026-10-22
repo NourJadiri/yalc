@@ -5,7 +5,7 @@
 .md li { margin-bottom: var(--space-1); }
 .md li::marker { font-variant-numeric: tabular-nums; }
 .md h2, .md h3 { margin: var(--space-5) 0 var(--space-2); color: var(--ink); font: var(--t-ui); letter-spacing: var(--t-ui-ls); }
-.md code { padding: 0 var(--space-1); border-radius: var(--radius-sm); background: var(--surface-sunk); font-family: var(--font-mono); font-size: .875em; }
+.md code { padding: 0 var(--space-1); border-radius: var(--radius-sm); background: var(--surface-sunk); font-family: var(--font-mono); font-size: .875em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .md pre {
   margin: 0 0 var(--space-3); padding: var(--space-3) var(--space-4); overflow-x: auto; white-space: pre;
   border: var(--hairline) solid var(--rule); border-radius: var(--radius-sm); background: var(--surface-sunk);

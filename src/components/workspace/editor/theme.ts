@@ -79,7 +79,7 @@ export const theme = EditorView.theme({
   ".cm-completionIcon": { opacity: "1", color: "var(--ink-muted)" },
   ".cm-completionDetail": { color: "var(--ink-muted)" },
   "li[aria-selected] .cm-completionIcon, li[aria-selected] .cm-completionDetail": { color: "var(--on-sign)" },
-  ".cm-completionMatchedText": { textDecorationThickness: "var(--stroke-bold)", textUnderlineOffset: "3px" },
+  ".cm-completionMatchedText": { textDecoration: "none", fontWeight: "700" },
   ".cm-tooltip.cm-completionInfo": { padding: "var(--space-2) var(--space-3)", font: "var(--t-caption)" },
   ".cm-panels": { backgroundColor: "var(--surface-raised)", color: "var(--ink)" },
   ".cm-panels.cm-panels-top": { borderBottom: "var(--hairline) solid var(--rule)" },

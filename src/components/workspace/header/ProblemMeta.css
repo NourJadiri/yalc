@@ -7,6 +7,9 @@
   transition: background-color 120ms ease-out, color 120ms ease-out;
 }
 .ws-lc > svg { flex: none; }
+/* A phone's title column holds the difficulty and the line's bullet; the station, the link and the word "passed" would
+   only show as slivers, so the station and link go and the passed mark keeps its pictogram, its word left to readers. */
 @media (max-width: 420px) {
-  .ws-meta .tag { display: none; }
+  .ws-meta .tag, .ws-lc { display: none; }
+  .ws-done-word { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }

@@ -4,8 +4,9 @@ import Button from "../../ui/Button";
 import type { Tone, Verdict } from "../lib/verdict";
 import "./VerdictBanner.css";
 
-/* The verdict's word always comes with its pictogram: check for go, warning for caution, the error mark for stop. */
-const MARK: Record<Tone, IconName> = { ok: "check", warn: "alert-triangle", bad: "x", info: "terminal" };
+/* A status verdict carries its pictogram: check for go, warning for caution, the error mark for stop. Stopped and
+   Finished are no status, so their word stands alone. */
+const MARK: Partial<Record<Tone, IconName>> = { ok: "check", warn: "alert-triangle", bad: "x" };
 
 interface VerdictBannerProps {
   verdict: Verdict;
@@ -17,10 +18,11 @@ interface VerdictBannerProps {
 }
 
 export default function VerdictBanner({ verdict, next, nextIsStep, onNext }: VerdictBannerProps) {
+  const mark = MARK[verdict.tone];
   return (
     <div className={"ws-verdict " + verdict.tone}>
       <strong>
-        <Icon name={MARK[verdict.tone]} size={24} />
+        {mark && <Icon name={mark} size={24} />}
         {verdict.title}
       </strong>
       <span>{verdict.detail}</span>
