@@ -110,7 +110,7 @@ export default function register(scenario) {
       done: { color: RGB.ink2, "text-decoration-line": "line-through", "text-decoration-thickness": "1px", "font-size": "14px", "font-weight": "500" },
       pending: { color: RGB.ink, "text-decoration-line": "none", "font-size": "14px", "font-weight": "500" },
     });
-    await s.expect("the difficulty chips: mono 9.5px bold pills in green (easy), orange (medium) and red (hard), ringed in the same colour", () => page.locator(".prow .diff").evaluateAll((els) => {
+    await s.expect("the difficulty chips: 13px caption chips in go (easy), caution (medium) and stop (hard), framed 2px in the same colour with 4px corners", () => page.locator(".prow .diff").evaluateAll((els) => {
       const seen = {};
       for (const e of els) {
         const cs = getComputedStyle(e);
@@ -118,15 +118,15 @@ export default function register(scenario) {
       }
       return seen;
     }), {
-      EASY: { color: RGB.green, ring: RGB.green, size: "9.5px", weight: "700", tracking: "0.57px", ringWidth: "1px", radius: "999px" },
-      MED: { color: "rgb(232, 113, 10)", ring: "rgb(232, 113, 10)", size: "9.5px", weight: "700", tracking: "0.57px", ringWidth: "1px", radius: "999px" },
-      HARD: { color: RGB.red, ring: RGB.red, size: "9.5px", weight: "700", tracking: "0.57px", ringWidth: "1px", radius: "999px" },
+      EASY: { color: "rgb(0, 107, 97)", ring: "rgb(0, 107, 97)", size: "13px", weight: "500", tracking: "normal", ringWidth: "2px", radius: "4px" },
+      MED: { color: "rgb(125, 88, 0)", ring: "rgb(125, 88, 0)", size: "13px", weight: "500", tracking: "normal", ringWidth: "2px", radius: "4px" },
+      HARD: { color: "rgb(196, 18, 47)", ring: "rgb(196, 18, 47)", size: "13px", weight: "500", tracking: "normal", ringWidth: "2px", radius: "4px" },
     });
     await s.pin("a chip's tinted fill", (await A.props(page.locator(".prow .diff.M").first(), ["background-color"]))["background-color"]);
-    await s.expect("tags and XP are small mono: the warm-up tag uppercase grey 9.5px, the XP 10.5px grey with tabular figures", async () => ({
-      tag: await rowProps(2, 3, ".tag", ["font-size", "text-transform", "color", "letter-spacing"]),
+    await s.expect("tags and XP are captions: the warm-up tag a muted 13px chip in sentence case on the sunken ground with 4px corners, the XP 13px muted with tabular figures", async () => ({
+      tag: await rowProps(2, 3, ".tag", ["font-size", "text-transform", "color", "letter-spacing", "background-color", "border-top-left-radius"]),
       xp: await rowProps(2, 3, ".xpv", ["font-size", "color", "font-variant-numeric"]),
-    }), { tag: { "font-size": "9.5px", "text-transform": "uppercase", color: RGB.ink2, "letter-spacing": "0.57px" }, xp: { "font-size": "10.5px", color: RGB.ink2, "font-variant-numeric": "tabular-nums" } });
+    }), { tag: { "font-size": "13px", "text-transform": "none", color: "rgb(87, 86, 79)", "letter-spacing": "normal", "background-color": "rgb(229, 228, 222)", "border-top-left-radius": "4px" }, xp: { "font-size": "13px", color: "rgb(87, 86, 79)", "font-variant-numeric": "tabular-nums" } });
     await s.expect("the editor button is a 34px round in the accent with a code glyph", async () => ({
       p: await rowProps(2, 2, ".golink", ["width", "height", "border-top-left-radius", "color"]),
       glyph: await stn(page, 2).locator(".prow").nth(2).locator(".golink").evaluate((g) => window.__glyph(g.querySelector("svg"))),

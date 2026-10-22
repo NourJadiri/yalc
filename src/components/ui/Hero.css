@@ -1,3 +1,4 @@
+.hero { margin-bottom: var(--space-6); }
 .hero h1 { margin: 0 0 var(--space-2); color: var(--ink); font: var(--t-title); letter-spacing: var(--t-title-ls); }
 .hero h1 b { font-weight: inherit; }
 .hero p { max-width: var(--measure); margin: 0; color: var(--ink-muted); }

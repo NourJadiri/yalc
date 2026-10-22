@@ -107,8 +107,9 @@ export default function register(scenario) {
     await boardIt(P, 92);
     await rush(P, "RRRRRRRRRR", { seedBase: 300 });
     await P.press(nextBtn(page));
-    await overlay(s, P, "Run it again", page.locator("#quizArea .mbtn").nth(0), { l: 0, r: 0, t: 4, b: 4 });
-    await overlay(s, P, "Decks", page.locator("#quizArea .mbtn").nth(1), { l: 0, r: 0, t: 4, b: 4 });
+    await s.expect("the result's two buttons are 44px tall, thumb targets of their own with no overlay", async () => page.locator("#quizArea .mbtn").evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height))), [44, 44]);
+    await overlay(s, P, "Run it again, its own 44px box", page.locator("#quizArea .mbtn").nth(0), { l: 2, r: 2, t: 2, b: 2 });
+    await overlay(s, P, "Decks, its own 44px box", page.locator("#quizArea .mbtn").nth(1), { l: 2, r: 2, t: 2, b: 2 });
     await s.pin("the .mbtn overlay", await P.props(page.locator("#quizArea .mbtn").first(), ["position", "inset"], "::after"));
 
     // ---- the Dojo: the veil's button and the log's
@@ -133,7 +134,7 @@ export default function register(scenario) {
     await s.expect("390px: nothing overflows the width of the window", () => noHScroll(page), true);
     await s.expect("the header and tab bar are the desktop's, in a narrower window", async () => ({ hdr: await hdr(page), bar: (await tabBar(page)).tabs.map((t) => t.text), view: await view(page) }), { hdr: hdrModel(F.mid), bar: ["Line", "Metro", "Dojo", "Me"], view: { views: 1, h1: "Onsite Express", on: "view on" } });
     await s.expect("the rail is the same model on a phone: the focus day open, two done, one now", () => rail(page), railModel(F.mid, ["d3"]).days);
-    await s.expect("the hero's title shrinks with the window (clamp(26px, 6vw, 36px) is 26px at 390)", async () => (await P.props("main .hero h1", ["font-size"]))["font-size"], "26px");
+    await s.expect("the hero's title steps down from the title style to the heading style on a phone (28px under 600px)", async () => (await P.props("main .hero h1", ["font-size"]))["font-size"], "28px");
     await s.expect("both line pills fit on one row", async () => { const rs = await page.locator(".linepick").evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top))); return rs[0] === rs[1]; }, true);
     await s.expect("a station card's body is narrower than on desktop but never wider than the window", async () => page.locator(".linewrap").evaluate((e) => e.getBoundingClientRect().right <= innerWidth), true);
     await s.pin("phone geometry of the rail and the picker", { pick: await P.rect(page.locator(".linepick").first()), card: await P.rect(page.locator(".daycard").first()), stop: await P.rect(page.locator(".stop").first()) });

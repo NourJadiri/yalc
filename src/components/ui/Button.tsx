@@ -10,5 +10,5 @@ interface ButtonProps extends ComponentProps<"button"> {
 }
 
 export default function Button({ variant, tone, size, className, ...rest }: ButtonProps) {
-  return <button className={cx("btn", variant, tone, size, className)} {...rest} />;
+  return <button className={cx("btn", variant, tone, className)} data-size={size} {...rest} />;
 }
