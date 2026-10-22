@@ -9,9 +9,9 @@ export const RGB = { blue: "rgb(26, 115, 232)", red: "rgb(217, 48, 37)", yellow:
 
 /* PF and the rest of Platform's colours the Line is drawn in: the sign (a checked box), the text on it, the clock's
    caution and stop. Day and Night, or High contrast for both under REGRESS_CONTRAST=more, as PF. */
-const LDAY = { sign: "rgb(20, 20, 20)", onSign: "rgb(255, 255, 255)", caution: "rgb(125, 88, 0)", stop: "rgb(196, 18, 47)" };
-const LNIGHT = { sign: "rgb(242, 242, 238)", onSign: "rgb(20, 20, 20)", caution: "rgb(255, 205, 0)", stop: "rgb(255, 107, 107)" };
-const LCONTRAST = { sign: "rgb(255, 255, 255)", onSign: "rgb(0, 0, 0)", caution: "rgb(255, 205, 0)", stop: "rgb(255, 138, 128)" };
+const LDAY = { sign: "rgb(20, 20, 20)", onSign: "rgb(255, 255, 255)", go: "rgb(0, 107, 97)", caution: "rgb(125, 88, 0)", stop: "rgb(196, 18, 47)" };
+const LNIGHT = { sign: "rgb(242, 242, 238)", onSign: "rgb(20, 20, 20)", go: "rgb(61, 207, 185)", caution: "rgb(255, 205, 0)", stop: "rgb(255, 107, 107)" };
+const LCONTRAST = { sign: "rgb(255, 255, 255)", onSign: "rgb(0, 0, 0)", go: "rgb(79, 224, 200)", caution: "rgb(255, 205, 0)", stop: "rgb(255, 138, 128)" };
 const HC = process.env.REGRESS_CONTRAST === "more";
 export const LPF = { light: { ...PF.light, ...(HC ? LCONTRAST : LDAY) }, dark: { ...PF.dark, ...(HC ? LCONTRAST : LNIGHT) } };
 const C = LPF.light;
@@ -157,15 +157,15 @@ export default function register(scenario) {
       }
       return seen;
     }), {
-      EASY: { color: "rgb(0, 107, 97)", ring: "rgb(0, 107, 97)", size: "13px", weight: "500", tracking: "normal", ringWidth: "2px", radius: "4px" },
-      MED: { color: "rgb(125, 88, 0)", ring: "rgb(125, 88, 0)", size: "13px", weight: "500", tracking: "normal", ringWidth: "2px", radius: "4px" },
-      HARD: { color: "rgb(196, 18, 47)", ring: "rgb(196, 18, 47)", size: "13px", weight: "500", tracking: "normal", ringWidth: "2px", radius: "4px" },
+      EASY: { color: C.go, ring: C.go, size: "13px", weight: "500", tracking: "normal", ringWidth: "2px", radius: "4px" },
+      MED: { color: C.caution, ring: C.caution, size: "13px", weight: "500", tracking: "normal", ringWidth: "2px", radius: "4px" },
+      HARD: { color: C.stop, ring: C.stop, size: "13px", weight: "500", tracking: "normal", ringWidth: "2px", radius: "4px" },
     });
     await s.pin("a chip's tinted fill", (await A.props(page.locator(".prow .diff.M").first(), ["background-color"]))["background-color"]);
     await s.expect("tags and XP are captions: the warm-up tag a muted 13px chip in sentence case on the sunken ground with 4px corners, the XP 13px muted with tabular figures", async () => ({
       tag: await rowProps(2, 3, ".tag", ["font-size", "text-transform", "color", "letter-spacing", "background-color", "border-top-left-radius"]),
       xp: await rowProps(2, 3, ".xpv", ["font-size", "color", "font-variant-numeric"]),
-    }), { tag: { "font-size": "13px", "text-transform": "none", color: "rgb(87, 86, 79)", "letter-spacing": "normal", "background-color": "rgb(229, 228, 222)", "border-top-left-radius": "4px" }, xp: { "font-size": "13px", color: "rgb(87, 86, 79)", "font-variant-numeric": "tabular-nums" } });
+    }), { tag: { "font-size": "13px", "text-transform": "none", color: C.inkMuted, "letter-spacing": "normal", "background-color": C.sunk, "border-top-left-radius": "4px" }, xp: { "font-size": "13px", color: C.inkMuted, "font-variant-numeric": "tabular-nums" } });
     await s.expect("the editor button is a 44px ghost icon button: 8px corners, no fill at rest, its code pictogram ink at 20px", async () => ({
       p: await rowProps(2, 2, ".golink", ["width", "height", "border-top-left-radius", "background-color", "color"]),
       glyph: await stn(page, 2).locator(".prow").nth(2).locator(".golink").evaluate((g) => window.__glyph(g.querySelector("svg")) + " " + g.querySelector("svg").getAttribute("width")),
