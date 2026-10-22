@@ -1,6 +1,6 @@
 .tab {
   position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: var(--control-height); padding: calc(var(--line-weight) + var(--space-2)) var(--space-1) var(--space-1);
+  min-height: var(--control-height); padding: calc(var(--line-weight) + var(--space-1)) var(--space-1) var(--space-1);
   border-radius: 0 0 var(--radius-sm) var(--radius-sm); color: var(--ink-muted); white-space: nowrap;
   font: var(--t-label); letter-spacing: var(--t-label-ls);
   transition: color 120ms ease-out, background-color 120ms ease-out;
