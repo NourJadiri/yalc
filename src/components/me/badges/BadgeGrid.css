@@ -1,1 +1,4 @@
-.badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+.badges { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); }
+@media (max-width: 599px) {
+  .badges { gap: var(--space-2); }
+}

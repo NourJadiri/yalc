@@ -1,3 +1,4 @@
+import LinkButton from "../../ui/LinkButton";
 import CodeInput from "../CodeInput";
 import "./WaysRound.css";
 
@@ -23,15 +24,15 @@ export default function WaysRound({ send, canScan, target, onTarget, onSend, onS
             placeholder="Or paste a code or link"
             aria-label="Code to send this device's progress to"
           />
-          <button className="sublink" onClick={onSend}>
+          <LinkButton className="sublink" onClick={onSend}>
             Send to a code
-          </button>
+          </LinkButton>
         </>
       )}
       {canScan && (
-        <button className="sublink" onClick={onScan}>
+        <LinkButton className="sublink" onClick={onScan}>
           Scan a code instead
-        </button>
+        </LinkButton>
       )}
     </div>
   );

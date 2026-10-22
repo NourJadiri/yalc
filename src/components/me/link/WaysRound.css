@@ -1,5 +1,4 @@
-/* Text-level on purpose: a pill here would compete with the square. The padding keeps 44px of finger. */
-.sheetsub { display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: 100%; padding-top: 8px; border-top: 1px solid #e8eaed; }
-.sublink { min-height: 44px; padding: 8px 10px; border: 0; background: transparent; color: #1a73e8; font-size: 12.5px; font-weight: 600; border-radius: 10px; }
-.sublink:active { background: #f1f3f4; }
-@media (hover: hover) { .sublink:hover { background: #f1f3f4; } }
+/* Text-level on purpose: a button here would compete with the square. Each link keeps 44px of finger, its lit fill hugging the words. */
+.sheetsub { display: flex; flex-direction: column; align-items: flex-start; width: 100%; padding-top: var(--space-4); border-top: var(--hairline) solid var(--rule); }
+.sheetsub .syncinput { flex: none; width: 100%; margin-bottom: var(--space-1); }
+.sheetsub .sublink { min-height: var(--control-height); padding-block: calc((var(--control-height) - var(--target-min)) / 2); background-clip: content-box; }

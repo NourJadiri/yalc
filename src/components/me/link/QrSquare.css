@@ -1,2 +1,8 @@
-.qrbig { width: min(78vw, 48vh, 380px); aspect-ratio: 1; flex: none; padding: 10px; border-radius: 12px; background: #ffffff; }
+/* White in every theme, like QrCode: the margin round the modules is part of what a scanner reads. */
+.qrbig { align-self: center; width: min(78vw, 48vh, 380px); aspect-ratio: 1; padding: var(--space-2); border-radius: var(--radius-sm); background: white; }
 .qrbig svg { display: block; }
+.qrbig + .synccode { margin-top: 0; }
+/* On a desktop the square gives up height to the words round it, so the tallest sheet still fits an 860px window. */
+@media (min-width: 600px) {
+  .qrbig { width: min(30vh, 380px); }
+}

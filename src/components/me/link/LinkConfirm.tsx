@@ -2,8 +2,8 @@ import { useApp } from "../../../state/AppState";
 import { progressSummary } from "../../../lib/engine";
 import type { SyncStatus } from "../../../lib/sync";
 import type { LinkDirective } from "../../../types";
+import Button from "../../ui/Button";
 import ButtonRow from "../../ui/ButtonRow";
-import PillButton from "../../ui/PillButton";
 import { useAcceptLink } from "./hooks/useAcceptLink";
 import "./LinkConfirm.css";
 
@@ -43,12 +43,12 @@ export default function LinkConfirm({ link, status, hasProgress }: LinkConfirmPr
         </p>
       )}
       <ButtonRow>
-        <PillButton disabled={busy} onClick={() => void accept()}>
+        <Button variant="primary" disabled={busy} onClick={() => void accept()}>
           {recv ? "Connect & adopt" : "Send & link"}
-        </PillButton>
-        <PillButton disabled={busy} onClick={actions.clearLink}>
+        </Button>
+        <Button disabled={busy} onClick={actions.clearLink}>
           Cancel
-        </PillButton>
+        </Button>
       </ButtonRow>
     </div>
   );

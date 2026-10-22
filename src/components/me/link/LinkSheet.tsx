@@ -3,6 +3,7 @@ import * as sync from "../../../lib/sync";
 import type { SyncStatus } from "../../../lib/sync";
 import Dialog from "../../ui/Dialog";
 import PillButton from "../../ui/PillButton";
+import DialogPanel from "../DialogPanel";
 import { scanSupported } from "../scan/lib/scanSupported";
 import EnableSyncPrompt from "./EnableSyncPrompt";
 import LinkedCard from "./LinkedCard";
@@ -44,7 +45,15 @@ export default function LinkSheet({ status, hasProgress, onScan, onDone, returnF
 
   return (
     <Dialog className="qrscrim" label="Link a device" onDismiss={onDone} initialFocus={closeBtn} returnFocus={returnFocus}>
-      <div className="qrsheet">
+      <DialogPanel
+        className="qrsheet"
+        title="Link a device"
+        actions={
+          <PillButton ref={closeBtn} onClick={onDone}>
+            Close
+          </PillButton>
+        }
+      >
         {linked ? (
           <LinkedCard />
         ) : (
@@ -65,10 +74,7 @@ export default function LinkSheet({ status, hasProgress, onScan, onDone, returnF
             )}
           </>
         )}
-        <PillButton ref={closeBtn} onClick={onDone}>
-          Close
-        </PillButton>
-      </div>
+      </DialogPanel>
     </Dialog>
   );
 }
