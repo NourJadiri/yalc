@@ -25,10 +25,10 @@ a { color: var(--ink); text-decoration: underline; text-decoration-thickness: va
   content: ""; position: absolute; top: 50%; left: 50%;
   width: 44px; height: 44px; transform: translate(-50%, -50%);
 }
-.ritual, .timer .tbtn, .mbtn, .quit, .next, .veil button, .dojo-log button { position: relative; }
+.ritual, .timer .tbtn, .quit, .next, .veil button, .dojo-log button { position: relative; }
 .ritual::after { content: ""; position: absolute; inset: -3px 0; }
 .timer .tbtn::after { content: ""; position: absolute; inset: -7px -2px; }
-.mbtn::after, .veil button::after, .dojo-log button::after,
+.veil button::after, .dojo-log button::after,
 .quit::after, .next::after { content: ""; position: absolute; inset: -4px 0; }
 
 /* With animation off, a toast leaves only when its JS timer fires. */

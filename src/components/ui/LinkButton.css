@@ -1,5 +1,8 @@
 .linkbtn {
-  display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600;
-  color: var(--ink2); padding: 4px 6px; border-radius: 6px;
+  display: inline-flex; align-items: center; gap: var(--space-1); min-height: var(--target-min); padding: 0 var(--space-1);
+  border-radius: calc(var(--radius-sm) / 2); color: var(--ink); font: var(--t-label); letter-spacing: var(--t-label-ls);
+  text-decoration: underline; text-decoration-thickness: var(--stroke-bold); text-underline-offset: 3px;
+  transition: background-color 120ms ease-out, color 120ms ease-out;
 }
-@media (hover: hover) { .linkbtn:hover { color: var(--ink); background: var(--sunken); } }
+.linkbtn > svg { flex: none; width: 16px; height: 16px; }
+@media (hover: hover) { .linkbtn:hover { background: var(--signal); color: var(--on-signal); } }

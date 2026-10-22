@@ -26,22 +26,22 @@ export default function HeaderActions({ wide, clock, asking, onAsk, copied, onCo
     <div className="ws-actions">
       {wide && <Stopwatch clock={clock} />}
       <AskButton open={asking} wide={wide} onClick={onAsk} />
-      <Button variant="ghost" tone={copied ? "ok" : undefined} onClick={onCopy} title="Problem, code and last result, ready to paste into Claude">
+      <Button variant="ghost" size="compact" tone={copied ? "ok" : undefined} onClick={onCopy} title="Problem, code and last result, ready to paste into Claude">
         <Icon name={copied ? "check" : "copy"} size={14} />
         {wide && (copied ? "Copied" : "Copy for Claude")}
       </Button>
       {busy ? (
-        <Button onClick={onStop} title="Stop">
+        <Button size="compact" onClick={onStop} title="Stop">
           <Icon name="square" size={13} />
           Stop
         </Button>
       ) : (
-        <Button onClick={onRun} title={"Run the cases (" + modKey() + "+Enter)"}>
+        <Button size="compact" onClick={onRun} title={"Run the cases (" + modKey() + "+Enter)"}>
           <Icon name="play" size={13} />
           Run
         </Button>
       )}
-      <Button variant="primary" onClick={onSubmit} disabled={busy} title={"Run every test (" + modKey() + "+Shift+Enter)"}>
+      <Button variant="primary" size="compact" onClick={onSubmit} disabled={busy} title={"Run every test (" + modKey() + "+Shift+Enter)"}>
         <Icon name="send" size={13} />
         Submit
       </Button>

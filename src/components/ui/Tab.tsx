@@ -12,8 +12,10 @@ interface TabProps extends Omit<ComponentProps<"button">, "onClick" | "onSelect"
 export default function Tab({ selected, onSelect, icon, status, className, children, ...rest }: TabProps) {
   return (
     <button role="tab" aria-selected={selected} className={cx(selected && "on", className)} onClick={onSelect} {...rest}>
-      {icon && <Icon name={icon} size={14} />}
-      {children}
+      {icon && <Icon name={icon} size={16} />}
+      <span className="tablabel" data-label={typeof children === "string" ? children : undefined}>
+        {children}
+      </span>
       {status}
     </button>
   );

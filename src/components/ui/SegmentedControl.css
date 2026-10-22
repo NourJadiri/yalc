@@ -1,9 +1,14 @@
 .seg {
-  flex: none; display: flex; gap: 4px; margin: 8px 10px 6px; padding: 3px;
-  background: var(--sunken); border-radius: 10px;
+  flex: none; display: flex; gap: calc(var(--space-1) / 2); margin: var(--space-2); padding: calc(var(--space-1) / 2);
+  border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-md); background: var(--surface-raised);
 }
 .seg button {
-  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  height: 30px; border-radius: 8px; font-size: 12.5px; font-weight: 600; color: var(--ink2);
+  flex: 1; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: calc(var(--control-height) - 2 * var(--stroke-bold) - var(--space-1)); border-radius: var(--radius-sm);
+  color: var(--ink); font: var(--t-ui); letter-spacing: var(--t-ui-ls); white-space: nowrap;
+  transition: background-color 120ms ease-out, color 120ms ease-out;
 }
-.seg button.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.seg button.on { background: var(--sign); color: var(--on-sign); font-weight: 700; }
+.seg button:focus-visible { position: relative; z-index: 1; }
+.seg button.on .dot.ok, .seg button.on .dot.bad, .seg button.on .dot.warn { box-shadow: 0 0 0 var(--stroke-bold) var(--on-sign); }
+@media (hover: hover) { .seg button:not(.on):hover { background: var(--surface-sunk); } }

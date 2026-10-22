@@ -12,7 +12,7 @@ interface PillButtonProps extends ComponentProps<"button"> {
 export default function PillButton({ tone, icon, className, children, ...rest }: PillButtonProps) {
   return (
     <button className={cx("mbtn", tone, icon && "ico", className)} {...rest}>
-      {icon && <Icon name={icon} size={14} />}
+      {icon && <Icon name={icon} size={20} />}
       {children}
     </button>
   );

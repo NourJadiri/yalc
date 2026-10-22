@@ -120,10 +120,10 @@ export default function register(scenario) {
     }), { quit: RGB.ink, next: "0.88", pressed: "matrix(0.97, 0, 0, 0.97, 0, 0)" });
     await M.press(nextBtn(mp));
     for (const mode of ["hover", "active"]) s.pin(`a result button under the pointer (${mode})`, await under(M, mp.locator("#quizArea .mbtn").first(), ["background-color", "border-top-color", "transform"], mode));
-    await s.expect("hovering a result button tints it; pressing squeezes it to 97%", async () => ({
+    await s.expect("hovering a result button fills it with the sunken ground, as every secondary Button does; pressing squeezes it to 97%", async () => ({
       hover: (await under(M, mp.locator("#quizArea .mbtn").first(), ["background-color"], "hover"))["background-color"],
       active: (await under(M, mp.locator("#quizArea .mbtn").first(), ["transform"], "active")).transform,
-    }), { hover: "rgb(241, 243, 244)", active: "matrix(0.97, 0, 0, 0.97, 0, 0)" });
+    }), { hover: "rgb(229, 228, 222)", active: "matrix(0.97, 0, 0, 0.97, 0, 0)" });
     finish(s);
   });
 }

@@ -1,11 +1,23 @@
+/* The top padding leaves the focus ring room inside panes that clip their overflow. */
 .tablist {
-  flex: none; display: flex; align-items: stretch; gap: 2px; height: 38px; padding: 0 8px;
-  border-bottom: 1px solid var(--line); background: var(--surface);
+  flex: none; display: flex; align-items: stretch; gap: var(--space-1); height: var(--control-height);
+  padding: var(--space-2) var(--space-2) 0; border-bottom: var(--hairline) solid var(--rule);
 }
 .tablist button {
-  display: inline-flex; align-items: center; gap: 6px; padding: 0 10px; font-size: 12.5px; font-weight: 600;
-  color: var(--ink2); border-bottom: 2px solid transparent; margin-bottom: -1px;
-  transition: color .15s ease, border-color .15s ease;
+  position: relative; display: inline-flex; align-items: center; gap: var(--space-2); margin-bottom: calc(-1 * var(--hairline));
+  padding: 0 var(--space-3) var(--line-weight); border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  color: var(--ink-muted); font: var(--t-ui); letter-spacing: var(--t-ui-ls); white-space: nowrap;
+  transition: background-color 120ms ease-out, color 120ms ease-out;
 }
-.tablist button.on { color: var(--ink); border-bottom-color: var(--accent); }
-@media (hover: hover) { .tablist button:not(.on):hover { color: var(--ink); } }
+.tablist button > svg { flex: none; }
+.tablist button::after { content: ""; position: absolute; right: 0; bottom: 0; left: 0; height: var(--line-weight); transition: background-color 120ms ease-out; }
+.tablist button.on { color: var(--ink); }
+.tablist button.on::after { background: var(--ink); }
+.tablist button:focus-visible { z-index: 1; }
+/* The bold copy, hidden, keeps a tab as wide as its selected self, so selecting one never moves the next. */
+.tablabel { display: inline-flex; flex-direction: column; }
+.tablabel::after { content: attr(data-label); height: 0; overflow: hidden; visibility: hidden; font-weight: 700; }
+.tablist button.on .tablabel { font-weight: 700; }
+@media (hover: hover) { .tablist button:not(.on):hover { background: var(--surface-sunk); color: var(--ink); } }
+/* base.css's reduced-motion rule doesn't reach pseudo-elements. */
+@media (prefers-reduced-motion: reduce) { .tablist button::after { transition: none; } }

@@ -1,7 +1,14 @@
 .statusbadge {
-  font-family: var(--mono); font-size: 9.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-  padding: 2px 7px; border-radius: 999px; background: var(--sunken); color: var(--ink2);
+  display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--space-6); padding: 0 var(--space-2);
+  border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink);
+  font: var(--t-label); letter-spacing: var(--t-label-ls); white-space: nowrap;
 }
-.statusbadge.ok { background: var(--ok-bg); color: var(--ok-ink); }
-.statusbadge.bad { background: var(--bad-bg); color: var(--bad-ink); }
-.statusbadge.warn { background: color-mix(in srgb, var(--med) 16%, var(--surface)); color: var(--med); }
+.statusbadge::before { content: ""; flex: none; width: var(--space-2); height: var(--space-2); border-radius: var(--radius-full); background: currentColor; }
+.statusbadge.ok { background: var(--go-wash); }
+.statusbadge.ok::before { background: var(--go); }
+.statusbadge.bad { background: var(--stop-wash); }
+.statusbadge.bad::before { background: var(--stop); }
+.statusbadge.warn { background: var(--caution-wash); }
+.statusbadge.warn::before { background: var(--caution); }
+.statusbadge.idle { color: var(--ink-muted); }
+.statusbadge.idle::before { background: transparent; box-shadow: inset 0 0 0 var(--stroke-bold) currentColor; }
