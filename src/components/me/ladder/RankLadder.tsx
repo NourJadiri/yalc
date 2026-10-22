@@ -19,7 +19,7 @@ export default function RankLadder({ ranks, colors, xp }: RankLadderProps) {
         <li key={name} className={k < here ? "past" : k === here ? "cur" : ""}>
           <span className="lmark">
             {k < here ? (
-              <Icon name="check" size={13} strokeWidth={2.5} />
+              <Icon name="check" size={13} />
             ) : (
               <i
                 className={"ldot" + (k === here ? "" : " dim")}

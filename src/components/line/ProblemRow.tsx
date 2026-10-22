@@ -26,7 +26,7 @@ export default function ProblemRow({ prob, step, done, passed, onToggle, onOpenE
         aria-pressed={done}
         aria-label={(done ? "Uncheck " : "Check ") + prob.n}
       >
-        <Icon name="check" size={14} strokeWidth={3} />
+        <Icon name="check" size={14} />
       </button>
       <div className="pmain">
         <span className="pname">{prob.n}</span>

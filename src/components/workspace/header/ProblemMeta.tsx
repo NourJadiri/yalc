@@ -27,7 +27,7 @@ export default function ProblemMeta({ spec, problemRef: { day, track }, done, ac
       <Tag>{`${T.unit} ${day.d} · ${day.stn}`}</Tag>
       {done && (
         <span className="ws-done">
-          <Icon name="check" size={11} strokeWidth={3} />
+          <Icon name="check" size={11} />
           {accepted ? "passed" : "ticked"}
         </span>
       )}
