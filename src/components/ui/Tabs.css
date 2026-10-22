@@ -19,3 +19,5 @@
 .tablabel::after { content: attr(data-label); height: 0; overflow: hidden; visibility: hidden; font-weight: 700; }
 .tablist button.on .tablabel { font-weight: 700; }
 @media (hover: hover) { .tablist button:not(.on):hover { background: var(--surface-sunk); color: var(--ink); } }
+/* base.css's reduced-motion rule doesn't reach pseudo-elements. */
+@media (prefers-reduced-motion: reduce) { .tablist button::after { transition: none; } }
