@@ -1,1 +1,3 @@
+/* The line's bullet stands where the logo dots were; the title beside it names the line. */
+.hero .gdots { display: flex; margin-bottom: var(--space-3); }
 .hero .linestats { margin-top: var(--space-3); font: var(--t-caption); letter-spacing: var(--t-caption-ls); font-variant-numeric: tabular-nums; }

@@ -1,4 +1,0 @@
-.gdots { position: relative; display: flex; align-items: center; gap: var(--space-5); width: max-content; margin-bottom: var(--space-4); }
-.gdots::before { content: ""; position: absolute; top: calc(50% - var(--line-weight) / 4); right: calc(var(--space-3) / 2); left: var(--space-4); height: calc(var(--line-weight) / 2); background: var(--track); }
-.gdots .bullet { position: relative; }
-.gdots i { position: relative; width: var(--space-3); height: var(--space-3); border: calc(var(--line-weight) / 2) solid var(--track); border-radius: var(--radius-full); background: var(--surface-raised); }

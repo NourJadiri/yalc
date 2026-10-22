@@ -1,7 +1,8 @@
-/* Platform's Route, vertical. Each stop sits level with its card's eyebrow and title (--stop-y), and each station draws
-   the stretch of line from its stop down to the next one, so a stretch is one piece from stop centre to stop centre. */
+/* Platform's Route, vertical. Each stop sits level with the middle of its card's eyebrow and title (--stop-y: the card's
+   edge, the head's padding, then half of the 48px the two lines take), and each station draws the stretch of line from
+   its stop down to the next one, so a stretch is one piece from stop centre to stop centre. */
 .stn {
-  --stop-y: calc(var(--line-weight) + var(--space-3) + var(--space-6) + var(--hairline)); --now: calc(var(--stop-size) + var(--space-2));
+  --stop-y: calc(var(--hairline) + var(--space-4) + var(--space-6)); --now: calc(var(--stop-size) + var(--space-2));
   display: grid; grid-template-columns: var(--now) minmax(0, 1fr); column-gap: var(--space-4);
 }
 .rail { position: relative; }

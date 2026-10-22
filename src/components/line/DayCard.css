@@ -1,6 +1,2 @@
-/* Platform's Card: the line's band along the top edge, over the hairline. */
-.daycard { position: relative; border: var(--hairline) solid var(--rule); border-radius: var(--radius-md); background: var(--surface-raised); }
-.daycard::before {
-  content: ""; position: absolute; top: calc(var(--hairline) * -1); right: calc(var(--hairline) * -1); left: calc(var(--hairline) * -1);
-  height: var(--line-weight); border-radius: var(--radius-md) var(--radius-md) 0 0; background: var(--track);
-}
+/* Platform's Card without its band: the rail beside the cards is the line. */
+.daycard { border: var(--hairline) solid var(--rule); border-radius: var(--radius-md); background: var(--surface-raised); }
