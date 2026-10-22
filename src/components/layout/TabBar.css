@@ -1,5 +1,5 @@
 .tabs {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 40; display: flex;
-  padding: 0 max(var(--space-2), (100% - 720px) / 2) env(safe-area-inset-bottom);
+  padding: 0 max(var(--space-2), (100% - 720px) / 2) calc(var(--space-2) + env(safe-area-inset-bottom));
   background: var(--surface-raised); border-top: var(--hairline) solid var(--rule);
 }

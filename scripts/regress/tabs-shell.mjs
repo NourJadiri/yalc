@@ -120,6 +120,7 @@ export default function register(scenario) {
     for (let i = 0; i < 3; i++) await page.keyboard.press("Tab");
     await s.expect("Tab from the Line tab three times lands on Me and shows a focus ring", () => page.evaluate(() => ({ label: document.activeElement.textContent.trim(), visible: document.activeElement.matches(":focus-visible") })), { label: "Me", visible: true });
     await s.expect("the ring is Platform's focus ring: 2px of ink hugging the tab, then 3px of signal yellow (a transparent 2px outline stands in for forced colours), following the tab's square top and 4px bottom corners", async () => A.props(tabBtn("Me"), ["outline-style", "outline-width", "outline-color", "box-shadow", "border-top-left-radius", "border-bottom-left-radius"]), { "outline-style": "solid", "outline-width": "2px", "outline-color": "rgba(0, 0, 0, 0)", "box-shadow": PF.light.ring, "border-top-left-radius": "0px", "border-bottom-left-radius": "4px" });
+    await s.expect("…and all of the ring shows: the tab bar keeps 8px under its tabs, so the window's bottom edge never cuts it off", async () => { const r = await A.rect(tabBtn("Me")); return 860 - (r.y + r.h); }, 8);
     await page.keyboard.press("Enter");
     await s.expect("Enter on the focused tab opens it", async () => ({ view: await view(page), bar: (await tabBar(page)).tabs.map((t) => t.current) }), { view: { views: 1, h1: H1.Me, on: "view on" }, bar: [null, null, null, "page"] });
     await A.tab("Line");
