@@ -1,4 +1,4 @@
-/* Platform's Checkbox box: chosen, it fills with sign and shows its check in on-sign. */
+/* Platform's Checkbox box, for the problem rows and the ritual row alike: the parent's .done fills it. */
 .pcheck {
   flex: none; display: grid; place-items: center; width: var(--target-min); height: var(--target-min);
   border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-sm); background: var(--surface-raised); color: transparent;
