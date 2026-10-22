@@ -1,1 +1,1 @@
-.linewrap { margin-top: 18px; }
+.linewrap { margin-top: var(--space-2); }

@@ -11,7 +11,7 @@ export default function LineHero() {
 
   return (
     <Hero
-      above={<TrackDots />}
+      above={<TrackDots bullet={track.bullet} />}
       heading={
         <>
           {track.title[0]} <b>{track.title[1]}</b>

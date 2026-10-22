@@ -1,1 +1,1 @@
-.hero .linestats { font-family: var(--mono); font-size: 12px; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.hero .linestats { margin-top: var(--space-3); font: var(--t-caption); letter-spacing: var(--t-caption-ls); font-variant-numeric: tabular-nums; }

@@ -16,7 +16,7 @@ export default function DayHead({ eyebrow, title, open, onToggle }: DayHeadProps
         <h2>{title}</h2>
       </div>
       <span className="chev">
-        <Icon name="chevron-down" size={18} />
+        <Icon name="chevron-down" size={20} />
       </span>
     </button>
   );

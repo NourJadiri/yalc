@@ -1,5 +1,7 @@
 import { cx } from "../../lib/cx";
 import type { Track } from "../../types";
+import Bullet from "../ui/Bullet";
+import { LINE_OF } from "./lib/lineOf";
 import "./LinePickOption.css";
 
 interface LinePickOptionProps {
@@ -14,11 +16,11 @@ interface LinePickOptionProps {
 export default function LinePickOption({ line, on, cleared, onPick }: LinePickOptionProps) {
   return (
     <button role="radio" aria-checked={on} className={cx("linepick", on && "on")} data-track={line.id} onClick={onPick}>
-      <span className="lbullet" aria-hidden="true">
+      <Bullet line={LINE_OF[line.id]} className="lbullet" aria-hidden="true">
         {line.bullet}
-      </span>
+      </Bullet>
       <span className="lname">
-        <b>{line.name}</b>
+        <b data-label={line.name}>{line.name}</b>
         <span>{`${line.company} · ${cleared}/${line.plan.length}`}</span>
       </span>
     </button>

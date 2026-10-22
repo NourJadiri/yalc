@@ -1,13 +1,13 @@
+/* A checkbox drawn as a control of its own: the whole row is the switch. */
 .ritual {
-  display: flex; align-items: center; gap: 10px; margin: 4px 14px 12px; padding: 9px 12px;
-  border: 1.5px dashed var(--seg); border-radius: 10px; font-size: 13px;
-  transition: background .15s ease;
+  display: flex; align-items: center; gap: var(--space-3); width: 100%; min-height: var(--control-height); margin: var(--space-3) 0 var(--space-1);
+  padding: var(--space-2) var(--space-3); border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-md);
+  background: var(--surface-raised); color: var(--ink); text-align: left; transition: background-color 120ms ease-out, border-color 120ms ease-out;
 }
-.ritual .pcheck { width: 22px; height: 22px; }
-.ritual:active { background: color-mix(in srgb, var(--seg) 6%, transparent); }
-.ritual:active .pcheck { transform: scale(.92); }
-.ritual.done { border-style: solid; background: color-mix(in srgb, var(--seg) 8%, transparent); }
+.ritual:active { transform: translateY(1px); }
+.ritual .rtext { flex: 1; min-width: 0; }
 
 @media (hover: hover) {
-  .ritual:not(.done):hover { background: color-mix(in srgb, var(--seg) 4%, transparent); }
+  .ritual:hover { background: var(--surface-sunk); }
+  .ritual:not(.done):hover .pcheck { border-color: var(--ink); }
 }
