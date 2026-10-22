@@ -1,9 +1,14 @@
 .asst-head {
-  flex: none; display: flex; align-items: center; gap: 6px;
-  padding: 7px 8px 7px 12px; border-bottom: 1px solid var(--line);
+  flex: none; display: flex; align-items: center; gap: var(--space-2); min-height: var(--space-12);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  background: var(--surface-raised); border-bottom: var(--hairline) solid var(--rule);
   user-select: none; -webkit-user-select: none;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
 }
 .asst.float .asst-head { cursor: grab; touch-action: none; }
 .asst.float .asst-head:active { cursor: grabbing; }
-.asst-head h3 { margin: 0; font-size: 13.5px; font-weight: 650; letter-spacing: -.1px; }
-.asst-mark { color: var(--accent); flex: none; }
+/* Her mark, when she has no face: a pictogram on the ink tile, as Platform draws someone without a photo. */
+.asst-mark { flex: none; box-sizing: content-box; padding: var(--space-2); border-radius: var(--radius-sm); background: var(--sign); color: var(--on-sign); }
+.asst-title { display: flex; align-items: baseline; gap: var(--space-2); min-width: 0; }
+.asst-head h3 { flex: none; margin: 0; font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); white-space: nowrap; }
+.asst-tagline { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: var(--t-label); letter-spacing: var(--t-label-ls); }

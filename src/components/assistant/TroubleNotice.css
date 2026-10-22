@@ -1,7 +1,23 @@
+/* Platform's Notice: the tone's pictogram tile, what happened, then the way on. Danger on stop's wash, warning on caution's under a hazard band. */
 .asst-trouble {
-  display: flex; align-items: flex-start; flex-wrap: wrap; gap: 4px 8px; padding: 8px 10px; border-radius: 10px;
-  background: var(--bad-bg); color: var(--bad-ink); font-size: 12.5px; line-height: 1.45;
+  position: relative; display: grid; grid-template-columns: calc(var(--space-8) + var(--space-2)) 1fr; align-items: start; gap: var(--space-2) var(--space-3);
+  overflow: hidden; padding: var(--space-3); border: var(--hairline) solid transparent; border-radius: var(--radius-md);
+  background: var(--stop-wash); color: var(--ink);
 }
-.asst-trouble svg { flex: none; margin-top: 2px; }
-.asst-trouble span { flex: 1; min-width: 12ch; }
-.asst-trouble .linkbtn { color: var(--bad-ink); padding: 0 4px; }
+.asst-trouble > svg {
+  grid-row: span 2; box-sizing: border-box; width: calc(var(--space-8) + var(--space-2)); height: calc(var(--space-8) + var(--space-2));
+  padding: var(--space-2); border-radius: var(--radius-sm); background: var(--stop); color: var(--on-stop);
+}
+.asst-trouble > span { padding-top: var(--space-2); }
+.asst-trouble > .btn { justify-self: start; }
+.asst-trouble.warning { padding-top: calc(2 * var(--space-3)); background: var(--caution-wash); }
+.asst-trouble.warning::before {
+  content: ""; position: absolute; top: 0; right: 0; left: 0; height: var(--space-3);
+  background: repeating-linear-gradient(-45deg, var(--signal) 0 var(--space-3), var(--on-signal) 0 calc(2 * var(--space-3)));
+}
+.asst-trouble.warning > svg { background: var(--signal); color: var(--on-signal); }
+/* High contrast tells grounds apart by their edges. */
+@media (prefers-contrast: more) {
+  :root:not([data-theme]) .asst-trouble { border-color: var(--rule); }
+}
+:root[data-theme="contrast"] .asst-trouble { border-color: var(--rule); }

@@ -1,55 +1,75 @@
-/* Each mode re-scopes the window's own tokens, so every part inside follows without knowing about modes. */
-.asst { transition: background-color .25s ease, border-color .25s ease, color .25s ease; }
-.asst-head { transition: background-color .25s ease; }
-.asst-tagline { font-family: var(--mono); font-size: 10.5px; color: var(--accent); white-space: nowrap; }
+/* Normal is plain Platform. The other modes each run on a line of their own (--asst-line) and re-scope the window's
+   tokens or add their marks, so every part inside follows without knowing about modes. */
 
-/* Tough love: the drill sergeant's red. */
-.asst[data-persona="tough"] {
-  --accent: #d93025;
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+/* Tough love: a sign panel for a header, the name on split flaps like a departure board's, stop red for its line. */
+.asst[data-persona="tough"] { --asst-line: var(--stop); }
+.asst[data-persona="tough"] .asst-head { background: var(--sign); color: var(--on-sign); border-bottom: var(--line-weight) solid var(--asst-line); }
+.asst[data-persona="tough"] .asst-mark { background: var(--asst-line); color: var(--on-stop); }
+.asst[data-persona="tough"] .asst-head h3 { font: var(--t-board); letter-spacing: var(--t-board-ls); text-transform: uppercase; }
+/* Inline boxes, not flex items: Chrome reads letters in boxes of their own one by one. */
+.asst[data-persona="tough"] .asst-flap {
+  margin-right: var(--stroke-bold); padding: var(--space-1) calc(var(--space-1) / 2 + var(--hairline)); border-radius: var(--radius-sm); color: var(--ink);
+  background: linear-gradient(transparent calc(50% - var(--hairline) / 2), var(--surface-sunk) 0 calc(50% + var(--hairline) / 2), transparent 0), var(--surface-raised);
 }
-@media (prefers-color-scheme: dark) {
-  .asst[data-persona="tough"] { --accent: #ff7a59; }
+.asst[data-persona="tough"] .asst-flap:last-child { margin-right: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .asst[data-persona="tough"] .asst-flap { animation: asst-flip 280ms cubic-bezier(0.3, 0.7, 0.4, 1) both; }
+  .asst[data-persona="tough"] .asst-flap:nth-child(2) { animation-delay: 26ms; }
+  .asst[data-persona="tough"] .asst-flap:nth-child(3) { animation-delay: 52ms; }
+  .asst[data-persona="tough"] .asst-flap:nth-child(4) { animation-delay: 78ms; }
 }
-.asst[data-persona="tough"] .asst-head {
-  background: linear-gradient(100deg, color-mix(in srgb, #f9ab00 18%, var(--surface)), color-mix(in srgb, var(--accent) 18%, var(--surface)));
-  border-bottom: 2px solid var(--accent);
+@keyframes asst-flip { from { clip-path: inset(0 0 100% 0); } }
+/* On the sign the controls take the sign's own colours, and its focus ring. */
+.asst[data-persona="tough"] .asst-voices { border-color: var(--on-sign); background: var(--sign); }
+.asst[data-persona="tough"] .asst-head .iconbtn { color: var(--on-sign); }
+.asst[data-persona="tough"] .asst-voices .asst-voice.on, .asst[data-persona="tough"] .asst-voices .asst-voice.on:hover { background: var(--on-sign); color: var(--sign); }
+.asst[data-persona="tough"] .asst-head :focus-visible { box-shadow: var(--focus-ring-on-sign); }
+@media (hover: hover) {
+  .asst[data-persona="tough"] .asst-head .iconbtn:not(:disabled):not(.on):hover { background: color-mix(in srgb, var(--on-sign) 16%, transparent); }
 }
-.asst[data-persona="tough"] .asst-head h3 { text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
-.asst[data-persona="tough"] .asst-wait i { background: var(--accent); }
+.asst[data-persona="tough"] .asst-wait { color: var(--asst-line); }
 
-/* Goth catgirl: dark whatever the system theme, so the light-mode code and notice colours are re-scoped too. */
-.asst[data-persona="catgirl"] {
-  color-scheme: dark;
-  --bg: #130e18; --surface: #1b1421; --sunken: #130e18;
-  --ink: #f2e7fb; --ink2: #b39bc8; --line: #3e2c4e;
-  --accent: #c77dff;
-  --blue: #c9a7ff; --red: #ff8fab; --green: #9be3b0; --yellow: #f7d774;
-  --ok-bg: #1f3328; --ok-ink: #9be3b0; --bad-bg: #3a1f2b; --bad-ink: #ff8fab;
-  --hl-kw: #c77dff; --hl-str: #9be3b0; --hl-num: #ff8fab; --hl-com: #8f7aa3;
-  --hl-fn: #f0a6ff; --hl-cls: #f7d774; --hl-op: #cbb8dc; --hl-meta: #f7d774;
-  border-color: #5a3d73;
-  box-shadow: 0 18px 48px rgba(40, 10, 60, .45), 0 0 0 1px rgba(199, 125, 255, .15);
+/* Goth catgirl: dark whatever the page, with her face, her bubbles and her paw prints, in lines 5 and 7. A Night page
+   already has Night's tokens and a High contrast page keeps its own; a Day page gets Night's on the window, copied from
+   tokens.css until it can scope them to an element (see the migration notes), with the code colours re-resolved on them. */
+@media (prefers-color-scheme: light) and (not (prefers-contrast: more)) {
+  :root:not([data-theme]) .asst[data-persona="catgirl"] {
+    color-scheme: dark;
+    --surface: #121315; --surface-raised: #1c1d21; --surface-sunk: #0b0c0d; --rule: #2f3035;
+    --border: #77787d; --ink: #f2f2ee; --ink-muted: #a9a9a3; --sign: #f2f2ee; --on-sign: #141414;
+    --signal: #ffcd00; --signal-deep: #ffd83d; --on-signal: #141414; --go: #3dcfb9; --go-wash: #0f2f2b;
+    --on-go: #141414; --stop: #ff6b6b; --stop-wash: #3b1517; --on-stop: #141414; --caution: #ffcd00;
+    --caution-wash: #3a3008; --line-1: #f0544a; --line-2: #5b8def; --line-3: #36b76a; --line-4: #ff8a2a;
+    --line-5: #b27ed8; --line-6: #2bbfd0; --line-7: #f0609f; --line-8: #c99561; --on-line: #141414;
+    --focus: var(--ink);
+    --shadow: #000000a6;
+    --scrim: #000000b3;
+    --shadow-float: 0 12px 32px -6px #000000cc;
+    --focus-ring: 0 0 0 2px #f2f2ee, 0 0 0 5px #ffcd00;
+    --focus-ring-on-sign: 0 0 0 2px #141414, 0 0 0 5px #ffcd00;
+    --hl-kw: var(--line-2); --hl-str: var(--line-3); --hl-num: var(--line-1); --hl-com: var(--ink-muted);
+    --hl-fn: var(--line-5); --hl-cls: var(--line-8); --hl-op: var(--ink-muted); --hl-meta: var(--line-4);
+  }
 }
-.asst[data-persona="catgirl"] .asst-head { background: linear-gradient(180deg, #2b1c38, #1b1421); }
-.asst[data-persona="catgirl"] .asst-head h3 {
-  font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 700; font-size: 15px; letter-spacing: .02em;
+.asst[data-persona="catgirl"] { --asst-line: var(--line-5); }
+.asst[data-persona="catgirl"] .asst-head { border-bottom: var(--line-weight) solid var(--asst-line); }
+.asst[data-persona="catgirl"] .asst-head h3 { font-style: italic; font-weight: 400; }
+.asst[data-persona="catgirl"] .asst-tagline { color: var(--line-7); }
+/* Her paw prints, behind the chat: line 7 through a stencil, so the colour stays a token. */
+.asst[data-persona="catgirl"]::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: color-mix(in srgb, var(--line-7) 12%, transparent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cellipse cx='17' cy='22' rx='5.5' ry='4.6'/%3E%3Ccircle cx='10.5' cy='15' r='2.2'/%3E%3Ccircle cx='14.6' cy='11' r='2.2'/%3E%3Ccircle cx='19.4' cy='11' r='2.2'/%3E%3Ccircle cx='23.5' cy='15' r='2.2'/%3E%3Cg transform='rotate(-24 46 50)'%3E%3Cellipse cx='46' cy='53' rx='5.5' ry='4.6'/%3E%3Ccircle cx='39.5' cy='46' r='2.2'/%3E%3Ccircle cx='43.6' cy='42' r='2.2'/%3E%3Ccircle cx='48.4' cy='42' r='2.2'/%3E%3Ccircle cx='52.5' cy='46' r='2.2'/%3E%3C/g%3E%3C/svg%3E") 0 0 / var(--space-16) var(--space-16);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cellipse cx='17' cy='22' rx='5.5' ry='4.6'/%3E%3Ccircle cx='10.5' cy='15' r='2.2'/%3E%3Ccircle cx='14.6' cy='11' r='2.2'/%3E%3Ccircle cx='19.4' cy='11' r='2.2'/%3E%3Ccircle cx='23.5' cy='15' r='2.2'/%3E%3Cg transform='rotate(-24 46 50)'%3E%3Cellipse cx='46' cy='53' rx='5.5' ry='4.6'/%3E%3Ccircle cx='39.5' cy='46' r='2.2'/%3E%3Ccircle cx='43.6' cy='42' r='2.2'/%3E%3Ccircle cx='48.4' cy='42' r='2.2'/%3E%3Ccircle cx='52.5' cy='46' r='2.2'/%3E%3C/g%3E%3C/svg%3E") 0 0 / var(--space-16) var(--space-16);
 }
-.asst[data-persona="catgirl"] .asst-log {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='%23c77dff' fill-opacity='.07'%3E%3Cellipse cx='17' cy='22' rx='5.5' ry='4.6'/%3E%3Ccircle cx='10.5' cy='15' r='2.2'/%3E%3Ccircle cx='14.6' cy='11' r='2.2'/%3E%3Ccircle cx='19.4' cy='11' r='2.2'/%3E%3Ccircle cx='23.5' cy='15' r='2.2'/%3E%3Cg transform='rotate(-24 46 50)'%3E%3Cellipse cx='46' cy='53' rx='5.5' ry='4.6'/%3E%3Ccircle cx='39.5' cy='46' r='2.2'/%3E%3Ccircle cx='43.6' cy='42' r='2.2'/%3E%3Ccircle cx='48.4' cy='42' r='2.2'/%3E%3Ccircle cx='52.5' cy='46' r='2.2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  background-size: 64px 64px;
-  background-attachment: local;
-}
-.asst[data-persona="catgirl"] .asst-wait i { background: var(--accent); }
 
-/* Modes with a face read like a messenger: her lines in bubbles beside her avatar. */
-.asst-a.chat, .asst-row { display: flex; align-items: flex-end; gap: 8px; }
+/* Modes with a face read like a messenger: her lines in bubbles beside her avatar, washed in her line's colour. */
+.asst-a.chat, .asst-row { display: flex; align-items: flex-end; gap: var(--space-2); }
 .asst-bubble {
-  min-width: 0; max-width: calc(100% - 44px); margin: 0; padding: 8px 11px;
-  border-radius: 14px 14px 14px 4px; background: color-mix(in srgb, var(--accent) 16%, var(--surface));
-  color: var(--ink); font-size: 13.5px; line-height: 1.55;
+  min-width: 0; max-width: calc(100% - var(--asst-face) - var(--space-2)); margin: 0; padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-md) var(--radius-sm);
+  background: color-mix(in srgb, var(--asst-line, var(--ink)) 22%, var(--surface-raised)); color: var(--ink);
 }
-.asst-bubble .asst-wait { padding: 2px 0; }
-.asst-empty .asst-row { margin-bottom: 12px; }
-.asst-empty .asst-bubble { margin: 0; }
-.asst-row + .asst-starters { padding-left: 44px; }
+.asst-empty .asst-row { margin-bottom: var(--space-4); }
+.asst-row + .asst-starters { padding-left: calc(var(--asst-face) + var(--space-2)); }
+.asst-quick.chat .btn, .asst-row + .asst-starters .btn { border-color: var(--asst-line, var(--ink)); }
