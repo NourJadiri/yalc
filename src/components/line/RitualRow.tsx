@@ -17,7 +17,7 @@ export default function RitualRow({ ritual, color, done, onToggle }: RitualRowPr
   return (
     <button className={cx("ritual", done && "done")} onClick={onToggle} aria-pressed={done}>
       <span className="pcheck" style={done ? { background: color, borderColor: color, color: "#fff" } : undefined}>
-        <Icon name="check" size={12} strokeWidth={3} />
+        <Icon name="check" size={12} />
       </span>
       <span style={{ flex: 1, textAlign: "left" }}>{ritual}</span>
       <XpValue>{"+" + RITUAL_XP}</XpValue>
