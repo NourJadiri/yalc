@@ -2,7 +2,7 @@
 // to the page, to the open cards, to the scroll and to the saved blob, and how it is tinted.
 
 import { finish } from "./me-lib.mjs";
-import { F, edit, hdr, hdrModel, heroLine, rail, railModel, terminusCopy, TERMINUS, clearedOf, planOf, shape } from "./tabs-kit.mjs";
+import { F, PF, edit, hdr, hdrModel, heroLine, rail, railModel, terminusCopy, TERMINUS, clearedOf, planOf, shape } from "./tabs-kit.mjs";
 import { RGB } from "./tabs-line.mjs";
 
 const picker = (page) =>
@@ -81,7 +81,7 @@ export default function register(scenario) {
     await s.expect("…the picker moved its 'on' to the Local", () => picker(page), pickerModel(blob));
     await s.expect("…the page went back to the top", () => A.scrollY(), 0);
     await s.expect("…the Local's first stop is open (its focus), the Google day that was open does not show here", () => openStations(page), ["Stop 1 · Pike Place"]);
-    await s.expect("…the header is the Local's: Applicant, Stop 1 Pike Place, 40 XP to Online Assessment", () => hdr(page), { rank: "Applicant", dot: "var(--aws-orange)", streak: "Streak 0/0", xp: "0", fill: "0%", where: "Stop 1 | Pike Place", next: "40 XP to Online Assessment" });
+    await s.expect("…the header is the Local's: Applicant, Stop 1 Pike Place, 40 XP to Online Assessment", () => hdr(page), { rank: "Applicant", bullet: "A", streak: "Streak 0/0", xp: "0", fill: "0%", where: "Stop 1 | Pike Place", next: "40 XP to Online Assessment" });
     await s.expect("…and the saved blob has only changed its track", async () => shape(await A.saved()), shape(blob));
     await A.resume();
     await s.expect("the Local's pick is outlined in the Local's orange; the Google pick has gone back to grey with a blue letter", async () => ({
@@ -90,7 +90,7 @@ export default function register(scenario) {
       off: (await A.props(pick(page, "google"), ["border-top-color"]))["border-top-color"],
       bulletOff: (await A.props(pick(page, "google").locator(".lbullet"), ["color"])).color,
     }), { on: RGB.orange, bulletOn: { "background-color": RGB.orange, color: "rgb(255, 255, 255)" }, off: RGB.line, bulletOff: RGB.blue });
-    await s.expect("the focus ring and the current tab are orange now", async () => ({ tab: (await A.props(page.locator("nav.tabs .tab.on"), ["color"])).color, ring: await (async () => { await page.keyboard.press("Tab"); return (await A.props(page.locator(":focus"), ["outline-color"]))["outline-color"]; })() }), { tab: RGB.orange, ring: RGB.orange });
+    await s.expect("on the Local the current tab stays ink and the focus ring stays ink and signal yellow: switching lines changes only the line's own marks", async () => ({ tab: (await A.props(page.locator("nav.tabs .tab.on"), ["color"])).color, ring: await (async () => { await page.keyboard.press("Tab"); return (await A.props(page.locator(":focus"), ["box-shadow"]))["box-shadow"]; })() }), { tab: PF.light.ink, ring: PF.light.ring });
     await A.scrollTo(0);
     await A.shot("picker-local", { locator: page.locator(".lines") });
     await A.shot("local-top");
