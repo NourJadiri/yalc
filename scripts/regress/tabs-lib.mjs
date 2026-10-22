@@ -59,6 +59,8 @@ const GLYPHS = {
   route: "M9 19h8.5",
   train: "M4 11h16",
   chart: "M18 17V9",
+  star: 'points="12 2 15.09 8.26',
+  "message-circle": "M7.9 20A9 9 0 1 0 4 16.1L2 22Z",
 };
 
 const PAGE_HELPERS = (glyphs) => {

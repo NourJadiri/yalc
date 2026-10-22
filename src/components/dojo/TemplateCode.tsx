@@ -1,6 +1,7 @@
 import { cx } from "../../lib/cx";
 import CodeBlock from "../shared/CodeBlock";
 import Icon from "../shared/Icon";
+import Button from "../ui/Button";
 import "./TemplateCode.css";
 
 interface TemplateCodeProps {
@@ -16,9 +17,9 @@ export default function TemplateCode({ code, shown, onReveal }: TemplateCodeProp
     <div className={cx("tcode", !shown && "hidden")}>
       <CodeBlock code={code} />
       <div className="veil">
-        <Icon name="lock" size={15} className="vlock" />
+        <Icon name="lock" size={24} className="vlock" />
         <span>Write yours from a blank page first.</span>
-        <button onClick={onReveal}>Reveal &amp; diff</button>
+        <Button onClick={onReveal}>Reveal &amp; diff</Button>
       </div>
     </div>
   );

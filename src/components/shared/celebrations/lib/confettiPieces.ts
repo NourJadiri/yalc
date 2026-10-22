@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 
-// Logo tokens, not raw hex, so dark mode's softer variants come along; the Local line gets them too.
-const COLS = ["var(--blue)", "var(--red)", "var(--yellow)", "var(--green)"];
+// Signal, then the eight lines in the order Platform draws series; tokens, so each theme brings its own.
+const COLS = ["signal", "line-2", "line-4", "line-6", "line-7", "line-8", "line-3", "line-5", "line-1"].map((t) => `var(--${t})`);
 
 export const DEFAULT_PIECES = 26;
 
@@ -9,7 +9,7 @@ export const DEFAULT_PIECES = 26;
 export function confettiPieces(count: number): CSSProperties[] {
   return Array.from({ length: count }, (_, i) => ({
     left: Math.random() * 100 + "vw",
-    background: COLS[i % 4],
+    background: COLS[i % COLS.length],
     animationDuration: 0.9 + Math.random() * 1.2 + "s",
     animationDelay: Math.random() * 0.3 + "s",
   }));

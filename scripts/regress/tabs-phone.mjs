@@ -115,8 +115,9 @@ export default function register(scenario) {
     // ---- the Dojo: the veil's button and the log's
     await P.tab("Dojo");
     await page.locator("#dojoArea .tcard").first().locator(".thead").click();
-    await overlay(s, P, "the veil's Reveal & diff", page.locator("#dojoArea .tcard").first().locator(".veil button"), { l: 0, r: 0, t: 4, b: 4 });
-    await overlay(s, P, "the ritual log's button", page.locator("#dojoArea .dojo-log button"), { l: 0, r: 0, t: 4, b: 4 });
+    await s.expect("the veil's Reveal & diff and the ritual log's Done are 44px Buttons, thumb targets of their own", async () => [await P.rect(page.locator("#dojoArea .tcard").first().locator(".veil button")), await P.rect(page.locator("#dojoArea .dojo-log button"))].map((r) => r.h), [44, 44]);
+    await overlay(s, P, "the veil's Reveal & diff, its 2px edge and the overlay 2px past it above and below", page.locator("#dojoArea .tcard").first().locator(".veil button"), { l: 2, r: 2, t: 4, b: 4 });
+    await overlay(s, P, "the ritual log's button, its 2px edge and the overlay 2px past it above and below", page.locator("#dojoArea .dojo-log button"), { l: 2, r: 2, t: 4, b: 4 });
     await s.expect("a template's header row is a full 44px thumb target", async () => (await P.rect(page.locator("#dojoArea .thead").first())).h, 44);
 
     // ---- the shell
@@ -230,7 +231,7 @@ export default function register(scenario) {
         await nextStop(P);
       }
     }
-    await s.expect("a missing-line or bug-hunt card shows its code in a scrollable mono block inside the card", async () => ({ has: !!codeCard, scroll: (await P.props("#quizArea pre.code", ["overflow-x", "white-space", "font-size"])) }), { has: true, scroll: { "overflow-x": "auto", "white-space": "pre", "font-size": "12px" } });
+    await s.expect("a missing-line or bug-hunt card shows its code in a scrollable block in the code style (14px mono) inside the card", async () => ({ has: !!codeCard, scroll: (await P.props("#quizArea pre.code", ["overflow-x", "white-space", "font-size"])) }), { has: true, scroll: { "overflow-x": "auto", "white-space": "pre", "font-size": "14px" } });
     await both("card-code");
     await P.press(quitBtn(page));
 
