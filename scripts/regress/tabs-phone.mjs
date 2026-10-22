@@ -53,16 +53,16 @@ export default function register(scenario) {
     const row = (k) => stn(page, d7).locator(".prow").nth(k);
 
     // ---- the Line
-    await s.expect("a check circle is drawn 26px and its editor button 34px; each has a 44px overlay behind it", async () => ({
+    await s.expect("a check box is drawn 24px with base.css's 44px overlay behind it; the editor button is a 44px ghost button of its own (its 44px overlay adds nothing)", async () => ({
       circle: await P.rect(row(0).locator(".pcheck")).then((r) => [r.w, r.h]),
       link: await P.rect(row(0).locator(".golink")).then((r) => [r.w, r.h]),
       circleAfter: await P.props(row(0).locator(".pcheck"), ["width", "height"], "::after"),
       linkAfter: await P.props(row(0).locator(".golink"), ["width", "height"], "::after"),
-    }), { circle: [26, 26], link: [34, 34], circleAfter: { width: "44px", height: "44px" }, linkAfter: { width: "44px", height: "44px" } });
-    await overlay(s, P, "the check circle", row(0).locator(".pcheck"), { size: 44 });
+    }), { circle: [24, 24], link: [44, 44], circleAfter: { width: "44px", height: "44px" }, linkAfter: { width: "44px", height: "44px" } });
+    await overlay(s, P, "the check box", row(0).locator(".pcheck"), { size: 44 });
     await overlay(s, P, "the editor button", row(0).locator(".golink"), { size: 44 });
     await overlay(s, P, "the mock's external link", row(2).locator("a.golink"), { size: 44 });
-    await overlay(s, P, "the ritual row", stn(page, d7).locator(".ritual"), { l: 0, r: 0, t: 3, b: 3 });
+    await overlay(s, P, "the ritual row, a 44px control with a 2px edge (base.css's overlay reaches 1px past its edge above and below)", stn(page, d7).locator(".ritual"), { l: 2, r: 2, t: 3, b: 3 });
     await overlay(s, P, "the clock's Start button", stn(page, d7).locator(".timer .tbtn").nth(0), { l: 2, r: 2, t: 7, b: 7 });
     await overlay(s, P, "the clock's Reset button", stn(page, d7).locator(".timer .tbtn").nth(1), { l: 2, r: 2, t: 7, b: 7 });
     await s.expect("the overlays stay inside each row: consecutive check circles are at least 44px apart, so no two targets overlap", async () => {
@@ -85,12 +85,12 @@ export default function register(scenario) {
     await centre(row(0).locator(".pcheck"));
     const c2 = await P.rect(row(0).locator(".pcheck"));
     await page.touchscreen.tap(c2.x + c2.w + 7, c2.y + c2.h / 2);
-    await s.expect("a tap 7px outside the drawn circle (inside the overlay) ticks the problem", async () => (await row(0).locator(".pcheck").getAttribute("aria-pressed")), "true");
+    await s.expect("a tap 7px outside the drawn box (inside the overlay) ticks the problem", async () => (await row(0).locator(".pcheck").getAttribute("aria-pressed")), "true");
     await page.touchscreen.tap(c2.x + c2.w + 8, c2.y + c2.h / 2);
-    await s.expect("a tap 8px outside it (the overlay reaches 9px beyond the circle) is still on it: it unticks again", async () => (await row(0).locator(".pcheck").getAttribute("aria-pressed")), "false");
+    await s.expect("a tap 8px outside it (the overlay reaches 10px beyond the box) is still on it: it unticks again", async () => (await row(0).locator(".pcheck").getAttribute("aria-pressed")), "false");
     const g = await P.rect(row(0).locator(".golink"));
-    await page.touchscreen.tap(g.x - 4, g.y + g.h / 2);
-    await s.expect("a tap 4px outside the editor button (inside its overlay) opens the workspace", async () => page.locator('.ws[role="dialog"]').count(), 1);
+    await page.touchscreen.tap(g.x + 2, g.y + g.h / 2);
+    await s.expect("a tap 2px inside the editor button's left edge, far from its pictogram, opens the workspace: the whole 44px box is the target", async () => page.locator('.ws[role="dialog"]').count(), 1);
     await page.getByRole("button", { name: "Back to the line" }).click();
 
     // ---- Metro: a run's own buttons and the result's

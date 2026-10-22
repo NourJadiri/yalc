@@ -6,7 +6,7 @@ import "./TimerState.css";
 export default function TimerState({ up }: { up: boolean }) {
   return (
     <span className={cx("tstate", up && "up")}>
-      <Icon name={up ? "square" : "alert-triangle"} size={16} />
+      <Icon name={up ? "stop" : "warning"} size={16} />
       {up ? "Time up" : "Under 5 min"}
     </span>
   );

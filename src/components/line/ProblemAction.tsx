@@ -26,7 +26,7 @@ export default function ProblemAction({ prob, onOpenEditor }: ProblemActionProps
     case "link":
       return (
         <a className="golink" href={action.url} target="_blank" rel="noopener" aria-label={"Open " + prob.n}>
-          <Icon name="arrow-up-right" size={20} />
+          <Icon name="external" size={20} />
         </a>
       );
     case "none":

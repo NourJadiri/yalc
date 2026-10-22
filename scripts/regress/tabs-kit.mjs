@@ -256,7 +256,7 @@ export function rowsModel(blob, dayId, track = blob.track) {
       link: inApp
         ? { tag: "BUTTON", cls: "golink code", label: `Solve ${p.n} in the editor`, title: "Open in the editor", href: null, target: null, rel: null, glyph: "code" }
         : p.url
-          ? { tag: "A", cls: "golink", label: `Open ${p.n}`, title: null, href: p.url, target: "_blank", rel: "noopener", glyph: "arrow-up-right" }
+          ? { tag: "A", cls: "golink", label: `Open ${p.n}`, title: null, href: p.url, target: "_blank", rel: "noopener", glyph: "external" }
           : null,
     };
   });

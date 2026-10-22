@@ -1,9 +1,9 @@
 // The line picker under the Line's hero (05): which lines it offers, what it says about each, what switching does
-// to the page, to the open cards, to the scroll and to the saved blob, and how it is tinted.
+// to the page, to the open cards, to the scroll and to the saved blob, and how each line and the chosen one are drawn.
 
 import { finish } from "./me-lib.mjs";
 import { F, PF, edit, hdr, hdrModel, heroLine, rail, railModel, terminusCopy, TERMINUS, clearedOf, planOf, shape } from "./tabs-kit.mjs";
-import { RGB } from "./tabs-line.mjs";
+import { LPF } from "./tabs-line.mjs";
 
 const picker = (page) =>
   page.locator(".lines").evaluate((g) => ({
@@ -41,6 +41,20 @@ const pickerModel = (blob) => ({
 const openStations = async (page) => (await rail(page)).filter((r) => r.cls.includes("open")).map((r) => r.eyebrow);
 const pick = (page, track) => page.locator(`.linepick[data-track="${track}"]`);
 const html = (page) => page.evaluate(() => document.documentElement.dataset.track);
+/** How a pick is drawn: its edge, the outline that doubles it when chosen, its name's weight and its bullet. */
+const look = (A, track) =>
+  pick(A.page, track).evaluate((b) => {
+    const c = getComputedStyle(b);
+    const n = getComputedStyle(b.querySelector(".lname b"));
+    const u = getComputedStyle(b.querySelector(".lbullet"));
+    return {
+      edge: `${c.borderTopWidth} ${c.borderTopStyle} ${c.borderTopColor}`,
+      outline: c.outlineStyle === "none" ? "none" : `${c.outlineWidth} ${c.outlineStyle} ${c.outlineColor} ${c.outlineOffset}`,
+      name: n.fontWeight,
+      bullet: `${u.width} ${u.backgroundColor} ${u.color}`,
+    };
+  });
+const C = LPF.light;
 
 export default function register(scenario) {
   scenario("05-line-picker", "the line picker: the three lines and their numbers, switching, which stations open, scroll, saved track, accents, keyboard", async (s) => {
@@ -53,18 +67,21 @@ export default function register(scenario) {
     await s.expect("the picker is a radio group named 'Choose a line' with the three lines: Onsite Express (G, Google), Day One Local (A, Amazon) and Engineering Works (E, ElevenLabs · SIG); the Google one is on", () => picker(page), pickerModel(blob));
     await s.expect("…in words: 'Google · 0/24', 'Amazon · 0/13' and 'ElevenLabs · SIG · 0/7' under the names", async () => (await picker(page)).picks.map((p) => `${p.bullet} ${p.name} / ${p.sub}`), ["G Onsite Express / Google · 0/24", "A Day One Local / Amazon · 0/13", "E Engineering Works / ElevenLabs · SIG · 0/7"]);
     await s.expect("the Google line is showing: data-track google, its hero and the first station open", async () => ({ track: await html(page), title: (await heroLine(page)).title, open: await openStations(page) }), { track: "google", title: "Onsite Express", open: ["Day 1 · Pathfinding"] });
-    await s.expect("the on pick is outlined in its line's colour, with its bullet filled and white; the off pick keeps the grey outline and an orange letter on a pale ground", async () => ({
-      on: await A.props(pick(page, "google"), ["border-top-color"]).then((p) => p["border-top-color"]),
-      bulletOn: await A.props(pick(page, "google").locator(".lbullet"), ["background-color", "color", "width", "height", "font-weight", "font-size"]),
-      off: await A.props(pick(page, "aws"), ["border-top-color"]).then((p) => p["border-top-color"]),
-      bulletOff: await A.props(pick(page, "aws").locator(".lbullet"), ["color"]).then((p) => p.color),
-    }), { on: RGB.blue, bulletOn: { "background-color": RGB.blue, color: "rgb(255, 255, 255)", width: "28px", height: "28px", "font-weight": "800", "font-size": "14px" }, off: RGB.line, bulletOff: RGB.orange });
+    await s.expect("the pick being ridden has a doubled ink edge (its 2px border and a 2px outline inside it) and a bold name; an off pick has the 2px control-edge grey and a semibold name; each bullet is a 24px Platform bullet in its own line's colour (G line 2, A line 4) with the on-line letter", async () => ({
+      on: await look(A, "google"),
+      off: await look(A, "aws"),
+      bulletType: await A.props(pick(page, "google").locator(".lbullet"), ["height", "font-weight", "font-size", "border-top-left-radius"]),
+    }), {
+      on: { edge: "2px solid " + C.ink, outline: `2px solid ${C.ink} -4px`, name: "700", bullet: `24px ${C.line2} ${C.onLine}` },
+      off: { edge: "2px solid " + C.border, outline: "none", name: "600", bullet: `24px ${C.line4} ${C.onLine}` },
+      bulletType: { height: "24px", "font-weight": "700", "font-size": "15px", "border-top-left-radius": "9999px" },
+    });
     await s.pin("the on pick's tint and the off bullet's ground", { on: (await A.props(pick(page, "google"), ["background-color"]))["background-color"], off: (await A.props(pick(page, "aws").locator(".lbullet"), ["background-color"]))["background-color"] });
     await s.pin("a pick's geometry", { pick: await A.props(pick(page, "google"), ["padding-top", "padding-left", "border-top-left-radius", "gap", "display"]), rect: await A.rect(pick(page, "google")), group: await A.props(".lines", ["display", "gap", "margin-top", "flex-wrap"]) });
     await s.marked(A, "the picker", ".lines");
     await A.shot("picker", { locator: page.locator(".lines") });
     await A.setDark(true);
-    await s.expect("dark: the on bullet's letter flips to the page colour so it reads on the lighter blue", async () => (await A.props(pick(page, "google").locator(".lbullet"), ["background-color", "color"])), { "background-color": "rgb(138, 180, 248)", color: "rgb(32, 33, 36)" });
+    await s.expect("Night: the bullets take Night's brighter line colours with the dark on-line letter, and the chosen pick's edge is Night's ink", async () => ({ bullet: await A.props(pick(page, "google").locator(".lbullet"), ["background-color", "color"]), edge: (await look(A, "google")).edge }), { bullet: { "background-color": LPF.dark.line2, color: LPF.dark.onLine }, edge: "2px solid " + LPF.dark.ink });
     await A.shot("picker", { locator: page.locator(".lines") });
     await A.setDark(false);
 
@@ -84,12 +101,10 @@ export default function register(scenario) {
     await s.expect("…the header is the Local's: Applicant, Stop 1 Pike Place, 40 XP to Online Assessment", () => hdr(page), { rank: "Applicant", bullet: "A", streak: "Streak 0/0", xp: "0", fill: "0%", where: "Stop 1 | Pike Place", next: "40 XP to Online Assessment" });
     await s.expect("…and the saved blob has only changed its track", async () => shape(await A.saved()), shape(blob));
     await A.resume();
-    await s.expect("the Local's pick is outlined in the Local's orange; the Google pick has gone back to grey with a blue letter", async () => ({
-      on: (await A.props(pick(page, "aws"), ["border-top-color"]))["border-top-color"],
-      bulletOn: (await A.props(pick(page, "aws").locator(".lbullet"), ["background-color", "color"])),
-      off: (await A.props(pick(page, "google"), ["border-top-color"]))["border-top-color"],
-      bulletOff: (await A.props(pick(page, "google").locator(".lbullet"), ["color"])).color,
-    }), { on: RGB.orange, bulletOn: { "background-color": RGB.orange, color: "rgb(255, 255, 255)" }, off: RGB.line, bulletOff: RGB.blue });
+    await s.expect("the Local's pick now has the doubled ink edge and the bold name; the Google pick is back to the grey edge, each bullet still in its own line's colour", async () => ({ on: await look(A, "aws"), off: await look(A, "google") }), {
+      on: { edge: "2px solid " + C.ink, outline: `2px solid ${C.ink} -4px`, name: "700", bullet: `24px ${C.line4} ${C.onLine}` },
+      off: { edge: "2px solid " + C.border, outline: "none", name: "600", bullet: `24px ${C.line2} ${C.onLine}` },
+    });
     await s.expect("on the Local the current tab stays ink and the focus ring stays ink and signal yellow: switching lines changes only the line's own marks", async () => ({ tab: (await A.props(page.locator("nav.tabs .tab.on"), ["color"])).color, ring: await (async () => { await page.keyboard.press("Tab"); return (await A.props(page.locator(":focus"), ["box-shadow"]))["box-shadow"]; })() }), { tab: PF.light.ink, ring: PF.light.ring });
     await A.scrollTo(0);
     await A.shot("picker-local", { locator: page.locator(".lines") });
@@ -140,10 +155,10 @@ export default function register(scenario) {
     const K = await s.device({ motion: true });
     await K.open();
     await K.page.keyboard.press("Tab");
-    await s.expect("Tab from the top of the page lands on the Google pick, ringed in the accent", async () => ({ on: await K.page.evaluate(() => document.activeElement.dataset.track), visible: await K.page.evaluate(() => document.activeElement.matches(":focus-visible")), ring: await K.props(K.page.locator(":focus"), ["outline-style", "outline-width", "outline-color", "outline-offset"]) }), { on: "google", visible: true, ring: { "outline-style": "solid", "outline-width": "2px", "outline-color": RGB.blue, "outline-offset": "2px" } });
+    await s.expect("Tab from the top of the page lands on the Google pick, ringed with Platform's focus ring (ink hugging it, then signal yellow) outside its doubled ink edge", async () => ({ on: await K.page.evaluate(() => document.activeElement.dataset.track), visible: await K.page.evaluate(() => document.activeElement.matches(":focus-visible")), ring: await K.props(K.page.locator(":focus"), ["box-shadow", "outline-style", "outline-color", "outline-offset"]) }), { on: "google", visible: true, ring: { "box-shadow": PF.light.ring, "outline-style": "solid", "outline-color": C.ink, "outline-offset": "-4px" } });
     await K.page.keyboard.press("Tab");
     await K.page.keyboard.press("Enter");
-    await s.expect("Tab then Enter on the Local pick switches to the Local, and the focus ring follows to the Local's orange on the same button", async () => ({ track: await html(K.page), on: await K.page.evaluate(() => document.activeElement.dataset.track), ring: (await K.props(K.page.locator(":focus"), ["outline-color"]))["outline-color"] }), { track: "aws", on: "aws", ring: RGB.orange });
+    await s.expect("Tab then Enter on the Local pick switches to the Local; the same button keeps the focus ring, which the line never changes (ink and signal yellow), and now wears the doubled ink edge", async () => ({ track: await html(K.page), on: await K.page.evaluate(() => document.activeElement.dataset.track), ring: await K.props(K.page.locator(":focus"), ["box-shadow", "outline-color"]) }), { track: "aws", on: "aws", ring: { "box-shadow": PF.light.ring, "outline-color": C.ink } });
     finish(s);
   });
 }
