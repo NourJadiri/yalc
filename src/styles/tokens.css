@@ -134,12 +134,36 @@
 :root[data-track="aws"] { --track: var(--line-4); }
 :root[data-track="eng"] { --track: var(--line-5); }
 
-/* Code: the editor and every highlighted snippet. Hues from the line colours; the workspace sets the final values. */
+/* Code: the editor and every highlighted snippet. The syntax colours take the line hues (keywords line 2, strings 3,
+   numbers 1, functions 5, classes 8, decorators 4), set darker by day and lighter by night and in High contrast
+   wherever the line itself would fall under 4.5:1 (7:1 in High contrast) on surface-raised, surface-sunk, the active
+   line, the selection or the error band. Line backgrounds stay translucent: the selection is drawn beneath them. */
 :root {
-  --ed-bg: var(--surface-raised); --ed-gutter: var(--surface); --ed-err: var(--stop-wash);
-  --ed-active: color-mix(in srgb, var(--ink) 5%, transparent); --ed-sel: color-mix(in srgb, var(--signal) 45%, transparent);
-  --hl-kw: var(--line-2); --hl-str: var(--line-3); --hl-num: var(--line-1); --hl-com: var(--ink-muted);
-  --hl-fn: var(--line-5); --hl-cls: var(--line-8); --hl-op: var(--ink-muted); --hl-meta: var(--line-4);
+  --ed-bg: var(--surface-raised); --ed-gutter: var(--surface); --ed-active: color-mix(in srgb, var(--surface-sunk) 50%, transparent);
+  --ed-sel: color-mix(in srgb, var(--signal) 35%, transparent); --ed-sel-edge: transparent; --ed-err: color-mix(in srgb, var(--stop) 14%, transparent);
+  --hl-kw: var(--line-2); --hl-str: #066f34; --hl-num: #c20c04; --hl-com: var(--ink-muted);
+  --hl-fn: var(--line-5); --hl-cls: var(--line-8); --hl-op: var(--ink-muted); --hl-meta: #9f4603;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --ed-sel: color-mix(in srgb, var(--signal) 16%, transparent); --ed-sel-edge: transparent;
+    --hl-kw: #72a2fe; --hl-str: #39b96c; --hl-num: #fe7c6f; --hl-fn: #c38ee9; --hl-cls: #cd9965; --hl-meta: var(--line-4);
+  }
+}
+:root[data-theme="dark"] {
+  --ed-sel: color-mix(in srgb, var(--signal) 16%, transparent); --ed-sel-edge: transparent;
+  --hl-kw: #72a2fe; --hl-str: #39b96c; --hl-num: #fe7c6f; --hl-fn: #c38ee9; --hl-cls: #cd9965; --hl-meta: var(--line-4);
+}
+/* High contrast tells the selection apart by a signal edge, not by a wash that would dim the text. */
+@media (prefers-contrast: more) {
+  :root:not([data-theme]) {
+    --ed-sel: var(--surface-sunk); --ed-sel-edge: var(--signal);
+    --hl-kw: #8ca6fe; --hl-str: var(--line-3); --hl-num: #ff887e; --hl-fn: var(--line-5); --hl-cls: var(--line-8); --hl-meta: #f5922d;
+  }
+}
+:root[data-theme="contrast"] {
+  --ed-sel: var(--surface-sunk); --ed-sel-edge: var(--signal);
+  --hl-kw: #8ca6fe; --hl-str: var(--line-3); --hl-num: #ff887e; --hl-fn: var(--line-5); --hl-cls: var(--line-8); --hl-meta: #f5922d;
 }
 
 /* MIGRATION ONLY: the old token names on Platform's, so that areas not yet moved still draw. The old --surface (a
