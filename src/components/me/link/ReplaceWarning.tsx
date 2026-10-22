@@ -6,7 +6,7 @@ export default function ReplaceWarning({ enabled }: { enabled: boolean }) {
   return (
     <p className="qrwarn">
       <span className="qrwarn-tile" aria-hidden="true">
-        <Icon name="alert-triangle" size={24} />
+        <Icon name="warning" size={24} />
       </span>
       <span className="qrwarn-text">
         {enabled

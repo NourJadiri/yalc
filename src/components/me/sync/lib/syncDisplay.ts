@@ -13,7 +13,7 @@ interface Look {
 export function look(s: SyncStatus): Look {
   if (s.held && s.phase === "error") {
     return {
-      glyph: "alert-triangle",
+      glyph: "warning",
       tone: "var(--caution)",
       title: "Update needed",
       note: "The cloud copy is from a newer version of the app. Reload to update; until then this device leaves it alone.",
@@ -21,17 +21,17 @@ export function look(s: SyncStatus): Look {
   }
   switch (s.phase) {
     case "working":
-      return { glyph: "cloud-upload", tone: "var(--ink)", title: "Syncing…", note: "" };
+      return { glyph: "refresh", tone: "var(--ink)", title: "Syncing…", note: "" };
     case "pending":
       return {
-        glyph: "timer",
+        glyph: "clock",
         tone: "var(--caution)",
         title: "Changes queued",
         note: "They go up in a moment, or the next time there's a network.",
       };
     case "error":
       return {
-        glyph: "cloud-off",
+        glyph: "stop",
         tone: "var(--stop)",
         title: "Cloud unreachable",
         note: "Progress is safe on this device and will sync when it can.",

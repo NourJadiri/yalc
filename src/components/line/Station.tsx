@@ -22,7 +22,7 @@ export default function Station({ color, done, now, open, terminus, children }: 
   return (
     <div className={cx("stn", done && "done", now && "now", open && "open", terminus && "terminus")} style={style}>
       <div className="rail">
-        <div className="stop">{done && <Icon name="check" size={12} strokeWidth={3.5} />}</div>
+        <div className="stop">{done && <Icon name="check" size={12} />}</div>
       </div>
       <div className="stn-body">{children}</div>
     </div>

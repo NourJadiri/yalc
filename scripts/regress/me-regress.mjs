@@ -93,21 +93,24 @@ const headerRank = (page) => page.locator("header.hdr").evaluate((h) => ({ rank:
 const noHScroll = (page) => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
 
 /* The status card: its words, the pictogram beside them and the status colour both are set in. The pictogram is told
-   apart by the stroke that sets it apart (a tick, a timer's button, an up arrow, a slash, a triangle), since icons
-   carry no names. */
+   apart by the stroke that sets it apart (a tick, a clock's hands, a turning arrow, a triangle, an octagon), since
+   icons carry no names. */
 const GLYPH = {
-  "M20 6 9 17l-5-5": "check",
-  "line 10 2 14 2": "timer",
-  "M12 21v-8": "cloud-upload",
-  "m2 2 20 20": "cloud-off",
-  "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3": "alert-triangle",
+  "M4.5 12.5L9.5 17.5L19.5 6.5": "check",
+  "M12 7V12L15.5 14": "clock",
+  "M17.65 10.1A6.4 6.4 0 1 1 12 6.7": "refresh",
+  "M12 3.5L21.5 20H2.5Z": "warning",
+  "M8.3 3H15.7L21 8.3V15.7L15.7 21H8.3L3 15.7V8.3Z": "stop",
+  "M8.5 14L11 16.5L15.75 11.75": "cloud-check",
+  "M12.25 19V10.75": "cloud-upload",
+  "M3.5 3.5L20.5 20.5": "cloud-off",
 };
 const card = (page) =>
   page.locator("main .synccard").evaluate((c, glyphs) => ({
     title: c.querySelector(".synctext b").textContent,
     when: c.querySelector(".synctext span")?.textContent ?? null,
     tone: c.style.color,
-    glyph: [...c.querySelectorAll(".ic svg path, .ic svg line")].map((e) => glyphs[e.tagName === "line" ? ["line", ...["x1", "y1", "x2", "y2"].map((a) => e.getAttribute(a))].join(" ") : e.getAttribute("d")]).find(Boolean) ?? "?",
+    glyph: [...c.querySelectorAll(".ic svg path")].map((p) => glyphs[p.getAttribute("d")]).find(Boolean) ?? "?",
   }), GLYPH);
 const syncNote = (page) => page.locator("main > section > .storenote").evaluateAll((els) => els.map((e) => e.textContent)).then((a) => a.join(" | "));
 const panelButtons = (page) => page.locator("main > section > .mrow").first().locator(".mbtn").evaluateAll((els) => els.map((e) => e.textContent.trim() + (e.disabled ? " (disabled)" : "")));
@@ -526,7 +529,7 @@ scenario("03-sync-on", "turn on sync: the code, the status card, Sync now, copy,
   await u.turnOn.click();
   await s.expect("the push is on its way (one PUT, nothing pulled first), held", async () => ({ put: A.net.count("PUT", code), get: A.net.count("GET"), inflight: A.net.inflight }), { put: 1, get: 0, inflight: 1 });
   await s.expect("Turn on sync: a gold toast says to enter the code on the other device", () => A.toasts(), ["* Sync is on — enter this code on your other device"]);
-  await s.expect("the card says Syncing… in ink (at work, not a status) with the upload cloud, and has never synced", () => card(page), { title: "Syncing…", when: null, tone: "var(--ink)", glyph: "cloud-upload" });
+  await s.expect("the card says Syncing… in ink (at work, not a status) with the refresh arrow, and has never synced", () => card(page), { title: "Syncing…", when: null, tone: "var(--ink)", glyph: "refresh" });
   await s.expect("the minted code is on the chip, which says it copies on tap", async () => ({ text: await u.chip.textContent(), title: await u.chip.getAttribute("title") }), { text: code, title: "Tap to copy" });
   await s.expect("while it works: Sync now is disabled, and Link a device and Turn off are there", () => panelButtons(page), ["Sync now (disabled)", "Link a device", "Turn off"]);
   await s.expect("…and Sync now looks out of service: a dashed edge, the sunken fill, muted text and a not-allowed pointer", () => u.syncNow.evaluate((b) => { const cs = getComputedStyle(b); return { edge: cs.borderTopStyle + " " + cs.borderTopColor, fill: cs.backgroundColor, color: cs.color, cursor: cs.cursor }; }), { edge: "dashed rgb(124, 123, 116)", fill: "rgb(229, 228, 222)", color: "rgb(87, 86, 79)", cursor: "not-allowed" });
@@ -568,8 +571,8 @@ scenario("03-sync-on", "turn on sync: the code, the status card, Sync now, copy,
 
   // ---- an edit: queued, held for 4 s, then pushed
   await edit(A, SEED_B);
-  await s.expect("an edit makes the card say Changes queued, with its note, in caution with the timer", async () => ({ card: await card(page), note: await syncNote(page) }), {
-    card: { title: "Changes queued", when: "Last synced just now", tone: "var(--caution)", glyph: "timer" },
+  await s.expect("an edit makes the card say Changes queued, with its note, in caution with the clock", async () => ({ card: await card(page), note: await syncNote(page) }), {
+    card: { title: "Changes queued", when: "Last synced just now", tone: "var(--caution)", glyph: "clock" },
     note: "They go up in a moment, or the next time there's a network.",
   });
   await s.expect("…the stamp is ahead of the acknowledged one (that is the dirty flag)", async () => { const c = await A.cfg(); return c.editedAt > c.serverAt; }, true);
@@ -1408,7 +1411,7 @@ scenario("10-held", "a cloud copy this build cannot read: sync parks instead of 
   await B.clearToasts();
   await B.answering(true, () => u.connect.click());
   await s.expect("Connect to the unreadable copy: no adoption; the toast says the cloud copy is from a newer app (not gold)", () => B.toasts(), ["The cloud copy is from a newer version of the app — reload to update"]);
-  await s.expect("…the card parks in its own look: caution, with the warning sign, 'Update needed', no 'last synced' line", () => card(B.page), { title: "Update needed", when: null, tone: "var(--caution)", glyph: "alert-triangle" });
+  await s.expect("…the card parks in its own look: caution, with the warning pictogram, 'Update needed', no 'last synced' line", () => card(B.page), { title: "Update needed", when: null, tone: "var(--caution)", glyph: "warning" });
   await s.expect("…its note says to reload, and that this device leaves the copy alone", () => syncNote(B.page), "The cloud copy is from a newer version of the app. Reload to update; until then this device leaves it alone.");
   await s.expect("…B's own progress was not touched", async () => ({ stats: await stats(B.page), blob: await B.blob() }), { stats: ["8/115 problems", "2/24 stations", "2/24 rituals", "40 cards", "70% accuracy", "3 best streak"], blob: SEED_B });
   await s.expect("…and the cloud's was not touched either: no PUT, same row", async () => ({ put: B.net.count("PUT"), row: (await d1.get(H)).body }), { put: 0, row: held.body });
@@ -1550,7 +1553,7 @@ scenario("12-sync-errors", "an unreachable or broken cloud: the 30 s retry, the 
   const OFFLINE = "Can't reach the cloud — progress is safe here";
   const ERROR_NOTE = "Progress is safe on this device and will sync when it can.";
   const tail = (D, from) => D.net.log.slice(from).map((e) => `${e.method} ${e.status}`);
-  const errorCard = { title: "Cloud unreachable", when: null, tone: "var(--stop)", glyph: "cloud-off" };
+  const errorCard = { title: "Cloud unreachable", when: null, tone: "var(--stop)", glyph: "stop" };
   const online = (D) => D.page.evaluate(() => window.dispatchEvent(new Event("online")));
 
   // ---- turning sync on with no network: queued, retried every 30 s, lands when the network is back

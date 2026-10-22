@@ -44,21 +44,21 @@ const RANDOM_STUB = (seed0) => {
   };
 };
 
-/* Icons carry no names, so a glyph is told by a stroke that sets it apart. */
+/* Icons carry no names, so a pictogram is told by a path that sets it apart. */
 const GLYPHS = {
-  play: 'points="6 3 20 12 6 21 6 3"',
-  pause: 'x="14" y="4"',
-  check: "M20 6 9 17l-5-5",
-  "rotate-ccw": "M3 12a9 9 0 1 0 9-9",
-  flame: "M8.5 14.5A2.5 2.5",
-  lock: 'rx="2" ry="2"',
-  "chevron-down": "m6 9 6 6 6-6",
-  "arrow-right": "M5 12h14",
-  "arrow-up-right": "M7 7h10v10",
-  code: "m16 18 6-6-6-6",
-  route: "M9 19h8.5",
-  train: "M4 11h16",
-  chart: "M18 17V9",
+  play: 'd="M8 4.75L19.75 12L8 19.25Z"',
+  pause: 'd="M7.25 5.25H10.25V18.75H7.25ZM13.75 5.25H16.75V18.75H13.75Z"',
+  check: 'd="M4.5 12.5L9.5 17.5L19.5 6.5"',
+  "rotate-ccw": 'd="M6.35 10.1A6.4 6.4 0 1 0 12 6.7"',
+  flame: 'd="M12.5 3.5C14.5 6.75 18.25 9',
+  lock: 'd="M8 11V8a4 4 0 0 1 8 0V11"',
+  "chevron-down": 'd="M7.5 9.75L12 14.25L16.5 9.75"',
+  "arrow-right": 'd="M3 10.25H12V4.75L21 12L12 19.25V13.75H3Z"',
+  "arrow-up-right": 'd="M4.4 17.13L10.76 10.76L6.87 6.87L18.36 5.64',
+  code: 'd="M13.5 5L10.5 19"',
+  route: 'd="M9 18H11.5L18 11.5V9"',
+  train: 'd="M5.5 10H18.5"',
+  chart: 'd="M3 20.75H21"',
 };
 
 const PAGE_HELPERS = (glyphs) => {
