@@ -7,8 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="YALC">
-<meta name="theme-color" content="#f8f9fa" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f1f0ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121315" media="(prefers-color-scheme: dark)">
 <!-- The app icon: the terminus dot as a roundel, four logo colours on dark.
      One SVG covers the tab;
      the PNGs cover installs — iOS ignores SVG here and wants a 180px PNG,
@@ -17,6 +17,9 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
+<!-- The two faces nearly every screen sets text in, fetched before the CSS asks for them. -->
+<link rel="preload" href="/fonts/Barlow-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/Barlow-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <title>YALC — Yet Another LeetCode Clone</title>
 </head>
 <body>

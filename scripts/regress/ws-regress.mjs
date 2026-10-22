@@ -21,6 +21,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Scenario, runSuite, sleep, isEqual } from "./harness.mjs";
 import { loadData } from "./tabs-data.mjs";
+import { AUDIT, auditContrast } from "./contrast-audit.mjs";
+
+/* REGRESS_CONTRAST=more runs every page as if the system asked for more contrast (Platform's High contrast theme). */
+const CONTRAST = process.env.REGRESS_CONTRAST || null;
 
 const [BASE, OUT] = process.argv.slice(2);
 if (!BASE || !OUT) {
@@ -174,6 +178,7 @@ class WsScenario extends Scenario {
         mask: [page.locator(".wclock-time")],
         maskColor: "#ff00ff",
       });
+      if (AUDIT) await auditContrast(page, OUT, file);
     } finally {
       await page.evaluate(() => {
         (window.__wsRestore || []).forEach(([t, v]) => (t.nodeValue = v));
@@ -204,6 +209,7 @@ async function newPage(s, opts = {}) {
     ...(phone ? PHONE : DESKTOP),
     colorScheme: dark ? "dark" : "light",
     reducedMotion: "reduce",
+    contrast: CONTRAST,
     locale: "en-US",
     timezoneId: "UTC",
     permissions,

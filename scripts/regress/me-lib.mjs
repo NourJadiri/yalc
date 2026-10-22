@@ -27,6 +27,10 @@ import os from "node:os";
 import path from "node:path";
 import { Scenario } from "./harness.mjs";
 import { JSQR_SOURCE } from "./me-fixtures.mjs";
+import { AUDIT, auditContrast } from "./contrast-audit.mjs";
+
+/* REGRESS_CONTRAST=more runs every page as if the system asked for more contrast (Platform's High contrast theme). */
+const CONTRAST = process.env.REGRESS_CONTRAST || null;
 
 export const ORIGIN = "https://yalc.test";
 /** Every device's clock starts here (plus its own offset). */
@@ -343,6 +347,7 @@ export class Device {
       ...(o.se ? PHONE_SE : this.phone ? PHONE : DESKTOP),
       colorScheme: o.dark ? "dark" : "light",
       reducedMotion: o.motion ? "no-preference" : "reduce",
+      contrast: CONTRAST,
       locale: "en-US",
       timezoneId: "UTC",
       permissions,
@@ -661,6 +666,7 @@ export class Device {
            that was repainted that way came out a few levels different from one that was painted whole. */
         await target.screenshot({ ...options, style: "html { visibility: hidden !important }" });
         await target.screenshot({ ...options, path: path.join(OUT, file) });
+        if (AUDIT) await auditContrast(page, OUT, file);
         if (!this.s.screenshots.includes(file)) this.s.screenshots.push(file);
       } finally {
         if (wasRunning) await this.resume();

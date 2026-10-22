@@ -21,6 +21,10 @@
 #                me-check.sh and tabs-check.sh are this script with REGRESS_SUITE=me / tabs.
 #   WS_JOBS=3    run the scenarios three at a time (about 1 minute instead of 2)
 #   WS_ONLY=03,06  run only the scenarios whose id starts with one of these
+#   REGRESS_CONTRAST=more  emulate prefers-contrast: more on every page (the High contrast theme);
+#                screenshots keep their -light/-dark names, so give such a run its own label
+#   REGRESS_AUDIT=1  at every screenshot, measure the contrast of all visible text against what is
+#                behind it and append the misses to <out>/runs/<label>/contrast.jsonl
 #
 # Every run gets a fresh --persist-to directory (deleted before and after), so the local
 # D1 behind /api/state starts empty and nothing leaks from one run into the next.
