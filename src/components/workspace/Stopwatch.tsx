@@ -19,7 +19,7 @@ export default function Stopwatch({ clock }: { clock: RefObject<Clock> }) {
         aria-label={running ? "Pause the clock" : "Resume the clock"}
         title={running ? "Pause" : "Resume"}
       >
-        <Icon name={running ? "timer" : "pause"} size={16} />
+        <Icon name={running ? "clock" : "pause"} size={16} />
         {fmtT(Math.min(secs, MAX_SECS))}
       </button>
       <IconButton size="sm" icon="rotate-ccw" label="Reset the clock" className="wclock-reset" onClick={reset} />

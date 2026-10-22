@@ -16,7 +16,7 @@ export default function StuckNudge({ minutes, action, onTake, onLater }: StuckNu
   return (
     <div className="ws-nudge" role="status">
       <span className="ws-nudge-tile">
-        <Icon name="timer" size={24} />
+        <Icon name="clock" size={24} />
       </span>
       <div className="ws-nudge-body">
         <p>{minutes} minutes in. Want a nudge?</p>

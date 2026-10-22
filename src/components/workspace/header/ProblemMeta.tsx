@@ -39,7 +39,7 @@ export default function ProblemMeta({ spec, problemRef: { day, track }, done, ac
       {lcLink ? (
         <a className="ws-lc" href={lcLink} target="_blank" rel="noopener">
           {"LC " + (spec.lc?.num ?? "")}
-          <Icon name="arrow-up-right" size={16} />
+          <Icon name="external" size={16} />
         </a>
       ) : spec.lc?.premium ? (
         <Tag>{"LC " + spec.lc.num + " · premium"}</Tag>

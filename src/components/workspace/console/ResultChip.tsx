@@ -4,8 +4,8 @@ import Icon, { type IconName } from "../../shared/Icon";
 import { caseMark } from "../lib/verdict";
 import "./Chips.css";
 
-/* Check for go, warning for caution, the error mark for stop; a case with no verdict keeps a plain dot. */
-const MARK: Partial<Record<string, IconName>> = { ok: "check", warn: "alert-triangle", bad: "x" };
+/* Check for go, warning for caution, stop for stop; a case with no verdict keeps a plain dot. */
+const MARK: Partial<Record<string, IconName>> = { ok: "check", warn: "warning", bad: "stop" };
 
 interface ResultChipProps {
   status: CaseResult["status"];
