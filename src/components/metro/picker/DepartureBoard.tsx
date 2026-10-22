@@ -11,9 +11,10 @@ interface DepartureBoardProps {
   onSelect: (deck: DeckId) => void;
 }
 
+/* data-theme: the board is lit at night on any page (High contrast keeps its own), as Platform's Board is. */
 export default function DepartureBoard({ data, selected, onSelect }: DepartureBoardProps) {
   return (
-    <div className="dboard" role="group" aria-label="Choose a deck">
+    <div className="dboard" role="group" aria-label="Choose a deck" data-theme="dark">
       <BoardHead />
       {DECKS.map((deck, i) => (
         <DeckRow

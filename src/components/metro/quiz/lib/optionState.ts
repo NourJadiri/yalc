@@ -1,3 +1,5 @@
+import type { IconName } from "../../../shared/Icon";
+
 export type OptionState = "right" | "wrong" | "dim";
 
 interface OptionFacts {
@@ -19,3 +21,9 @@ export function optionState({ revealed, stored, slot, answer, picked }: OptionFa
   if (slot === picked) return "wrong";
   return "dim";
 }
+
+/** What a revealed option says besides its colour: a word and a pictogram. */
+export const VERDICT: Partial<Record<OptionState, { word: string; icon: IconName }>> = {
+  right: { word: "Right", icon: "check" },
+  wrong: { word: "Wrong", icon: "x" },
+};

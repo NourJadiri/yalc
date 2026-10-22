@@ -1,4 +1,10 @@
-.dboard-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 14px 10px; }
-.dboard-title { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--ink2); }
-.dboard-live { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10px; color: var(--ink2); font-variant-numeric: tabular-nums; }
-.dboard-live i { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+/* Signal on the board's lit body, as Platform's Board sets its title: yellow is barred as text on light grounds only. */
+.dboard-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-4) var(--space-4) var(--space-3); }
+.dboard-title { display: flex; align-items: center; gap: var(--space-2); color: var(--signal); font: var(--t-heading); letter-spacing: var(--t-heading-ls); }
+.dboard-title svg { flex: none; }
+.dboard-live { flex: none; color: var(--ink-muted); font: var(--t-label); letter-spacing: var(--t-label-ls); font-variant-numeric: tabular-nums; }
+@media (max-width: 599px) {
+  .dboard-head { padding: var(--space-4) var(--space-3) var(--space-3); }
+  .dboard-title { font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); }
+  .dboard-title svg { width: 24px; height: 24px; }
+}
