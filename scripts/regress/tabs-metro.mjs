@@ -5,7 +5,7 @@
 
 import { finish } from "./me-lib.mjs";
 import { D, F, hdr, feedOf } from "./tabs-kit.mjs";
-import { board, boardModel, card, result, cardOf, multOf, askModel, revealModel, cardView, FRESH_NOTE, deckStat } from "./tabs-metro-kit.mjs";
+import { board, boardModel, card, result, cardOf, multOf, askModel, revealModel, cardView, FRESH_NOTE, deckStat, MPF, BOARD, lit, litModel, marks, marksModel, flips, flipsModel, route, routeModel, optLooks, optLook, cardLook, cardLookModel, navLook, ticket, ticketModel, boardButton } from "./tabs-metro-kit.mjs";
 
 const rowOf = (page, id) => page.locator("#quizArea .drow").nth(D.DECKS.findIndex((d) => d.id === id));
 const boardBtn = (page) => page.locator("#quizArea button.board");
@@ -49,7 +49,7 @@ async function play(s, A, { label, plan, n = plan.length, shots = {} }) {
       st.right++;
     } else st.streak = 0;
     st.results.push(wantRight);
-    await s.expect(`${label}: card ${i + 1} answered ${wantRight ? "right" : "wrong"}: ${wantRight ? "the right option green, the rest dimmed" : "the picked option red, the right one green, the rest dimmed"}, the explanation, ${i + 1 >= n ? "Finish" : "Next stop"}`, async () => cardView(await card(page)), revealModel(q, pre, { i, n, streak: st.streak, xp: st.xp, results: st.results, slot, rightSlot }));
+    await s.expect(`${label}: card ${i + 1} answered ${wantRight ? "right" : "wrong"}: ${wantRight ? "the right option in go, saying Right with a check, the rest muted" : "the picked option in stop, saying Wrong with the stop pictogram, the right one in go saying Right, the rest muted"}, the explanation, ${i + 1 >= n ? "Finish" : "Next stop"}`, async () => cardView(await card(page)), revealModel(q, pre, { i, n, streak: st.streak, xp: st.xp, results: st.results, slot, rightSlot }));
     if (shots[i]?.markReveal) await s.marked(A, shots[i].markReveal, "#quizArea");
     if (shots[i]?.reveal) await A.shot(shots[i].reveal);
     if (i + 1 < plan.length) {
@@ -88,7 +88,7 @@ export { rowOf, boardBtn, nextBtn, quitBtn, chooseDeck, boardIt, play, rush, ph,
 
 export default function register(scenario) {
   /* 8 ------------------------------------------------------------------ */
-  scenario("08-metro-board", "the departures board: deck rows, tags, the delayed Redemption deck, platform labels, roundels, the Board button, the footnote", async (s) => {
+  scenario("08-metro-board", "the departures board: lit at night, deck rows on their lines, split flaps for platforms and statuses, the delayed Redemption deck, the interchange, the Board button, the footnote", async (s) => {
     const A = await s.device({ motion: true });
     await A.open();
     await A.tab("Metro");
@@ -110,42 +110,55 @@ export default function register(scenario) {
       "Redemption | no misses yet — clean sheet | dplat:P6 | closed",
     ]);
     await s.expect("the Board button names the chosen deck and the stops; the footnote explains the multipliers", async () => ({ btn: (await board(page)).boardBtn, note: (await board(page)).note, glyph: await boardBtn(page).evaluate((b) => window.__glyph(b.querySelector("svg"))) }), { btn: "Board Mix — 10 stops", note: FRESH_NOTE, glyph: "train" });
-    await s.expect("the roundels: Mix a four-colour wheel (conic), Graphs G blue, Backtracking B red, DP D yellow (dark letter), Heaps H green, Redemption R orange", async () => page.locator("#quizArea .rdl").evaluateAll((els) => els.map((e) => ({ t: e.textContent, bg: e.style.background || (getComputedStyle(e).backgroundImage.startsWith("conic-gradient") ? "conic" : ""), cls: e.className }))), [
-      { t: "", bg: "conic", cls: "rdl mix" },
-      { t: "G", bg: "var(--blue)", cls: "rdl" },
-      { t: "B", bg: "var(--red)", cls: "rdl" },
-      { t: "D", bg: "var(--yellow)", cls: "rdl onyellow" },
-      { t: "H", bg: "var(--green)", cls: "rdl" },
-      { t: "R", bg: "var(--med)", cls: "rdl" },
-    ]);
-    await s.expect("the DP roundel's letter is dark ink in either palette (yellow never darkens); the others' are white", async () => ({ dp: (await A.props(rowOf(page, "dp").locator(".rdl"), ["color"])).color, graphs: (await A.props(rowOf(page, "graphs").locator(".rdl"), ["color"])).color }), { dp: "rgb(32, 33, 36)", graphs: "rgb(255, 255, 255)" });
-    await s.expect("a row is at least 60px tall (it clears the 44px thumb floor without an overlay); the roundel is a 28px disc", async () => ({ rows: await page.locator("#quizArea .drow").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 60)), disc: await A.props(rowOf(page, "graphs").locator(".rdl"), ["width", "height", "border-top-left-radius"]) }), { rows: [true, true, true, true, true, true], disc: { width: "28px", height: "28px", "border-top-left-radius": "50%" } });
-    await s.expect("Redemption is disabled at zero misses: dimmed to 40% and with no pointer", async () => ({ disabled: await rowOf(page, "redo").isDisabled(), p: await A.props(rowOf(page, "redo"), ["opacity", "cursor"]) }), { disabled: true, p: { opacity: "0.4", cursor: "default" } });
+    await s.expect("the departures board is lit at night on a Day page, as Platform's Board is: Night's sunk body and hairline rule, its ink, the raised flaps; the title in signal yellow at the heading size beside the 28px train pictogram, the line count a muted 14px label in tabular figures", () => lit(page), litModel());
+    await s.expect("the deck marks: Mix is the interchange (a 32px raised disc in a 6px ink ring, no letter, no colour); Graphs G on line 6, Backtracking B on line 1, DP D on line 8, Heaps & tries H on line 3, each a 32px bullet with its letter in on-line; Redemption, closed, R out of service", () => marks(page), marksModel(false));
+    await s.expect("every open bullet's letter is on-line, dark on the lit board's brighter lines: DP's and Graphs' alike", async () => ({ dp: (await A.props(rowOf(page, "dp").locator(".rdl"), ["color"])).color, graphs: (await A.props(rowOf(page, "graphs").locator(".rdl"), ["color"])).color }), { dp: BOARD.onLine, graphs: BOARD.onLine });
+    s.pin("the rows' heights", await page.locator("#quizArea .drow").evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height))));
+    await s.expect("a row is at least 44px tall, a thumb target of its own with no overlay; the bullet is a 32px disc, Platform's large Line bullet", async () => ({ rows: await page.locator("#quizArea .drow").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 44)), disc: await A.props(rowOf(page, "graphs").locator(".rdl"), ["width", "height", "border-top-left-radius"]) }), { rows: [true, true, true, true, true, true], disc: { width: "32px", height: "32px", "border-top-left-radius": "9999px" } });
+    await s.expect("Redemption is out of service at zero misses: never dimmed, its words and its platform muted, its bullet a dashed ring on the sunk ground, a not-allowed pointer", async () => ({ disabled: await rowOf(page, "redo").isDisabled(), p: await A.props(rowOf(page, "redo"), ["opacity", "cursor", "color"]), rdl: await A.props(rowOf(page, "redo").locator(".rdl"), ["border-top-style", "border-top-color", "background-color", "color"]), flaps: (await A.props(rowOf(page, "redo").locator(".dplat"), ["color"])).color }), { disabled: true, p: { opacity: "1", cursor: "not-allowed", color: BOARD.inkMuted }, rdl: { "border-top-style": "dashed", "border-top-color": BOARD.border, "background-color": BOARD.sunk, color: BOARD.inkMuted }, flaps: BOARD.inkMuted });
     await rowOf(page, "redo").click({ force: true, timeout: 1500 }).catch(() => {});
     await s.expect("…pressing it anyway changes nothing: Mix is still the deck", async () => (await board(page)).boardBtn, "Board Mix — 10 stops");
+    await s.expect("the live values sit on split flaps in board type: Barlow Condensed 20px semibold in capitals, a 4px-cornered raised flap to each character with a hairline split across it", async () => rowOf(page, "mix").locator(".dtag").evaluate((t) => {
+      const f = t.querySelector(".flap");
+      const cs = getComputedStyle(t);
+      return { type: cs.fontFamily.split(",")[0] + " " + cs.fontSize + " " + cs.fontWeight, flaps: t.querySelectorAll(".flap").length, chars: [...t.querySelectorAll(".flap")].map((x) => x.dataset.ch).join(""), flap: getComputedStyle(f).borderTopLeftRadius + " " + getComputedStyle(f).backgroundColor, split: getComputedStyle(f, "::after").height + " " + getComputedStyle(f, "::after").backgroundColor };
+    }), { type: '"Barlow Condensed" 20px 600', flaps: 12, chars: "NOW BOARDING", flap: "4px " + BOARD.raised, split: "1px " + BOARD.sunk });
+    await s.expect("the Board button is the view's one primary Button: signal yellow with on-signal text, 44px, 8px corners, the train pictogram at 20px, as wide as the board", () => boardButton(page), { button: `btn primary board 44px 8px ${MPF.light.signal} ${MPF.light.onSignal}`, picto: "train 20px", wide: true, primaries: 1 });
     await s.expect("the Metro tab is no taller than the window on a desktop (nothing to scroll)", () => page.evaluate(() => document.documentElement.scrollHeight <= innerHeight), true);
     await s.marked(A, "the board (#quizArea)", "#quizArea");
     await A.shot("board");
     await A.setDark(true);
+    await s.expect("…and on a Night page it is the same board, lit at night", () => lit(page), litModel());
     await A.shot("board");
     await A.setDark(false);
 
-    // ---- choosing decks
+    // ---- choosing decks: the values that change flip into place
+    await chooseDeck(A, "graphs");
+    await s.expect("choosing a deck flips the values that changed into place: Graphs' NOW BOARDING and Mix's P1, each flap for 280ms, one after another; the other rows' flaps stay still", () => flips(page), flipsModel({ mix: "P1", graphs: "NOW BOARDING" }));
     for (const id of ["graphs", "bt", "dp", "ds"]) {
-      await chooseDeck(A, id);
-      await s.expect(`choosing ${D.DECKS.find((d) => d.id === id).n}: its row says NOW BOARDING with a ringed roundel, Mix goes back to platform P1, the button names it`, () => board(page), boardModel(blob, id));
+      if (id !== "graphs") await chooseDeck(A, id);
+      await s.expect(`choosing ${D.DECKS.find((d) => d.id === id).n}: its row says NOW BOARDING on its flaps, Mix goes back to platform P1, the button names it`, () => board(page), boardModel(blob, id));
     }
     await chooseDeck(A, "dp");
-    await s.expect("the chosen row is tinted (the sunken ground), the others are not", async () => ({ sel: (await A.props(rowOf(page, "dp"), ["background-color"]))["background-color"], other: (await A.props(rowOf(page, "bt"), ["background-color"]))["background-color"] }), { sel: "rgb(241, 243, 244)", other: "rgba(0, 0, 0, 0)" });
-    await s.pin("the NOW BOARDING tag", await A.props(rowOf(page, "dp").locator(".dtag"), ["font-size", "font-weight", "letter-spacing", "padding-left", "border-top-left-radius", "color", "background-color"]));
-    await s.pin("the roundel ring of the chosen row", (await A.props(rowOf(page, "dp").locator(".rdl"), ["box-shadow"]))["box-shadow"]);
+    const band = (await A.props(rowOf(page, "dp"), ["background-color"]))["background-color"];
+    s.pin("the chosen row's band", band);
+    await s.expect("the chosen row is lit: a band between the board's body and its flaps, and a 6px ink bar down its left edge (you are here); the others have neither", async () => ({ band: band !== "rgba(0, 0, 0, 0)", bar: await A.props(rowOf(page, "dp"), ["content", "width", "background-color"], "::before"), other: (await A.props(rowOf(page, "bt"), ["background-color"]))["background-color"], otherBar: (await A.props(rowOf(page, "bt"), ["content"], "::before")).content }), { band: true, bar: { content: '""', width: "6px", "background-color": BOARD.ink }, other: "rgba(0, 0, 0, 0)", otherBar: "none" });
+    await s.pin("the NOW BOARDING tag", await A.props(rowOf(page, "dp").locator(".dtag"), ["font-family", "font-size", "font-weight", "letter-spacing", "color"]));
+    await s.pin("the chosen row's bar", await A.props(rowOf(page, "dp"), ["position", "top", "bottom", "left", "width"], "::before"));
     await rowOf(page, "bt").hover();
-    await s.expect("hovering an unchosen row tints it like the chosen one", async () => (await A.props(rowOf(page, "bt"), ["background-color"]))["background-color"], "rgb(241, 243, 244)");
+    await s.expect("hovering an unchosen row lights it with the chosen row's band", async () => (await A.props(rowOf(page, "bt"), ["background-color"]))["background-color"], band);
     await page.mouse.move(640, 3);
     await A.shot("board-dp");
     await A.tab("Dojo");
     await A.tab("Metro");
     await s.expect("the choice survives a visit to another tab", async () => (await board(page)).boardBtn, "Board DP — 10 stops");
+
+    // ---- with reduced motion nothing flips
+    const R = await s.device({ seed: F.board });
+    await R.open();
+    await R.tab("Metro");
+    await chooseDeck(R, "graphs");
+    await s.expect("with reduced motion the flaps never flip: the new values are simply there", async () => R.page.locator("#quizArea .dboard").evaluate((g) => ({ flipping: [...g.querySelectorAll(".flap")].reduce((n, f) => n + f.getAnimations().length, 0), animation: getComputedStyle(g.querySelector(".flap")).animationName })), { flipping: 0, animation: "none" });
 
     // ---- history on the board
     const B = await s.device({ seed: F.board, motion: true });
@@ -158,7 +171,8 @@ export default function register(scenario) {
       const b = await board(bp);
       return b.rows.map((r) => r.sub);
     }, [`${D.Q.length} cards · 50% · weakest first`, `${deckStat(blob, "graphs").n} cards · 75% right`, `${deckStat(blob, "bt").n} cards · 100% right`, `${deckStat(blob, "dp").n} cards · 20% right`, `${deckStat(blob, "ds").n} cards · not yet ridden`, "3 missed · win them back"]);
-    await s.expect("Redemption is open and carries the orange DELAYED · 3 tag instead of a platform", async () => ({ disabled: await rowOf(bp, "redo").isDisabled(), tag: (await board(bp)).rows[5].tag }), { disabled: false, tag: "dtag:DELAYED · 3:var(--med):color-mix(in srgb, var(--med) 14%, transparent)" });
+    await s.expect("Redemption is open and its flaps say DELAYED · 3 in caution instead of a platform; NOW BOARDING and the platforms are the board's ink", async () => ({ disabled: await rowOf(bp, "redo").isDisabled(), tag: (await board(bp)).rows[5].tag, flaps: (await board(bp)).rows[5].flaps, delayed: (await B.props(rowOf(bp, "redo").locator(".dtag"), ["color"])).color, boarding: (await B.props(rowOf(bp, "mix").locator(".dtag"), ["color"])).color, platform: (await B.props(rowOf(bp, "graphs").locator(".dplat"), ["color"])).color }), { disabled: false, tag: "dtag:DELAYED · 3", flaps: "delayed:DELAYED · 3", delayed: BOARD.caution, boarding: BOARD.ink, platform: BOARD.ink });
+    await s.expect("with misses owed, Redemption's bullet is its line again: R on line 7", async () => (await marks(bp))[5], marksModel(true)[5]);
     await s.expect("the footnote is the lifetime line: 44/61 lifetime · best streak 8 · 6 runs", async () => (await board(bp)).note, "44/61 lifetime · best streak 8 · 6 runs");
     await s.expect("an open Redemption row is not dimmed", async () => (await B.props(rowOf(bp, "redo"), ["opacity", "cursor"])), { opacity: "1", cursor: "pointer" });
     await B.shot("board-history");
@@ -199,8 +213,14 @@ export default function register(scenario) {
     await s.expect("Board starts a run: the picker is gone, a card is up at 1/10 with a quiet explanation slot, and nothing was celebrated", async () => ({ picker: await page.locator("#quizArea .dboard").count(), board: await boardBtn(page).count(), counter: (await card(page)).meta[0], fx: (await A.fx()).length }), { picker: 0, board: 0, counter: "-:1/10", fx: 0 });
     await s.pin("random draws taken by starting a Mix run (ten cards picked and shuffled, the first card's options dealt)", await A.draws());
     await s.expect("the metro hero stays above the run", async () => (await heroLine0(page)).h1, "Metro mode");
+    await s.expect("the run's card is a Platform Card: the raised ground, a hairline rule edge, 8px corners, no shadow; the question in the subheading style, the category a muted 14px label in sentence case, the header's numbers in tabular figures", () => cardLook(page), cardLookModel(MPF.light));
+    await s.expect("the options are Platform choices: rows at least 44px tall with a 2px border edge and 8px corners, the text in ink, each letter in a 24px ringed stop", () => optLooks(page), ["opt", "opt", "opt", "opt"].map((c) => optLook(c, MPF.light)));
+    await s.expect("End run is a 44px ghost Button: no fill, no edge, its word in ink; nothing opposite it yet", () => navLook(page), { quit: `btn ghost quit 44px rgba(0, 0, 0, 0) ${MPF.light.ink}`, next: null });
+    await s.expect("the stops track is Platform's Route: the first stop, where the run is, a 28px ink ring; the nine ahead 20px rings in the border colour on a dashed line", () => route(page), routeModel(10, [], 0, MPF.light));
     const run = await play(s, A, { label: "Mix run", plan: "RRRWRRRRRR", n: 10, shots: { 0: { ask: "card-ask", markAsk: "the first card, unanswered (#quizArea)", markReveal: "the first card, answered right (#quizArea)" }, 2: { reveal: "card-streak", markReveal: "the third card, answered right at x2 (#quizArea)" }, 3: { reveal: "card-wrong", markReveal: "the fourth card, answered wrong (#quizArea)" } } });
     await s.pin("the ten cards of the seed-7 Mix run", run.ids.join(" "));
+    await s.expect("the multiplier in force is lit like a current page number: ×3 on a sign square, bold", async () => ({ text: await page.locator("#quizArea .qmeta .mult").textContent(), look: await A.props("#quizArea .qmeta .mult", ["background-color", "color", "border-top-left-radius", "font-weight"]) }), { text: "×3", look: { "background-color": MPF.light.sign, color: MPF.light.onSign, "border-top-left-radius": "4px", "font-weight": "700" } });
+    await s.expect("Finish is the view's primary Button: 44px, signal yellow with on-signal text, the arrow after its word", async () => (await navLook(page)).next, `btn primary next 44px ${MPF.light.signal} ${MPF.light.onSignal} arrow-right`);
     await s.expect("the Mix deck with day 3 (backtracking) in focus: five backtracking cards and five others, no card twice", async () => ({ unique: new Set(run.ids).size, bt: countBy(run.ids, (id) => ph(id) === "bt"), other: countBy(run.ids, (id) => ph(id) !== "bt") }), { unique: 10, bt: 5, other: 5 });
     await s.expect("the multiplier: XP climbs 2, 4, 8 (the third in a row doubles), a wrong answer resets it, then 10, 12, 16, 20, 24, and the sixth in a row triples: 30", async () => run.st.xp, 30);
     await s.expect("during the run nothing was celebrated (no toast, no burst)", async () => (await A.fx()).length, 0);
@@ -220,6 +240,7 @@ export default function register(scenario) {
     await A.resume();
     await A.press(nextBtn(page));
     await s.expect("Finish ends the run: the result screen", async () => (await result(page)), { cls: "qwrap result", big: "9/10", sub: "Solid. The missed ones went to Redemption.", row: ["+30|XP", "6|best streak", "1|to redemption"], btns: ["Run it again", "Decks"] });
+    await s.expect("the result is a Ticket, a confirmation you could keep: raised paper with 8px corners, notched at the cut, casting a small shadow, the Express's line 2 as its band; the score on the stub to the right of a perforation, in the numeral style; the verdict in the subheading style; each number a 16px value under its muted 13px label; Run it again the primary Button, Decks the secondary", () => ticket(page), ticketModel(MPF.light, MPF.light.line2));
     await s.expect("…and the run is counted: sessions 1", async () => (await A.saved()).quiz.sessions, 1);
     await A.resume();
     await A.tab("Dojo");
@@ -235,6 +256,8 @@ export default function register(scenario) {
       return { meta: c.meta, stops: c.stops };
     }, { meta: ["-:1/10", "-:+0"], stops: "- - - - - - - - - -" });
     const second = await play(s, A, { label: "Second run, ended early", plan: "RW", n: 10 });
+    await s.expect("…its Route after a right and a wrong answer: the right one's stop a go disc with a check, the wrong one's a stop disc with the stop pictogram, ringed in ink where the run is; the line travelled ink, the eight stops ahead on the dashed line", () => route(page), routeModel(10, [true, false], 1, MPF.light));
+    await s.expect("…and its options after the wrong pick: the right one go-washed with a go edge, its letter on go, saying Right with a check in go; the picked one the same in stop, saying Wrong with the stop pictogram in stop; the other two muted on a rule edge", () => optLooks(page), [0, 1, 2, 3].map((k) => optLook(k === second.picks[1].rightSlot ? "opt right" : k === second.picks[1].slot ? "opt wrong" : "opt dim", MPF.light)));
     await s.expect("…and its first two cards are not the first run's (another seed, another deal)", async () => second.ids.join() !== run.ids.slice(0, 2).join(), true);
     await A.press(quitBtn(page));
     const afterQuit = await A.saved();
@@ -398,7 +421,7 @@ export default function register(scenario) {
     await s.expect("…the owed list is empty now, and the run is counted but not as perfect", () => ({ missed: ob.quiz.missed, sessions: ob.quiz.sessions, perfect: ob.quiz.perfect, owedWas: one.ids.length }), { missed: [], sessions: 2, perfect: 0, owedWas: 1 });
     await O.resume();
     await O.press(O.page.locator("#quizArea .mbtn", { hasText: "Decks" }));
-    await s.expect("back on the board the emptied Redemption deck is no longer chosen: closed and dimmed on its platform, 'no misses yet — clean sheet'", async () => (await board(O.page)).rows[5], { cls: "drow", disabled: true, pressed: "false", rdl: "rdl", glyph: "R", bg: "var(--med)", ring: "", name: "Redemption", sub: "no misses yet — clean sheet", tag: "dplat:P6" });
+    await s.expect("back on the board the emptied Redemption deck is no longer chosen: closed and out of service on its platform, 'no misses yet — clean sheet'", async () => (await board(O.page)).rows[5], { cls: "drow", disabled: true, pressed: "false", rdl: "bullet lg rdl", glyph: "R", line: "7", name: "Redemption", sub: "no misses yet — clean sheet", tag: "dplat:P6", flaps: "platform:P6" });
     await s.expect("…Mix is boarding again, and the board is the model for that", () => board(O.page), boardModel(ob, "mix"));
     await both(O, "board-empty-deck");
     await O.clearFx();
@@ -416,6 +439,7 @@ export default function register(scenario) {
       feed: ["* Badge — Perfect Run", "confetti 70", "+20 XP · perfect run", "* Rank up — Phone Screen", "confetti 60"],
       res: { cls: "qwrap result", big: "10/10", sub: "Perfect run. Day One is getting closer.", row: ["+66|XP", "10|best streak", "0|to redemption"], btns: ["Run it again", "Decks"] },
     });
+    await s.expect("the Local's Ticket rides on the Local's own line: its band is line 4's orange", async () => (await ticket(L.page)).band, "6px solid " + MPF.light.line4);
     await s.expect("the header is the Local's: Phone Screen on 106 XP", async () => ({ rank: (await hdr(L.page)).rank, xp: (await hdr(L.page)).xp }), { rank: "Phone Screen", xp: "106" });
     await both(L, "result-perfect-local");
     finish(s);

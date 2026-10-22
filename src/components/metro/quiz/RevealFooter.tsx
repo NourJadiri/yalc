@@ -18,7 +18,7 @@ export default function RevealFooter({ explanation, last, onNext, onQuit }: Reve
       <QuizNav onQuit={onQuit}>
         <Button variant="primary" className="next" onClick={onNext}>
           {last ? "Finish" : "Next stop"}
-          <Icon name="arrow-right" size={20} />
+          <Icon name="arrow" size={20} />
         </Button>
       </QuizNav>
     </>

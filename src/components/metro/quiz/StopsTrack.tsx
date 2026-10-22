@@ -14,13 +14,14 @@ function tickClass(result: boolean | undefined) {
   return result ? "ok" : "ko";
 }
 
-/** The run as a Route: answered stops right (go, check) or wrong (stop, cross), the current one ringed, the rest ahead. */
+/** The run as a Route: a right answer's stop in go with a check, a wrong one's in stop with the stop pictogram, the
+ *  current stop ringed, the rest ahead. */
 export default function StopsTrack({ ids, results, current }: StopsTrackProps) {
   return (
     <div className="stops-track" aria-hidden="true">
       {ids.map((_, k) => (
         <i key={k} className={tickClass(results[k])} data-now={k === current || undefined}>
-          {results[k] !== undefined && <Icon name={results[k] ? "check" : "x"} size={16} />}
+          {results[k] !== undefined && <Icon name={results[k] ? "check" : "stop"} size={16} />}
         </i>
       ))}
     </div>

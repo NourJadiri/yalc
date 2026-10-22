@@ -3,7 +3,7 @@
 
 import { finish } from "./me-lib.mjs";
 import { F, hdr, hdrModel, heroLine, rail, railModel, noHScroll, tabBar, view, scrollToStn } from "./tabs-kit.mjs";
-import { board, boardModel, card, result, cardOf } from "./tabs-metro-kit.mjs";
+import { board, boardModel, card, result, cardOf, ticket, ticketModel, MPF } from "./tabs-metro-kit.mjs";
 import { stn, dayHead } from "./tabs-line.mjs";
 import { chooseDeck, boardIt, rush, boardBtn, nextBtn, quitBtn } from "./tabs-metro.mjs";
 
@@ -100,10 +100,10 @@ export default function register(scenario) {
     const pre = await card(page);
     const q = cardOf(pre);
     await P.press(page.locator("#quizArea .opt").nth(pre.opts.findIndex((o) => o.text === q.o[q.a])));
-    await overlay(s, P, "End run", quitBtn(page), { l: 0, r: 0, t: 4, b: 4 });
-    await overlay(s, P, "Next stop", nextBtn(page), { l: 0, r: 0, t: 4, b: 4 });
+    await overlay(s, P, "End run, a 44px Button: its 2px edge, and base.css's overlay 4px above and below", quitBtn(page), { l: 2, r: 2, t: 4, b: 4 });
+    await overlay(s, P, "Next stop, a 44px Button: its 2px edge, and base.css's overlay 4px above and below", nextBtn(page), { l: 2, r: 2, t: 4, b: 4 });
     await P.press(quitBtn(page));
-    await s.expect("the departures rows are 60px or taller and the Board button 44px or taller", async () => ({ rows: await page.locator("#quizArea .drow").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 60)), board: (await P.rect(boardBtn(page))).h >= 44 }), { rows: [true, true, true, true, true, true], board: true });
+    await s.expect("the departures rows are 44px or taller, thumb targets of their own, and the Board button 44px or taller", async () => ({ rows: await page.locator("#quizArea .drow").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 44)), board: (await P.rect(boardBtn(page))).h >= 44 }), { rows: [true, true, true, true, true, true], board: true });
     await boardIt(P, 92);
     await rush(P, "RRRRRRRRRR", { seedBase: 300 });
     await P.press(nextBtn(page));
@@ -197,6 +197,13 @@ export default function register(scenario) {
     await s.marked(P, "the board", "#quizArea");
     await both("board");
     await chooseDeck(P, "redo");
+    await s.expect("on a phone a row's numbers drop under the deck's name, so the flaps share the name's line: no name wraps, the flaps step down to 16px, NOW BOARDING included", async () => page.locator("#quizArea .drow").evaluateAll((els) => els.map((r) => {
+      const n = r.querySelector(".drow-name").getBoundingClientRect();
+      const sub = r.querySelector(".drow-sub").getBoundingClientRect();
+      const tag = r.querySelector(".dtag, .dplat");
+      const f = tag.getBoundingClientRect();
+      return { oneLine: n.height <= 24, under: sub.top >= n.bottom - 1, beside: f.top < n.bottom && f.left > n.right, flaps: getComputedStyle(tag).fontSize };
+    })), Array(6).fill({ oneLine: true, under: true, beside: true, flaps: "16px" }));
     await both("board-redemption");
     await chooseDeck(P, "dp");
 
@@ -239,6 +246,7 @@ export default function register(scenario) {
     await rush(P, "RRWRRRRWRR", { seedBase: 300 });
     await P.press(nextBtn(page));
     await s.expect("the result on a phone: 8/10, the Solid copy, three columns of numbers inside the card", async () => ({ res: await result(page), over: await noHScroll(page) }), { res: { cls: "qwrap result", big: "8/10", sub: "Solid. The missed ones went to Redemption.", row: ["+20|XP", "4|best streak", "2|to redemption"], btns: ["Run it again", "Decks"] }, over: true });
+    await s.expect("…a Ticket turned for a phone, like a boarding pass: the stub with the score on top, the perforation across, the band over the stub", () => ticket(page), ticketModel(MPF.light, MPF.light.line2, "top"));
     await both("result");
 
     // ---- the Dojo

@@ -25,5 +25,5 @@ export function optionState({ revealed, stored, slot, answer, picked }: OptionFa
 /** What a revealed option says besides its colour: a word and a pictogram. */
 export const VERDICT: Partial<Record<OptionState, { word: string; icon: IconName }>> = {
   right: { word: "Right", icon: "check" },
-  wrong: { word: "Wrong", icon: "x" },
+  wrong: { word: "Wrong", icon: "stop" },
 };
