@@ -24,7 +24,7 @@ export default function RitualLog({ day, ritual, logged, onToggle }: RitualLogPr
         {logged ? (
           <>
             Logged
-            <Icon name="check" size={13} strokeWidth={2.5} />
+            <Icon name="check" size={13} />
           </>
         ) : (
           <>
