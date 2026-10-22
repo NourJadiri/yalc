@@ -6,7 +6,6 @@
   width: calc(var(--space-8) + var(--space-2)); height: calc(var(--space-8) + var(--space-2)); display: grid; place-items: center;
   border-radius: var(--radius-sm); background: var(--sign); color: var(--on-sign);
 }
-/* Platform's Field: a firm 2px edge that turns ink under the pointer and in focus. */
 .asst-lock input {
   width: 100%; height: var(--control-height); padding: 0 var(--space-3);
   color: var(--ink); background: var(--surface-raised); border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-sm);

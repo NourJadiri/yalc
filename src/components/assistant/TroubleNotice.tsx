@@ -15,7 +15,7 @@ export default function TroubleNotice({ trouble, onRetry, onNewChat }: Props) {
   const tone = trouble.kind === "other" ? "danger" : "warning";
   return (
     <div className={cx("asst-trouble", tone)} role="alert">
-      <Icon name="alert-triangle" size={24} />
+      <Icon name={tone === "danger" ? "stop" : "warning"} size={24} />
       <span>{trouble.text}</span>
       {trouble.kind === "other" && (
         <Button size="compact" onClick={onRetry}>

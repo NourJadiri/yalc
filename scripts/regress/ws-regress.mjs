@@ -1095,9 +1095,11 @@ scenario("09-copy-for-claude", "Copy for Claude: feedback and clipboard text", a
 /* 10 ----------------------------------------------------------------- */
 /* Platform's colours as Bana is drawn in them: `page` is the page's own palette (Day, or High contrast for both under
    REGRESS_CONTRAST=more), `catgirl` the Goth catgirl's window, which is Night's on a Day page and keeps High contrast's. */
-const BANA_DAY = { raised: "rgb(255, 255, 255)", ink: "rgb(20, 20, 20)", rule: "rgb(211, 210, 203)", sign: "rgb(20, 20, 20)", stop: "rgb(196, 18, 47)" };
-const BANA_NIGHT = { raised: "rgb(28, 29, 33)", ink: "rgb(242, 242, 238)", rule: "rgb(47, 48, 53)", sign: "rgb(242, 242, 238)", stop: "rgb(255, 107, 107)", line5: "rgb(178, 126, 216)", line7: "rgb(240, 96, 159)" };
-const BANA_HC = { raised: "rgb(0, 0, 0)", ink: "rgb(255, 255, 255)", rule: "rgb(166, 166, 166)", sign: "rgb(255, 255, 255)", stop: "rgb(255, 138, 128)", line5: "rgb(206, 170, 255)", line7: "rgb(255, 136, 200)" };
+const BANA_DAY = { raised: "rgb(255, 255, 255)", sunk: "rgb(229, 228, 222)", ink: "rgb(20, 20, 20)", rule: "rgb(211, 210, 203)", border: "rgb(124, 123, 116)", sign: "rgb(20, 20, 20)", stop: "rgb(196, 18, 47)" };
+const BANA_NIGHT = { raised: "rgb(28, 29, 33)", sunk: "rgb(11, 12, 13)", ink: "rgb(242, 242, 238)", rule: "rgb(47, 48, 53)", border: "rgb(119, 120, 125)", sign: "rgb(242, 242, 238)", stop: "rgb(255, 107, 107)", line5: "rgb(178, 126, 216)", line7: "rgb(240, 96, 159)" };
+const BANA_HC = { raised: "rgb(0, 0, 0)", sunk: "rgb(31, 31, 31)", ink: "rgb(255, 255, 255)", rule: "rgb(166, 166, 166)", border: "rgb(166, 166, 166)", sign: "rgb(255, 255, 255)", stop: "rgb(255, 138, 128)", line5: "rgb(206, 170, 255)", line7: "rgb(255, 136, 200)" };
+/* Send with an empty box: out of service, a dashed edge on the sunk ground. */
+const idle = (pal) => [pal.sunk, "dashed", pal.border].join(" ");
 const BANA = CONTRAST === "more" ? { page: BANA_HC, catgirl: BANA_HC } : { page: BANA_DAY, catgirl: BANA_NIGHT };
 const CLEAR = "rgba(0, 0, 0, 0)";
 /* A colour's channels as 0-255 and its alpha, whether the page wrote it rgb() or color(srgb ...). */
@@ -1232,14 +1234,14 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
         persona: p.dataset.persona,
         tagline: p.querySelector(".asst-tagline")?.textContent ?? null,
         placeholder: p.querySelector("textarea")?.placeholder,
-        send: send.backgroundColor + " " + send.borderTopColor,
+        send: [send.backgroundColor, send.borderTopStyle, send.borderTopColor].join(" "),
         bg: getComputedStyle(p).backgroundColor,
         head: head.backgroundColor,
         rail: head.borderBottomWidth + " " + head.borderBottomColor,
         name: getComputedStyle(p.querySelector(".asst-head h3")).textTransform,
       };
     });
-    await s.expect("in Normal the window is plain Platform: raised, a hairline under its header, Send a clear Button edged in ink, no tagline", look, { persona: "normal", tagline: null, placeholder: "Ask about this problem…", send: CLEAR + " " + BANA.page.ink, bg: BANA.page.raised, head: BANA.page.raised, rail: "1px " + BANA.page.rule, name: "none" });
+    await s.expect("in Normal the window is plain Platform: raised, a hairline under its header, Send out of service while the box is empty, no tagline", look, { persona: "normal", tagline: null, placeholder: "Ask about this problem…", send: idle(BANA.page), bg: BANA.page.raised, head: BANA.page.raised, rail: "1px " + BANA.page.rule, name: "none" });
     if (MOCK_LOG) await s.expect("…in Normal the model is told it is Bana, with no voice on top", lastSystem, (v) => v.includes("You are Bana") && !v.includes("Voice:"));
     if (MOCK_LOG) await s.expect("…and is asked for plain text: effort low, no JSON format", () => mockRequests()?.at(-1)?.body?.output_config, { effort: "low" });
     await panel.getByRole("button", { name: "Tough love" }).click();
@@ -1247,7 +1249,7 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
     await q().fill("Roast my loop");
     await q().press("Enter");
     await s.expect("…the next question is answered", () => panel.locator(".asst-a").count(), 2, { timeout: 20_000 });
-    await s.expect("…and the window turns drill sergeant: a sign-panel header on a stop-red line, the name in capitals, 'no excuses', a blunter prompt", look, { persona: "tough", tagline: "no excuses", placeholder: "Spit it out. What did you break?", send: CLEAR + " " + BANA.page.ink, bg: BANA.page.raised, head: BANA.page.sign, rail: "6px " + BANA.page.stop, name: "uppercase" });
+    await s.expect("…and the window turns drill sergeant: a sign-panel header on a stop-red line, the name in capitals, 'no excuses', a blunter prompt", look, { persona: "tough", tagline: "no excuses", placeholder: "Spit it out. What did you break?", send: idle(BANA.page), bg: BANA.page.raised, head: BANA.page.sign, rail: "6px " + BANA.page.stop, name: "uppercase" });
     await s.expect("…its name on four split flaps that still read as one word", async () => ({ flaps: await panel.locator(".asst-head h3 .asst-flap").count(), heading: await panel.getByRole("heading", { name: "Bana", exact: true }).count() }), { flaps: 4, heading: 1 });
     await s.shot(page, "assistant-tough-desktop-light");
     if (MOCK_LOG) await s.expect("…and the Worker asked for the tough-love voice", lastSystem, (v) => v.includes("Voice: tough love") && v.includes("Never at who they are"));
@@ -1255,7 +1257,7 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
     await q().fill("Is this right?");
     await q().press("Enter");
     await s.expect("in Goth catgirl the next question is answered too", () => panel.locator(".asst-a").count(), 3, { timeout: 20_000 });
-    await s.expect("…and the window goes goth: Night's tokens even in light mode, her line 5 under the header, 'nya~', Mommy's prompt", look, { persona: "catgirl", tagline: "nya~", placeholder: "Ask Mommy, kitten… 🐾", send: CLEAR + " " + BANA.catgirl.ink, bg: BANA.catgirl.raised, head: BANA.catgirl.raised, rail: "6px " + BANA.catgirl.line5, name: "none" });
+    await s.expect("…and the window goes goth: Night's tokens even in light mode, her line 5 under the header, 'nya~', Mommy's prompt", look, { persona: "catgirl", tagline: "nya~", placeholder: "Ask Mommy, kitten… 🐾", send: idle(BANA.catgirl), bg: BANA.catgirl.raised, head: BANA.catgirl.raised, rail: "6px " + BANA.catgirl.line5, name: "none" });
     if (MOCK_LOG) await s.expect("…and the Worker asks her for JSON: a mood from the six faces, then the answer, both required", () => mockRequests()?.at(-1)?.body?.output_config, { effort: "low", format: { type: "json_schema", schema: { type: "object", properties: { mood: { type: "string", enum: ["happy", "angry", "sad", "shocked", "smug", "dizzy"] }, answer: { type: "string" } }, required: ["mood", "answer"], additionalProperties: false } } });
     const moods = () => panel.evaluate((p) => ({
       rows: [...p.querySelectorAll(".asst-a")].map((a) => a.querySelector(":scope > img.asst-avatar")?.dataset.mood ?? null),

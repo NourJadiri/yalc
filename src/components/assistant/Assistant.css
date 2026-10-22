@@ -1,6 +1,6 @@
-/* A floating Platform panel: raised, a hairline edge, small firm corners, the one shadow floating things cast. */
 .asst {
   --asst-face: calc(var(--space-8) + var(--space-2));
+  container: asst / inline-size;
   position: fixed; z-index: var(--layer-dialog); display: flex; flex-direction: column; overflow: hidden;
   background: var(--surface-raised); color: var(--ink); border: var(--hairline) solid var(--rule); box-shadow: var(--shadow-float);
   font: var(--t-body); letter-spacing: var(--t-body-ls);

@@ -1,4 +1,4 @@
-/* The follow-ups people reach for, one tap under her latest answer: compact secondary Buttons. */
+/* The follow-ups people reach for, one tap under her latest answer. */
 .asst-quick { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: calc(-1 * var(--space-1)); }
 .asst-quick.chat { padding-left: calc(var(--asst-face) + var(--space-2)); }
 /* Thumbs on the phone sheet get the full control height. */

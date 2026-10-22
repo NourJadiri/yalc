@@ -9,12 +9,12 @@
 .asst-a .md h1, .asst-a .md h2 { margin: var(--space-4) 0 var(--space-2); color: var(--ink); font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); text-transform: none; }
 .asst-a .md h3, .asst-a .md h4 { margin: var(--space-4) 0 var(--space-1); color: var(--ink); font: var(--t-ui); letter-spacing: var(--t-ui-ls); text-transform: none; }
 .asst-a .md code { padding: 0 var(--space-1); border-radius: var(--radius-sm); background: var(--surface-sunk); font: var(--t-code); letter-spacing: var(--t-code-ls); }
-/* Code in a well, coloured by the editor's palette. */
 .asst-a .md pre {
   margin: 0 0 var(--space-3); padding: var(--space-2) var(--space-3); border: 0; border-radius: var(--radius-sm);
   background: var(--surface-sunk); font: var(--t-code); letter-spacing: var(--t-code-ls); white-space: pre; overflow-x: auto; overflow-wrap: normal;
 }
 .asst-a .md pre code { padding: 0; background: none; font: inherit; }
+.asst-a .md blockquote { margin: 0 0 var(--space-3); padding-left: var(--space-3); border-left: var(--stroke-bold) solid var(--border); }
 .asst-a .md hr { margin: var(--space-4) 0; border: 0; border-top: var(--hairline) solid var(--rule); }
 
 /* A "line 7" she names: a link into the editor, at least a target tall. */

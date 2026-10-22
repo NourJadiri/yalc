@@ -2,7 +2,7 @@
   flex: none; display: flex; align-items: flex-end; gap: var(--space-2); padding: var(--space-3) var(--space-4);
   background: var(--surface-raised); border-top: var(--hairline) solid var(--rule);
 }
-/* Platform's Field: a firm 2px edge that turns ink under the pointer and in focus. The height grows with the text (useAutoGrow). */
+/* Platform's Field; its height follows the text (useAutoGrow) up to the max-height. */
 .asst-compose textarea {
   flex: 1; min-width: 0; resize: none; max-height: 140px; padding: var(--space-2) var(--space-3);
   color: var(--ink); background: var(--surface-raised); border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-sm);

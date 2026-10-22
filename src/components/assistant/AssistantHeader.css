@@ -11,4 +11,6 @@
 .asst-mark { flex: none; box-sizing: content-box; padding: var(--space-2); border-radius: var(--radius-sm); background: var(--sign); color: var(--on-sign); }
 .asst-title { display: flex; align-items: baseline; gap: var(--space-2); min-width: 0; }
 .asst-head h3 { flex: none; margin: 0; font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); white-space: nowrap; }
+/* A narrow window tightens the header, so every control keeps its size and the name its flaps. */
+@container asst (max-width: 359px) { .asst-head, .asst-title { gap: var(--space-1); } }
 .asst-tagline { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: var(--t-label); letter-spacing: var(--t-label-ls); }

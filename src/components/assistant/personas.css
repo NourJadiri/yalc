@@ -1,10 +1,11 @@
-/* Normal is plain Platform. The other modes each run on a line of their own (--asst-line) and re-scope the window's
-   tokens or add their marks, so every part inside follows without knowing about modes. */
+/* Normal is plain Platform; each other mode runs on a line of its own (--asst-line) and re-scopes the window's tokens. */
 
 /* Tough love: a sign panel for a header, the name on split flaps like a departure board's, stop red for its line. */
 .asst[data-persona="tough"] { --asst-line: var(--stop); }
 .asst[data-persona="tough"] .asst-head { background: var(--sign); color: var(--on-sign); border-bottom: var(--line-weight) solid var(--asst-line); }
 .asst[data-persona="tough"] .asst-mark { background: var(--asst-line); color: var(--on-stop); }
+/* The flaps are wide: the tagline goes under them, a sign's sub-line. */
+.asst[data-persona="tough"] .asst-title { flex-direction: column; align-items: flex-start; gap: 0; }
 .asst[data-persona="tough"] .asst-head h3 { font: var(--t-board); letter-spacing: var(--t-board-ls); text-transform: uppercase; }
 /* Inline boxes, not flex items: Chrome reads letters in boxes of their own one by one. */
 .asst[data-persona="tough"] .asst-flap {
@@ -29,10 +30,9 @@
 }
 .asst[data-persona="tough"] .asst-wait { color: var(--asst-line); }
 
-/* Goth catgirl: dark whatever the page, with her face, her bubbles and her paw prints, in lines 5 and 7. A Night page
-   already has Night's tokens and a High contrast page keeps its own; a Day page gets Night's on the window, copied from
-   tokens.css until it can scope them to an element (see the migration notes), with the code colours re-resolved on them. */
+/* Goth catgirl: dark whatever the page, with her face, her bubbles and her paw prints, in lines 5 and 7. */
 @media (prefers-color-scheme: light) and (not (prefers-contrast: more)) {
+  /* Night's tokens, copied from tokens.css until it can scope them to an element, and the code colours re-resolved on them. */
   :root:not([data-theme]) .asst[data-persona="catgirl"] {
     color-scheme: dark;
     --surface: #121315; --surface-raised: #1c1d21; --surface-sunk: #0b0c0d; --rule: #2f3035;
