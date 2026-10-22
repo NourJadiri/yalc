@@ -167,8 +167,8 @@ export default function register(scenario) {
       plainTile: { "background-color": PFX.light.onSign, color: PFX.light.sign, width: "32px", height: "32px", "border-top-left-radius": "4px" },
       goldTile: { "background-color": PFX.light.signal, color: PFX.light.onSignal },
     });
-    await s.expect("…the tile carries a 20px pictogram, a message on a plain toast and the star on a gold one, and adds no words: each toast's text is still exactly its message", async () => rp.locator(".toast").evaluateAll((els) => els.map((e) => ({ glyph: window.__glyph(e.querySelector(".toast-tile svg")), size: e.querySelector(".toast-tile svg").getAttribute("width"), text: e.textContent }))), [
-      { glyph: "message-circle", size: "20", text: "+40 XP · N-Queens" },
+    await s.expect("…the tile carries a 20px pictogram, the bell on a plain toast and the star on a gold one, and adds no words: each toast's text is still exactly its message", async () => rp.locator(".toast").evaluateAll((els) => els.map((e) => ({ glyph: window.__glyph(e.querySelector(".toast-tile svg")), size: e.querySelector(".toast-tile svg").getAttribute("width"), text: e.textContent }))), [
+      { glyph: "bell", size: "20", text: "+40 XP · N-Queens" },
       { glyph: "star", size: "20", text: "Badge — Heating Up" },
     ]);
     await s.pin("the toasts' shadows", { plain: (await R.props(rp.locator(".toast:not(.gold)"), ["box-shadow"]))["box-shadow"], gold: (await R.props(rp.locator(".toast.gold"), ["box-shadow"]))["box-shadow"] });

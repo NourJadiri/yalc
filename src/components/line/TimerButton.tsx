@@ -11,7 +11,7 @@ interface TimerButtonProps {
 export default function TimerButton({ icon, onClick, children }: TimerButtonProps) {
   return (
     <button className="tbtn" onClick={onClick}>
-      <Icon name={icon} size={12} strokeWidth={2.5} />
+      <Icon name={icon} size={12} />
       {children}
     </button>
   );

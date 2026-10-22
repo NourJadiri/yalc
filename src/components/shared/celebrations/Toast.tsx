@@ -16,7 +16,7 @@ export default function Toast({ toast, onExpire }: ToastProps) {
   return (
     <div className={cx("toast", toast.gold && "gold")}>
       <span className="toast-tile">
-        <Icon name={toast.gold ? "star" : "message-circle"} size={20} />
+        <Icon name={toast.gold ? "star" : "bell"} size={20} />
       </span>
       <span className="toast-msg">{toast.msg}</span>
     </div>
