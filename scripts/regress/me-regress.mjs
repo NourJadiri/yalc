@@ -66,10 +66,10 @@ const noHScroll = (page) => page.evaluate(() => document.documentElement.scrollW
 /* The status card: its words, what it draws and the colour it is tinted with. The glyph is told apart by
    the stroke that sets it apart (a tick, an up arrow, a slash, a triangle), since icons carry no names. */
 const GLYPH = {
-  "m8.5 17 2.5 2.5 4.5-4.5": "cloud-check",
-  "M12 21v-8": "cloud-upload",
-  "m2 2 20 20": "cloud-off",
-  "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3": "alert-triangle",
+  "M8.5 14L11 16.5L15.75 11.75": "cloud-check",
+  "M12.25 19V10.75": "cloud-upload",
+  "M3.5 3.5L20.5 20.5": "cloud-off",
+  "M12 3.5L21.5 20H2.5Z": "alert-triangle",
 };
 const card = (page) =>
   page.locator("main .synccard").evaluate((c, glyphs) => ({

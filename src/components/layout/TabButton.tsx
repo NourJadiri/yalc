@@ -13,7 +13,7 @@ export default function TabButton({ icon, label, current, onSelect }: TabButtonP
   return (
     <button className={cx("tab", current && "on")} aria-current={current ? "page" : undefined} onClick={onSelect}>
       <span className="ic">
-        <Icon name={icon} size={20} strokeWidth={1.8} />
+        <Icon name={icon} size={20} />
       </span>
       {label}
     </button>
