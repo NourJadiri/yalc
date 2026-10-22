@@ -1,6 +1,6 @@
 .hdr {
-  position: sticky; top: 0; z-index: 30; background: var(--bg);
-  padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
-  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 30; background: var(--surface);
+  padding: calc(var(--space-2) + env(safe-area-inset-top)) var(--space-4) var(--space-2);
+  border-bottom: var(--hairline) solid var(--rule);
 }
-.hdr-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; max-width: 720px; margin: 0 auto; }
+.hdr-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); max-width: 720px; margin: 0 auto; }

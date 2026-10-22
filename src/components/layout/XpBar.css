@@ -1,4 +1,5 @@
-.xp-track { height: 4px; border-radius: 999px; background: var(--sunken); margin: 8px auto 0; max-width: 720px; overflow: hidden; }
-.xp-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--blue), var(--red), var(--yellow), var(--green)); transition: width .4s ease; }
-:root[data-track="aws"] .xp-fill { background: linear-gradient(90deg, var(--aws-teal), var(--aws-orange), var(--aws-rust)); }
-:root[data-track="eng"] .xp-fill { background: linear-gradient(90deg, var(--eng-violet), var(--eng-magenta), var(--eng-lime)); }
+/* The fill's width is a share of the track inset by half a stop, so the stop stays inside the track at 0% and 100%. */
+.xp-track { position: relative; display: flex; align-items: center; max-width: 720px; height: var(--stop-size); margin: var(--space-1) auto 0; padding: 0 calc(var(--stop-size) / 2); }
+.xp-track::before { content: ""; position: absolute; top: calc(50% - var(--line-weight) / 2); right: 0; left: 0; box-sizing: border-box; height: var(--line-weight); border: var(--hairline) solid var(--border); background: var(--surface-sunk); }
+.xp-fill { position: relative; flex: none; box-sizing: content-box; height: var(--line-weight); margin-left: calc(var(--stop-size) / -2); padding-left: calc(var(--stop-size) / 2); background: var(--track); transition: width 160ms ease-out; }
+.xp-fill::after { content: ""; position: absolute; top: calc(50% - var(--stop-size) / 2); right: calc(var(--stop-size) / -2); box-sizing: border-box; width: var(--stop-size); height: var(--stop-size); border: calc(var(--stop-size) / 4) solid var(--track); border-radius: var(--radius-full); background: var(--surface-raised); }

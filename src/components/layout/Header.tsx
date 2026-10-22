@@ -13,7 +13,7 @@ export default function Header() {
   return (
     <header className="hdr">
       <div className="hdr-row">
-        <RankBadge name={rank.name} color={track.rankCol[rank.idx]} />
+        <RankBadge name={rank.name} bullet={track.bullet} />
         <HeaderStats streak={data.streak.cur} xp={progress.xp} />
       </div>
       <XpBar pct={rank.pct} />
