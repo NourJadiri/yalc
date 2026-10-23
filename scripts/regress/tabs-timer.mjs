@@ -28,7 +28,7 @@ export default function register(scenario) {
     const btn = (name) => stn(page, 6).locator(".timer").getByRole("button", { name, exact: true });
     const idle = { cls: "timer", text: "25:00", role: "timer", live: "off", btns: ["Start:play", "Reset:rotate-ccw"], note: "the mock clock", state: null };
     const C = LPF.light;
-    const readout = () => stn(page, 6).locator(".timer b");
+    const readout = () => stn(page, 6).locator(".timer .tboard");
 
     // ---- at rest
     await s.expect("day 7 (the focus day, open) carries the clock: 25:00, a timer role that stays quiet for screen readers, Start and Reset, 'the mock clock'", () => clock(page), idle);
@@ -40,6 +40,7 @@ export default function register(scenario) {
       b: { "font-size": "28px", "font-family": '"Barlow Condensed", "Arial Narrow", sans-serif', "font-weight": "700", color: C.ink, "font-variant-numeric": "tabular-nums", "background-color": C.sunk, "border-top-left-radius": "4px" },
       row: { display: "flex", "border-top-width": "1px", "border-top-style": "solid", "border-top-color": C.rule, "padding-top": "16px", gap: "12px", "margin-top": "8px" },
     });
+    await s.expect("the time is one text in the timer element, read whole ('25:00', not five characters); the flaps that draw it are hidden from assistive technology", async () => ({ tree: (await stn(page, 6).locator(".timer b").ariaSnapshot()).trim(), nodes: await stn(page, 6).locator(".timer b").evaluate((b) => b.childNodes.length), hidden: await readout().getAttribute("aria-hidden") }), { tree: "- timer: 25:00", nodes: 1, hidden: "true" });
     await s.expect("…each character on its own raised split flap, the split drawn behind it: 2, 5, :, 0, 0", () => readout().evaluate((b) => [...b.children].map((f) => `${f.className}|${f.textContent}|${getComputedStyle(f).backgroundColor}|${getComputedStyle(f, "::after").backgroundColor}|${getComputedStyle(f, "::after").zIndex}`)), ["2", "5", ":", "0", "0"].map((ch) => `flap|${ch}|${C.raised}|${C.sunk}|-1`));
     await s.expect("its buttons are Platform's secondary Button: 44px tall, 16px semibold, an ink edge with 8px corners, 20px pictograms", async () => ({ btn: await A.props(btn("Start"), ["height", "font-size", "font-weight", "border-top-color", "border-top-left-radius", "padding-left", "display"]), glyph: await btn("Start").locator("svg").evaluate((e) => e.getAttribute("width")) }), { btn: { height: "44px", "font-size": "16px", "font-weight": "600", "border-top-color": C.ink, "border-top-left-radius": "8px", "padding-left": "20px", display: "flex" }, glyph: "20" });
     await scrollToStn(A, 6);

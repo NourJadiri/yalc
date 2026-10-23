@@ -15,13 +15,15 @@ const GLYPH: Record<TimerLabel, IconName> = { Start: "play", Pause: "pause", Res
 /* Reads the timer itself, so its once-a-second tick re-renders only this and never the line. */
 export default function MockTimer() {
   const timer = useTimer();
+  const time = fmtT(timer.left);
   const up = timer.left === 0;
 
   return (
     <div className={cx("timer", timer.low && "low")} data-up={up || undefined}>
       <b role="timer" aria-live="off">
-        <Flaps text={fmtT(timer.left)} />
+        {time}
       </b>
+      <Flaps className="tboard" text={time} />
       <TimerButton icon={GLYPH[timer.label]} onClick={timer.toggle}>
         {timer.label}
       </TimerButton>
