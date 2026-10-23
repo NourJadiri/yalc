@@ -34,6 +34,31 @@ if (!BASE || !OUT) {
   process.exit(2);
 }
 
+/* Platform's colours as the Me tab is drawn in them, for the light and the dark palette. A run with REGRESS_CONTRAST=more
+   draws every page in High contrast, so both palettes are High contrast's there. */
+const DAY = {
+  surface: "rgb(241, 240, 236)", raised: "rgb(255, 255, 255)", sunk: "rgb(229, 228, 222)", rule: "rgb(211, 210, 203)", border: "rgb(124, 123, 116)",
+  ink: "rgb(20, 20, 20)", inkMuted: "rgb(87, 86, 79)", sign: "rgb(20, 20, 20)", onSign: "rgb(255, 255, 255)", signal: "rgb(255, 205, 0)", onSignal: "rgb(20, 20, 20)",
+  go: "rgb(0, 107, 97)", onGo: "rgb(255, 255, 255)", stop: "rgb(196, 18, 47)", caution: "rgb(125, 88, 0)", cautionWash: "rgb(255, 240, 179)",
+  line2: "rgb(29, 91, 198)", line4: "rgb(180, 80, 0)", scrim: "rgba(20, 20, 20, 0.4)",
+  ring: "rgb(20, 20, 20) 0px 0px 0px 2px, rgb(255, 205, 0) 0px 0px 0px 5px",
+};
+const NIGHT = {
+  surface: "rgb(18, 19, 21)", raised: "rgb(28, 29, 33)", sunk: "rgb(11, 12, 13)", rule: "rgb(47, 48, 53)", border: "rgb(119, 120, 125)",
+  ink: "rgb(242, 242, 238)", inkMuted: "rgb(169, 169, 163)", sign: "rgb(242, 242, 238)", onSign: "rgb(20, 20, 20)", signal: "rgb(255, 205, 0)", onSignal: "rgb(20, 20, 20)",
+  go: "rgb(61, 207, 185)", onGo: "rgb(20, 20, 20)", stop: "rgb(255, 107, 107)", caution: "rgb(255, 205, 0)", cautionWash: "rgb(58, 48, 8)",
+  line2: "rgb(91, 141, 239)", line4: "rgb(255, 138, 42)", scrim: "rgba(0, 0, 0, 0.7)",
+  ring: "rgb(242, 242, 238) 0px 0px 0px 2px, rgb(255, 205, 0) 0px 0px 0px 5px",
+};
+const CONTRAST = {
+  surface: "rgb(0, 0, 0)", raised: "rgb(0, 0, 0)", sunk: "rgb(31, 31, 31)", rule: "rgb(166, 166, 166)", border: "rgb(166, 166, 166)",
+  ink: "rgb(255, 255, 255)", inkMuted: "rgb(194, 194, 194)", sign: "rgb(255, 255, 255)", onSign: "rgb(0, 0, 0)", signal: "rgb(255, 205, 0)", onSignal: "rgb(0, 0, 0)",
+  go: "rgb(79, 224, 200)", onGo: "rgb(0, 0, 0)", stop: "rgb(255, 138, 128)", caution: "rgb(255, 205, 0)", cautionWash: "rgb(58, 48, 0)",
+  line2: "rgb(117, 147, 255)", line4: "rgb(242, 143, 41)", scrim: "rgba(0, 0, 0, 0.8)",
+  ring: "rgb(0, 0, 0) 0px 0px 0px 2px, rgb(255, 255, 255) 0px 0px 0px 4px, rgb(255, 205, 0) 0px 0px 0px 7px",
+};
+const PF = process.env.REGRESS_CONTRAST === "more" ? { light: CONTRAST, dark: CONTRAST } : { light: DAY, dark: NIGHT };
+
 /* ------------------------------ readers ------------------------------ */
 
 const sections = (page) => page.locator("main .sectionlabel").allTextContents();
@@ -47,7 +72,11 @@ const ladder = (page) =>
       name: li.childNodes[1].textContent,
       xp: li.querySelector(".lxp").textContent,
       cls: li.className,
-      mark: li.querySelector(".lmark svg") ? "check" : li.querySelector(".ldot.dim") ? "dim" : "dot",
+      mark: (() => {
+        const cs = getComputedStyle(li.querySelector(".lmark .ldot"));
+        const stop = `${cs.width}/${cs.borderTopWidth}`;
+        return { "28px/7px": "here", "20px/5px": "travelled", "20px/3px": "ahead" }[stop] ?? stop;
+      })(),
       color: li.querySelector(".ldot")?.style.color || "",
     }))
   );
@@ -63,13 +92,18 @@ const headerRank = (page) => page.locator("header.hdr").evaluate((h) => ({ rank:
 
 const noHScroll = (page) => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
 
-/* The status card: its words, what it draws and the colour it is tinted with. The glyph is told apart by
-   the stroke that sets it apart (a tick, an up arrow, a slash, a triangle), since icons carry no names. */
+/* The status card: its words, the pictogram beside them and the status colour both are set in. The pictogram is told
+   apart by the stroke that sets it apart (a tick, a clock's hands, a turning arrow, a triangle, an octagon), since
+   icons carry no names. */
 const GLYPH = {
+  "M4.5 12.5L9.5 17.5L19.5 6.5": "check",
+  "M12 7V12L15.5 14": "clock",
+  "M17.65 10.1A6.4 6.4 0 1 1 12 6.7": "refresh",
+  "M12 3.5L21.5 20H2.5Z": "warning",
+  "M8.3 3H15.7L21 8.3V15.7L15.7 21H8.3L3 15.7V8.3Z": "stop",
   "M8.5 14L11 16.5L15.75 11.75": "cloud-check",
   "M12.25 19V10.75": "cloud-upload",
   "M3.5 3.5L20.5 20.5": "cloud-off",
-  "M12 3.5L21.5 20H2.5Z": "alert-triangle",
 };
 const card = (page) =>
   page.locator("main .synccard").evaluate((c, glyphs) => ({
@@ -130,7 +164,7 @@ async function qrCheck(page, link) {
     size: got.size,
   };
 }
-const QR_OK = (label) => ({ same: true, box: true, fills: "#ffffff #202124", label, role: "img", shape: "crispEdges", size: "100%x100%" });
+const QR_OK = (label) => ({ same: true, box: true, fills: "white black", label, role: "img", shape: "crispEdges", size: "100%x100%" });
 const GET_LABEL = "QR code — scan it with the device that has your progress";
 const SEND_LABEL = "QR code — scan it with the device you want to link";
 
@@ -190,33 +224,48 @@ scenario("01-render", "the Me tab: stats, rank ladder, badges, data and sync pan
   await s.expect("six stat tiles on the Google line, from the seeded progress", () => stats(page), [
     "22/115 problems", "5/24 stations", "5/24 rituals", "134 cards", "75% accuracy", "6 best streak",
   ]);
-  await s.expect("the ladder: ten rungs, five climbed (check), Pattern Oracle current, four to go (dim)", () => ladder(page), [
-    { name: "Wanderer", xp: "0 XP", cls: "past", mark: "check", color: "" },
-    { name: "Pathfinder", xp: "100 XP", cls: "past", mark: "check", color: "" },
-    { name: "Backtracker", xp: "250 XP", cls: "past", mark: "check", color: "" },
-    { name: "Memoizer", xp: "450 XP", cls: "past", mark: "check", color: "" },
-    { name: "Tabulator", xp: "700 XP", cls: "past", mark: "check", color: "" },
-    { name: "Pattern Oracle", xp: "1000 XP", cls: "cur", mark: "dot", color: "var(--red)" },
-    { name: "Noogler", xp: "1350 XP", cls: "", mark: "dim", color: "" },
-    { name: "Graph Whisperer", xp: "1800 XP", cls: "", mark: "dim", color: "" },
-    { name: "DP Sensei", xp: "2250 XP", cls: "", mark: "dim", color: "" },
-    { name: "Offer Letter", xp: "2750 XP", cls: "", mark: "dim", color: "" },
+  await s.expect("the ladder: ten stops, five travelled, Pattern Oracle the current stop (the large ring), four ahead; no rank has a colour of its own", () => ladder(page), [
+    { name: "Wanderer", xp: "0 XP", cls: "past", mark: "travelled", color: "" },
+    { name: "Pathfinder", xp: "100 XP", cls: "past", mark: "travelled", color: "" },
+    { name: "Backtracker", xp: "250 XP", cls: "past", mark: "travelled", color: "" },
+    { name: "Memoizer", xp: "450 XP", cls: "past", mark: "travelled", color: "" },
+    { name: "Tabulator", xp: "700 XP", cls: "past", mark: "travelled", color: "" },
+    { name: "Pattern Oracle", xp: "1000 XP", cls: "cur", mark: "here", color: "" },
+    { name: "Noogler", xp: "1350 XP", cls: "", mark: "ahead", color: "" },
+    { name: "Graph Whisperer", xp: "1800 XP", cls: "", mark: "ahead", color: "" },
+    { name: "DP Sensei", xp: "2250 XP", cls: "", mark: "ahead", color: "" },
+    { name: "Offer Letter", xp: "2750 XP", cls: "", mark: "ahead", color: "" },
   ]);
-  await s.expect("the hardware grid: the Google line's twelve badges, five earned, the rest locked, tinted in rotation", () => badges(page), [
-    { name: "First Blood", locked: false, title: "Clear your first problem", color: "var(--blue)" },
-    { name: "Template Monk", locked: false, title: "Log 5 morning rituals", color: "var(--red)" },
-    { name: "Metro Rat", locked: false, title: "Answer 100 cards", color: "var(--yellow)" },
-    { name: "Perfect Run", locked: true, title: "Score 10/10 in a session", color: "var(--green)" },
-    { name: "Exterminator", locked: true, title: "20 bug hunts right", color: "var(--blue)" },
-    { name: "Heating Up", locked: false, title: "3-day streak", color: "var(--red)" },
-    { name: "Full Week", locked: true, title: "7-day streak", color: "var(--yellow)" },
-    { name: "Halfway There", locked: true, title: "Clear 12 stations", color: "var(--green)" },
-    { name: "End of the Line", locked: true, title: "Clear all 24 stations", color: "var(--blue)" },
-    { name: "Noogler", locked: true, title: "Reach the top rank", color: "var(--red)" },
-    { name: "All Green", locked: true, title: "Pass every test of a problem in the editor", color: "var(--yellow)" },
-    { name: "Test Pilot", locked: true, title: "Pass 25 problems in the editor", color: "var(--green)" },
+  await s.expect("the hardware grid: the Google line's twelve badges, five earned, the rest locked, none tinted (a badge has no colour of its own)", () => badges(page), [
+    { name: "First Blood", locked: false, title: "Clear your first problem", color: "" },
+    { name: "Template Monk", locked: false, title: "Log 5 morning rituals", color: "" },
+    { name: "Metro Rat", locked: false, title: "Answer 100 cards", color: "" },
+    { name: "Perfect Run", locked: true, title: "Score 10/10 in a session", color: "" },
+    { name: "Exterminator", locked: true, title: "20 bug hunts right", color: "" },
+    { name: "Heating Up", locked: false, title: "3-day streak", color: "" },
+    { name: "Full Week", locked: true, title: "7-day streak", color: "" },
+    { name: "Halfway There", locked: true, title: "Clear 12 stations", color: "" },
+    { name: "End of the Line", locked: true, title: "Clear all 24 stations", color: "" },
+    { name: "Noogler", locked: true, title: "Reach the top rank", color: "" },
+    { name: "All Green", locked: true, title: "Pass every test of a problem in the editor", color: "" },
+    { name: "Test Pilot", locked: true, title: "Pass 25 problems in the editor", color: "" },
   ]);
   await s.expect("every badge carries a drawn icon, none an emoji", () => page.locator("#meArea .badge .ic svg").count(), 12);
+  await s.expect("the stats are Platform Counters: the value in the numeral style (Barlow Condensed Bold 56px, tabular figures), its label under it in the muted label style, on raised tiles with a hairline rule edge and 8px corners", () => page.locator("#meArea .stat").first().evaluate((t) => {
+    const cs = getComputedStyle(t), v = getComputedStyle(t.querySelector("b")), l = getComputedStyle(t.querySelector("span"));
+    return { value: `${v.fontFamily.split(",")[0]} ${v.fontWeight} ${v.fontSize}/${v.lineHeight} ${v.fontVariantNumeric}`, label: `${l.fontWeight} ${l.fontSize}/${l.lineHeight} ${l.color}`, tile: `${cs.backgroundColor} ${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor} ${cs.borderTopLeftRadius}` };
+  }), { value: '"Barlow Condensed" 700 56px/56px tabular-nums', label: `600 14px/20px ${PF.light.inkMuted}`, tile: `${PF.light.raised} 1px solid ${PF.light.rule} 8px` });
+  await s.expect("the ladder is a vertical Route in the line's colour: travelled stops ringed in line 2's blue on a solid line, the current stop a large ink ring with the line on from it dashed, the stops ahead thin border rings; labels semibold, the current bold, those ahead lighter; thresholds in muted tabular captions", () => page.locator("#meArea .ladder").evaluate((ul) => {
+    const lis = [...ul.children];
+    const stop = (li) => { const d = getComputedStyle(li.querySelector(".ldot")); return `${d.borderTopColor} on ${d.backgroundColor}`; };
+    const line = (li) => { const a = getComputedStyle(li, "::after"); return a.backgroundImage !== "none" ? "dashed" : `solid ${a.backgroundColor} ${a.width}`; };
+    const xp = getComputedStyle(lis[0].querySelector(".lxp"));
+    return { travelled: stop(lis[0]), lineOn: line(lis[0]), here: stop(lis[5]), lineOnFromHere: line(lis[5]), ahead: stop(lis[6]), lineAhead: line(lis[6]), weights: [lis[0], lis[5], lis[6]].map((li) => getComputedStyle(li).fontWeight), xp: `${xp.fontSize} ${xp.fontVariantNumeric} ${xp.color}` };
+  }), { travelled: `${PF.light.line2} on ${PF.light.raised}`, lineOn: `solid ${PF.light.line2} 6px`, here: `${PF.light.ink} on ${PF.light.raised}`, lineOnFromHere: "dashed", ahead: `${PF.light.border} on ${PF.light.raised}`, lineAhead: "dashed", weights: ["600", "700", "500"], xp: `13px tabular-nums ${PF.light.inkMuted}` });
+  await s.expect("earned badges are pictogram tiles in ink on the raised ground; the rest are out of service: a dashed edge on the sunk ground, muted; 4px corners and 28px pictograms for both", () => page.locator("#meArea .badges").evaluate((g) => {
+    const look = (b) => { const cs = getComputedStyle(b); return `${cs.color} on ${cs.backgroundColor}, ${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor}, ${cs.borderTopLeftRadius}, ${b.querySelector("svg").getAttribute("width")}px`; };
+    return { earned: look(g.querySelector(".badge:not(.locked)")), locked: look(g.querySelector(".badge.locked")) };
+  }), { earned: `${PF.light.ink} on ${PF.light.raised}, 2px solid ${PF.light.rule}, 4px, 28px`, locked: `${PF.light.inkMuted} on ${PF.light.sunk}, 2px dashed ${PF.light.border}, 4px, 28px` });
   await s.expect("the header agrees with the ladder (rank, XP, station)", () => headerRank(page), { rank: "Pattern Oracle", xp: "1240", sub: "Day 6 Grid Gardens 110 XP to Noogler" });
   await s.expect("the data panel at rest: Export, Import, Reset; the textarea hidden and empty", async () => ({
     buttons: await page.locator("#meArea .mrow .mbtn").allTextContents(),
@@ -228,6 +277,7 @@ scenario("01-render", "the Me tab: stats, rank ladder, badges, data and sync pan
     box: { cls: "io", display: "none", value: "", label: "Progress export and import", ph: "Paste an export here, then tap Import again." },
   });
   await s.expect("the storage note says where progress lives", () => page.locator("#meArea .storenote").textContent(), "Progress saves in this browser (localStorage). Export to move it between devices.");
+  await s.expect("at rest the tab has no primary Button (signal yellow is kept for a way forward), and Reset is its one danger Button", async () => ({ primary: await page.locator("main .btn.primary").count(), danger: await page.locator("main .mbtn.danger").allTextContents() }), { primary: 0, danger: ["Reset"] });
   await s.expect("the sync panel with sync off: three buttons and the explaining note", async () => ({
     buttons: await page.locator("main > section > .mrow .mbtn").allTextContents(),
     note: await page.locator("main > section > .storenote").textContent(),
@@ -237,10 +287,10 @@ scenario("01-render", "the Me tab: stats, rank ladder, badges, data and sync pan
     note: "Sync mirrors progress through the app's own cloud store. Turn it on here, then enter the code on the next device — the cloud copy wins there, so export first if that device has progress worth keeping.",
     card: 0,
   });
-  await s.expect("the stats grid is three columns of equal tiles with 10px between them", () => page.locator("#meArea .statgrid").evaluate((g) => {
+  await s.expect("the stats grid is three columns of equal tiles with 12px between them", () => page.locator("#meArea .statgrid").evaluate((g) => {
     const tiles = [...g.children].map((t) => t.getBoundingClientRect());
     return { cols: getComputedStyle(g).gridTemplateColumns.split(" ").length, gap: getComputedStyle(g).columnGap, widths: [...new Set(tiles.map((r) => Math.round(r.width * 10) / 10))].length, firstRow: tiles.slice(0, 3).map((r) => Math.round(r.y)).every((y, _, a) => y === a[0]) };
-  }), { cols: 3, gap: "10px", widths: 1, firstRow: true });
+  }), { cols: 3, gap: "12px", widths: 1, firstRow: true });
   await s.expect("the badges grid is four columns", () => page.locator("#meArea .badges").evaluate((g) => getComputedStyle(g).gridTemplateColumns.split(" ").length), 4);
   await s.expect("nothing overflows the width of the window", () => noHScroll(page), true);
   await s.marked(A, "#meArea (the subtree the parity harness diffs against the reference)", "#meArea");
@@ -252,10 +302,10 @@ scenario("01-render", "the Me tab: stats, rank ladder, badges, data and sync pan
   const F = await s.device({});
   await F.openMe();
   await s.expect("fresh profile: every tile at zero", () => stats(F.page), ["0/115 problems", "0/24 stations", "0/24 rituals", "0 cards", "0% accuracy", "0 best streak"]);
-  await s.expect("fresh profile: Wanderer is current (blue dot), nine rungs ahead, nothing climbed", async () => {
+  await s.expect("fresh profile: Wanderer is the current stop (the large ring, no colour of its own), nine stops ahead, nothing travelled", async () => {
     const l = await ladder(F.page);
-    return { cur: l.filter((r) => r.cls === "cur").map((r) => [r.name, r.mark, r.color]), past: l.filter((r) => r.cls === "past").length, dim: l.filter((r) => r.mark === "dim").length };
-  }, { cur: [["Wanderer", "dot", "var(--blue)"]], past: 0, dim: 9 });
+    return { cur: l.filter((r) => r.cls === "cur").map((r) => [r.name, r.mark, r.color]), past: l.filter((r) => r.cls === "past").length, ahead: l.filter((r) => r.mark === "ahead").length };
+  }, { cur: [["Wanderer", "here", ""]], past: 0, ahead: 9 });
   await s.expect("fresh profile: all twelve badges locked", async () => (await badges(F.page)).filter((b) => b.locked).length, 12);
   await s.expect("fresh profile: the header says Wanderer, 0 XP, Day 1", () => headerRank(F.page), { rank: "Wanderer", xp: "0", sub: "Day 1 Pathfinding 100 XP to Pathfinder" });
   await F.shot("fresh", { tall: true });
@@ -267,14 +317,15 @@ scenario("01-render", "the Me tab: stats, rank ladder, badges, data and sync pan
   await L.openMe();
   await s.expect("on the Local the hero says so", () => hero(L.page), { h1: "Your line", p: "The numbers, the ranks, the hardware — Day One Local." });
   await s.expect("on the Local the third tile counts problems passed in the editor, not rituals", () => stats(L.page), ["8/55 problems", "1/13 stations", "3 passed in editor", "134 cards", "75% accuracy", "6 best streak"]);
-  await s.expect("the Local's ladder: seven rungs, Phone Screen current in the Local's ink", async () => {
+  await s.expect("the Local's ladder: seven stops, Phone Screen the current stop, with no colour of its own", async () => {
     const l = await ladder(L.page);
     return { names: l.map((r) => r.name), cur: l.filter((r) => r.cls === "cur").map((r) => [r.name, r.color]), past: l.filter((r) => r.cls === "past").length };
-  }, { names: ["Applicant", "Online Assessment", "Phone Screen", "On the Loop", "Bar Raiser", "Offer Extended", "Day One"], cur: [["Phone Screen", "var(--aws-ink)"]], past: 2 });
+  }, { names: ["Applicant", "Online Assessment", "Phone Screen", "On the Loop", "Bar Raiser", "Offer Extended", "Day One"], cur: [["Phone Screen", ""]], past: 2 });
   await s.expect("the Local's eleven badges (its own milestones, no ritual or station badges of the Google line)", async () => (await badges(L.page)).map((b) => `${b.locked ? "-" : "+"}${b.name}`), [
     "+First Delivery", "+Metro Rat", "-Perfect Run", "-Exterminator", "+Heating Up", "-Full Week", "-Halfway House", "-Doors Open", "-Day One", "-All Green", "-Test Pilot",
   ]);
   await s.expect("the app is tinted for the Local (data-track on <html>)", () => L.page.evaluate(() => document.documentElement.dataset.track), "aws");
+  await s.expect("on the Local the ladder is drawn in line 4's orange: the travelled stops and the line between them", () => L.page.locator("#meArea .ladder li.past").first().evaluate((li) => ({ stop: getComputedStyle(li.querySelector(".ldot")).borderTopColor, line: getComputedStyle(li, "::after").backgroundColor })), { stop: PF.light.line4, line: PF.light.line4 });
   await L.shot("local", { tall: true });
 
   // ---- a phone
@@ -323,6 +374,7 @@ scenario("02-data", "Data panel: Export, Import (v2, legacy v1, refusals), Reset
   await s.expect("Export fills the box with the progress as JSON (what the app holds, nothing else)", async () => JSON.parse(await u.box.inputValue()), SEED);
   await s.expect("…the box is open, focused, and its whole text is selected", () => u.box.evaluate((t) => ({ on: t.classList.contains("on"), focus: document.activeElement === t, from: t.selectionStart, to: t.selectionEnd, len: t.value.length })), (v) => v.on && v.focus && v.from === 0 && v.to === v.len && v.len > 500);
   await s.expect("…and a plain 'Copied to clipboard' toast confirms the copy", () => A.toasts(), ["Copied to clipboard"]);
+  await s.expect("the box is a Field holding code: the raised ground, 4px corners, the code type; focused, its 2px edge is ink and Platform's focus ring is round it", () => u.box.evaluate((t) => { const cs = getComputedStyle(t); return { ground: cs.backgroundColor, radius: cs.borderTopLeftRadius, mono: cs.fontFamily.includes("monospace"), edge: `${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor}`, ring: cs.boxShadow }; }), { ground: PF.light.raised, radius: "4px", mono: true, edge: `2px solid ${PF.light.ink}`, ring: PF.light.ring });
   await s.expect("…the clipboard holds exactly the box's text", async () => (await page.evaluate(() => navigator.clipboard.readText())) === (await u.box.inputValue()), true);
   await s.expect("exporting saves nothing and changes nothing", async () => ({ stats: await stats(page), blob: await A.blob() }), { stats: seededStats, blob: SEED });
   await A.shot("export-open");
@@ -477,10 +529,10 @@ scenario("03-sync-on", "turn on sync: the code, the status card, Sync now, copy,
   await u.turnOn.click();
   await s.expect("the push is on its way (one PUT, nothing pulled first), held", async () => ({ put: A.net.count("PUT", code), get: A.net.count("GET"), inflight: A.net.inflight }), { put: 1, get: 0, inflight: 1 });
   await s.expect("Turn on sync: a gold toast says to enter the code on the other device", () => A.toasts(), ["* Sync is on — enter this code on your other device"]);
-  await s.expect("the card says Syncing… in blue with the upload cloud, and has never synced", () => card(page), { title: "Syncing…", when: null, tone: "var(--blue)", glyph: "cloud-upload" });
+  await s.expect("the card says Syncing… in ink (at work, not a status) with the refresh arrow, and has never synced", () => card(page), { title: "Syncing…", when: null, tone: "var(--ink)", glyph: "refresh" });
   await s.expect("the minted code is on the chip, which says it copies on tap", async () => ({ text: await u.chip.textContent(), title: await u.chip.getAttribute("title") }), { text: code, title: "Tap to copy" });
   await s.expect("while it works: Sync now is disabled, and Link a device and Turn off are there", () => panelButtons(page), ["Sync now (disabled)", "Link a device", "Turn off"]);
-  await s.expect("…and Sync now looks out of service: a dashed edge, the sunken fill, muted text and a not-allowed pointer", () => u.syncNow.evaluate((b) => { const cs = getComputedStyle(b); return { edge: cs.borderTopStyle + " " + cs.borderTopColor, fill: cs.backgroundColor, color: cs.color, cursor: cs.cursor }; }), { edge: "dashed rgb(124, 123, 116)", fill: "rgb(229, 228, 222)", color: "rgb(87, 86, 79)", cursor: "not-allowed" });
+  await s.expect("…and Sync now looks out of service: a dashed edge, the sunken fill, muted text and a not-allowed pointer", () => u.syncNow.evaluate((b) => { const cs = getComputedStyle(b); return { edge: cs.borderTopStyle + " " + cs.borderTopColor, fill: cs.backgroundColor, color: cs.color, cursor: cs.cursor }; }), { edge: `dashed ${PF.light.border}`, fill: PF.light.sunk, color: PF.light.inkMuted, cursor: "not-allowed" });
   await s.expect("a working card has no note under it", () => syncNote(page), "");
   await s.expect("the config is saved with the code, a stamp for the edit, nothing acknowledged yet", async () => {
     const c = await A.cfg();
@@ -489,8 +541,14 @@ scenario("03-sync-on", "turn on sync: the code, the status card, Sync now, copy,
   await s.expect("D1 is still empty while the push is held", async () => (await d1.get(code)).status, 404);
   await A.shot("sync-working", { bottom: true });
   release();
-  await s.expect("the card settles on All changes synced, green, last synced just now", () => card(page), { title: "All changes synced", when: "Last synced just now", tone: "var(--green)", glyph: "cloud-check" });
+  await s.expect("the card settles on All changes synced, in go with the check, last synced just now", () => card(page), { title: "All changes synced", when: "Last synced just now", tone: "var(--go)", glyph: "check" });
   await s.expect("…with the note that points at the other device", () => syncNote(page), "Enter the code above on another device to link it.");
+  await s.expect("the status is a word with its pictogram: the word bold in go beside a 24px check in go, the time under it a muted caption in tabular figures, on a raised card with a hairline rule edge and 8px corners", () => page.locator("main .synccard").evaluate((c) => {
+    const cs = getComputedStyle(c), w = getComputedStyle(c.querySelector(".synctext b")), t = getComputedStyle(c.querySelector(".synctext span")), svg = c.querySelector(".ic svg");
+    return { word: `${w.color} ${w.fontWeight} ${w.fontSize}`, picto: `${getComputedStyle(svg).color} ${svg.getAttribute("width")}px`, time: `${t.color} ${t.fontSize} ${t.fontVariantNumeric}`, card: `${cs.backgroundColor} ${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor} ${cs.borderTopLeftRadius}` };
+  }), { word: `${PF.light.go} 700 16px`, picto: `${PF.light.go} 24px`, time: `${PF.light.inkMuted} 13px tabular-nums`, card: `${PF.light.raised} 1px solid ${PF.light.rule} 8px` });
+  await s.expect("the code chip is the code in the code type on the sunk ground, with a control's 2px border edge, 4px corners, 44px tall and the copy pictogram", () => u.chip.evaluate((c) => { const cs = getComputedStyle(c); return { font: `${cs.fontFamily.includes("monospace")} ${cs.fontSize}/${cs.lineHeight}`, ground: cs.backgroundColor, edge: `${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor}`, radius: cs.borderTopLeftRadius, tall: c.getBoundingClientRect().height >= 44, picto: !!c.querySelector("svg") }; }), { font: "true 14px/22px", ground: PF.light.sunk, edge: `2px solid ${PF.light.border}`, radius: "4px", tall: true, picto: true });
+  await s.expect("Turn off is a secondary Button, not the danger one (turning sync off loses nothing), so Reset stays the one danger Button", () => page.locator("main .mbtn.danger").allTextContents(), ["Reset"]);
   await s.expect("…Sync now is enabled again", () => panelButtons(page), ["Sync now", "Link a device", "Turn off"]);
   const cfg1 = await A.cfg();
   await s.expect("the stamp was acknowledged: serverAt equals editedAt, okAt is set", () => A.cfg(), (c) => c.serverAt === c.editedAt && c.editedAt > 0 && c.okAt >= c.editedAt);
@@ -513,8 +571,8 @@ scenario("03-sync-on", "turn on sync: the code, the status card, Sync now, copy,
 
   // ---- an edit: queued, held for 4 s, then pushed
   await edit(A, SEED_B);
-  await s.expect("an edit makes the card say Changes queued, with its note, in blue", async () => ({ card: await card(page), note: await syncNote(page) }), {
-    card: { title: "Changes queued", when: "Last synced just now", tone: "var(--blue)", glyph: "cloud-upload" },
+  await s.expect("an edit makes the card say Changes queued, with its note, in caution with the clock", async () => ({ card: await card(page), note: await syncNote(page) }), {
+    card: { title: "Changes queued", when: "Last synced just now", tone: "var(--caution)", glyph: "clock" },
     note: "They go up in a moment, or the next time there's a network.",
   });
   await s.expect("…the stamp is ahead of the acknowledged one (that is the dirty flag)", async () => { const c = await A.cfg(); return c.editedAt > c.serverAt; }, true);
@@ -610,6 +668,7 @@ scenario("04-join", "join with a code: type it on device B, adopt A's progress, 
     input: await u.codeInput.evaluate((i) => ({ ph: i.placeholder, spell: i.spellcheck, cap: i.getAttribute("autocapitalize"), fix: i.getAttribute("autocorrect"), value: i.value })),
     connect: await u.connect.isDisabled(),
   }), { input: { ph: "Paste your sync code", spell: false, cap: "none", fix: "off", value: "" }, connect: false });
+  await s.expect("the code box is a Field: a 2px border edge, 4px corners, the raised ground, 44px tall, the code in the code type", () => u.codeInput.evaluate((i) => { const cs = getComputedStyle(i); return { edge: `${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor}`, radius: cs.borderTopLeftRadius, ground: cs.backgroundColor, height: cs.height, mono: cs.fontFamily.includes("monospace") }; }), { edge: `2px solid ${PF.light.border}`, radius: "4px", ground: PF.light.raised, height: "44px", mono: true });
   await B.shot("join-input", { bottom: true });
   await u.haveCode.click();
   await s.expect("I have a code again folds it away", () => u.codeInput.count(), 0);
@@ -652,7 +711,7 @@ scenario("04-join", "join with a code: type it on device B, adopt A's progress, 
   await s.expect("B's config: this code, the cloud's stamp taken as both edited and acknowledged, no 'joining' flag left", () => B.cfg(), (c) => c.code === code && c.editedAt === stamp && c.serverAt === stamp && c.okAt > 0 && !("joining" in c));
   await s.expect("B saved the adopted progress, as it came", () => B.blob(), SEED);
   await s.expect("an adoption is not an edit: B asked for the row once and wrote nothing", async () => ({ get: B.net.count("GET", code), put: B.net.count("PUT", code), row: (await d1.get(code)).body.updatedAt === stamp }), { get: 1, put: 0, row: true });
-  await s.expect("…and its card says synced just now", () => card(B.page), { title: "All changes synced", when: "Last synced just now", tone: "var(--green)", glyph: "cloud-check" });
+  await s.expect("…and its card says synced just now", () => card(B.page), { title: "All changes synced", when: "Last synced just now", tone: "var(--go)", glyph: "check" });
   await B.advance(6000);
   await s.expect("…even after the debounce window nothing is pushed back", () => B.net.count("PUT"), 1 /* the blank seed of the unknown code */);
   await B.shot("joined", { bottom: true });
@@ -711,8 +770,14 @@ scenario("05-link-get", "link sheet, Get mode: A shows a code, B sends from its 
     enable: [],
     qr: true,
   });
-  await s.expect("the square is the link <origin>/#sync=<code>&do=send, white card with dark modules", () => qrCheck(A.page, linkOf(code, "send")), QR_OK(GET_LABEL));
+  await s.expect("the square is the link <origin>/#sync=<code>&do=send, black modules on white in every theme", () => qrCheck(A.page, linkOf(code, "send")), QR_OK(GET_LABEL));
   await s.expect("focus went to Close", () => A.page.evaluate(() => document.activeElement?.textContent), "Close");
+  await s.expect("the sheet is Platform's Dialog: the scrim dims the page at the dialog layer; the panel is raised, with 8px corners and the floating shadow, headed 'Link a device' in the heading style, and Close sits alone in the actions row at its foot", () => sheet(A.page).evaluate((d) => {
+    const panel = d.querySelector(".qrsheet"), cs = getComputedStyle(panel), h = panel.firstElementChild, hs = getComputedStyle(h);
+    return { scrim: getComputedStyle(d).backgroundColor, layer: getComputedStyle(d).zIndex, panel: `${cs.backgroundColor} ${cs.borderTopLeftRadius} ${cs.boxShadow !== "none"}`, heading: `${h.tagName} ${h.textContent} ${hs.fontSize}/${hs.lineHeight} ${hs.fontWeight}`, actions: [...panel.lastElementChild.querySelectorAll("button")].map((b) => b.textContent) };
+  }), { scrim: PF.light.scrim, layer: "1000", panel: `${PF.light.raised} 8px true`, heading: "H2 Link a device 28px/32px 700", actions: ["Close"] });
+  await s.expect("the mode toggle is a SegmentedControl: the chosen mode a lit sign square, the other ink on the control's raised ground", () => sheet(A.page).evaluate((d) => [...d.querySelectorAll(".segtoggle button")].map((b) => { const cs = getComputedStyle(b); return `${b.textContent}: ${cs.color} on ${cs.backgroundColor}`; }).concat(getComputedStyle(d.querySelector(".segtoggle")).backgroundColor)), [`Get progress: ${PF.light.onSign} on ${PF.light.sign}`, `Send progress: ${PF.light.ink} on rgba(0, 0, 0, 0)`, PF.light.raised]);
+  await s.expect("the waiting line ends in Platform's small Loader: three 12px stops ringed 3px in the text colour, on a rail (still, under reduced motion), its text still the three dots", () => sheet(A.page).locator(".qrwait .ell").evaluate((e) => ({ stops: [...e.children].map((i) => { const cs = getComputedStyle(i); return `${cs.width} ${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor === getComputedStyle(e).color}`; }), rail: getComputedStyle(e).backgroundImage.startsWith("linear-gradient"), text: e.textContent })), { stops: ["12px 3px solid true", "12px 3px solid true", "12px 3px solid true"], rail: true, text: "..." });
   await s.expect("nothing is enabled or saved yet, and the Worker has no row for the code", async () => ({ cfg: await A.cfg(), row: (await d1.get(code)).status }), { cfg: null, row: 404 });
   await A.settle();
   await s.expect("it peeked at the code once on opening (a plain GET)", () => A.net.count("GET", code), 1);
@@ -742,6 +807,10 @@ scenario("05-link-get", "link sheet, Get mode: A shows a code, B sends from its 
     buttons: ["Send & link", "Cancel"],
   });
   await s.expect("the link was consumed: the address bar is back to the bare page", () => B.page.evaluate(() => location.href), "https://yalc.test/");
+  await s.expect("the consent card is a raised card with a hairline rule edge; its accept is the view's one primary Button, signal yellow, and Cancel the secondary", () => B.page.locator(".linkcard").evaluate((c) => {
+    const cs = getComputedStyle(c), [a, x] = c.querySelectorAll("button"), ca = getComputedStyle(a), cx = getComputedStyle(x);
+    return { card: `${cs.backgroundColor} ${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor} ${cs.borderTopLeftRadius}`, accept: `${ca.color} on ${ca.backgroundColor}`, cancel: `${cx.color} on ${cx.backgroundColor}, ${cx.borderTopWidth} ${cx.borderTopStyle} ${cx.borderTopColor}`, primaries: document.querySelectorAll(".btn.primary").length };
+  }), { card: `${PF.light.raised} 1px solid ${PF.light.rule} 8px`, accept: `${PF.light.onSignal} on ${PF.light.signal}`, cancel: `${PF.light.ink} on rgba(0, 0, 0, 0), 2px solid ${PF.light.ink}`, primaries: 1 });
   await s.expect("nothing is acted on until the reader says yes: no request for that code, no config, no row", async () => ({ requests: B.net.count(null, code), cfg: await B.cfg(), row: (await d1.get(code)).status }), { requests: 0, cfg: null, row: 404 });
   await B.shot("consent-send", { bottom: true });
   await B.setDark(true);
@@ -757,6 +826,7 @@ scenario("05-link-get", "link sheet, Get mode: A shows a code, B sends from its 
   await A.page.evaluate((sel) => { window.__sheetNode = document.querySelector(sel); }, SHEET);
   const steps = await A.pump(async () => (await sheetState(A.page).catch(() => ({}))).linked === "Linked");
   await s.expect("A's very next peek sees the row: the sheet says Linked (one interval)", () => steps, 1);
+  await s.expect("…its check is the go colour's: on a go tile", () => A.page.locator(`${SHEET} .qrlinked .ic`).evaluate((t) => { const cs = getComputedStyle(t); return `${cs.color} on ${cs.backgroundColor}`; }), `${PF.light.onGo} on ${PF.light.go}`);
   await s.expect("the Linked card stands where the square was: role=status, no toggle, no code", () => A.page.locator(`${SHEET} .qrlinked`).evaluate((e) => ({ role: e.getAttribute("role"), text: e.textContent, toggle: !!e.ownerDocument.querySelector(".segtoggle"), icon: !!e.querySelector("svg") })), { role: "status", text: "Linked", toggle: false, icon: true });
   await s.expect("it is the very same sheet that was open before (sync coming on flipped the panel behind it without remounting it)", () => A.page.evaluate((sel) => document.querySelector(sel) === window.__sheetNode, SHEET), true);
   await s.expect("A adopted B's progress: one gold toast, and the tiles changed", async () => ({ toasts: await A.toasts(), stats: await stats(A.page) }), { toasts: ["* Progress synced from the cloud"], stats: ["8/115 problems", "2/24 stations", "2/24 rituals", "40 cards", "70% accuracy", "3 best streak"] });
@@ -814,6 +884,7 @@ scenario("05-link-get", "link sheet, Get mode: A shows a code, B sends from its 
   await ui(E.page).link.click();
   await E.page.getByRole("button", { name: "Get progress" }).click();
   await s.expect("Get mode on a device with progress (sync off) warns that what arrives replaces it", async () => { const st = await sheetState(E.page); return { warn: st.warn, wait: st.wait, code: st.code }; }, { warn: "This device has progress. What arrives replaces it — export first if it's worth keeping.", wait: "Waiting for the other device...", code: codeOf(5, "e", 1) });
+  await s.expect("the warning is Platform's caution Notice: ink on the caution wash, a hazard band along its top, and the warning pictogram on a signal tile", () => E.page.locator(`${SHEET} .qrwarn`).evaluate((w) => { const cs = getComputedStyle(w), band = getComputedStyle(w, "::before"), tile = getComputedStyle(w.querySelector(".qrwarn-tile")); return { text: `${cs.color} on ${cs.backgroundColor}`, band: band.backgroundImage.startsWith("repeating-linear-gradient"), tile: `${tile.color} on ${tile.backgroundColor}`, picto: !!w.querySelector(".qrwarn-tile svg") }; }), { text: `${PF.light.ink} on ${PF.light.cautionWash}`, band: true, tile: `${PF.light.onSignal} on ${PF.light.signal}`, picto: true });
   await E.shot("get-warn");
 
   // ---- Get mode on a device that is already syncing: its own pushes are not "the other device"
@@ -865,6 +936,7 @@ scenario("06-link-send", "link sheet, Send mode: A turns sync on and shows a cod
     enable: ["Turn on sync & show the code"],
     qr: false,
   });
+  await s.expect("the ways round: the paste box a Field, and the two fallbacks Platform's links, underlined ink", () => A.page.locator(`${SHEET} .sheetsub`).evaluate((w) => { const i = getComputedStyle(w.querySelector("input")); return { field: `${i.borderTopWidth} ${i.borderTopStyle} ${i.borderTopLeftRadius}`, links: [...w.querySelectorAll(".sublink")].map((b) => { const cs = getComputedStyle(b); return `${b.textContent}: ${cs.color} ${cs.textDecorationLine} ${cs.textDecorationThickness}`; }) }; }), { field: "2px solid 4px", links: [`Send to a code: ${PF.light.ink} underline 2px`, `Scan a code instead: ${PF.light.ink} underline 2px`] });
   await A.shot("send-off");
   await A.clearToasts();
   await A.page.getByRole("button", { name: "Turn on sync & show the code" }).click();
@@ -1083,6 +1155,10 @@ scenario("08-scanner", "the in-app scanner: a fake camera showing a real QR, bot
   await openScanner(A);
   await s.expect("Scan a code instead hands the screen to the camera: the sheet is gone, the scanner dialog is up", async () => ({ sheet: await sheet(A.page).count(), scan: await A.page.locator(SCAN).count() }), { sheet: 0, scan: 1 });
   await s.expect("the scanner: the hint, a status line, a Cancel button and a live video", () => scanner(A.page), { note: HINT, role: "status", video: true, buttons: ["Cancel"] });
+  await s.expect("the scanner is Platform's Dialog too: nothing is set on the scrim, which only dims; the video, the note and Cancel sit on a raised panel headed 'Scan a linking code', Cancel in its actions row", () => A.page.locator(SCAN).evaluate((d) => {
+    const panel = d.querySelector(".scancard"), cs = getComputedStyle(panel), cancel = getComputedStyle(d.querySelector("button"));
+    return { scrim: getComputedStyle(d).backgroundColor, layer: getComputedStyle(d).zIndex, onlyPanel: [...d.children].every((c) => c === panel), panel: `${cs.backgroundColor} ${cs.borderTopLeftRadius}`, heading: panel.querySelector("h2")?.textContent ?? null, inside: ["video", ".scannote", "button"].every((q) => panel.contains(d.querySelector(q))), cancel: `${cancel.color} ${panel.lastElementChild.contains(d.querySelector("button"))}` };
+  }), { scrim: PF.light.scrim, layer: "1000", onlyPanel: true, panel: `${PF.light.raised} 8px`, heading: "Scan a linking code", inside: true, cancel: `${PF.light.ink} true` });
   await s.expect("the video is the camera's: autoplay, muted, inline", () => A.page.locator(`${SCAN} video`).evaluate((v) => ({ autoplay: v.autoplay, muted: v.muted, inline: v.hasAttribute("playsinline"), live: !!v.srcObject })), { autoplay: true, muted: true, inline: true, live: true });
   await s.expect("it asked for the back camera, once", async () => (await cam(A.page)).calls, [{ video: { facingMode: "environment" } }]);
   await s.expect("a frame from the (fake) camera arrived, 640x480", () => frameIn(A.page), "640x480");
@@ -1288,7 +1364,7 @@ scenario("09-lww", "two devices on one code: flush on hide, pull on wake and Syn
   await edit(A, SEED);
   await A.advance(4500);
   await A.settle();
-  await s.expect("A, offline, edits: its push fails and the card says the cloud is unreachable", async () => ({ title: (await card(A.page)).title, tone: (await card(A.page)).tone, note: await syncNote(A.page) }), { title: "Cloud unreachable", tone: "var(--red)", note: "Progress is safe on this device and will sync when it can." });
+  await s.expect("A, offline, edits: its push fails and the card says the cloud is unreachable", async () => ({ title: (await card(A.page)).title, tone: (await card(A.page)).tone, note: await syncNote(A.page) }), { title: "Cloud unreachable", tone: "var(--stop)", note: "Progress is safe on this device and will sync when it can." });
   A.net.down = false;
   await A.clearToasts();
   await ui(A.page).syncNow.click();
@@ -1335,7 +1411,7 @@ scenario("10-held", "a cloud copy this build cannot read: sync parks instead of 
   await B.clearToasts();
   await B.answering(true, () => u.connect.click());
   await s.expect("Connect to the unreadable copy: no adoption; the toast says the cloud copy is from a newer app (not gold)", () => B.toasts(), ["The cloud copy is from a newer version of the app — reload to update"]);
-  await s.expect("…the card parks in its own look: amber, a warning sign, 'Update needed', no 'last synced' line", () => card(B.page), { title: "Update needed", when: null, tone: "var(--med)", glyph: "alert-triangle" });
+  await s.expect("…the card parks in its own look: caution, with the warning pictogram, 'Update needed', no 'last synced' line", () => card(B.page), { title: "Update needed", when: null, tone: "var(--caution)", glyph: "warning" });
   await s.expect("…its note says to reload, and that this device leaves the copy alone", () => syncNote(B.page), "The cloud copy is from a newer version of the app. Reload to update; until then this device leaves it alone.");
   await s.expect("…B's own progress was not touched", async () => ({ stats: await stats(B.page), blob: await B.blob() }), { stats: ["8/115 problems", "2/24 stations", "2/24 rituals", "40 cards", "70% accuracy", "3 best streak"], blob: SEED_B });
   await s.expect("…and the cloud's was not touched either: no PUT, same row", async () => ({ put: B.net.count("PUT"), row: (await d1.get(H)).body }), { put: 0, row: held.body });
@@ -1431,8 +1507,8 @@ scenario("11-phone", "phone: the link sheet takes the whole screen, on a tall ph
   await A.openMe();
   await ui(A.page).link.tap();
   await A.pause();
-  await s.expect("phone, Get mode: the scrim is the whole window and the card fills it less the 14px side padding", async () => { const g = await geometry(A.page); return { scrim: g.scrim, position: g.scrimStyle, width: g.sheetWidth, square: g.square, closeVisible: g.closeVisible, scrolls: g.scrolls }; }, { scrim: [0, 0, 390, 844], position: "fixed", width: 362, square: 304.2, closeVisible: true, scrolls: false });
-  await s.expect("…the square is the link, the toggle is a 44px-tall control, and the Scan link is there", async () => ({ qr: (await qrCheck(A.page, linkOf(codeOf(11, "a", 1), "send"))).same, toggle: (await geometry(A.page)).toggle >= 50, sub: (await sheetState(A.page)).sub }), { qr: true, toggle: true, sub: ["Scan a code instead"] });
+  await s.expect("phone, Get mode: the scrim is the whole window and the card fills it less the 16px side padding", async () => { const g = await geometry(A.page); return { scrim: g.scrim, position: g.scrimStyle, width: g.sheetWidth, square: g.square, closeVisible: g.closeVisible, scrolls: g.scrolls }; }, { scrim: [0, 0, 390, 844], position: "fixed", width: 358, square: 304.2, closeVisible: true, scrolls: false });
+  await s.expect("…the square is the link, the toggle is a 44px-tall control, and the Scan link is there", async () => ({ qr: (await qrCheck(A.page, linkOf(codeOf(11, "a", 1), "send"))).same, toggle: (await geometry(A.page)).toggle >= 44, sub: (await sheetState(A.page)).sub }), { qr: true, toggle: true, sub: ["Scan a code instead"] });
   await A.shot("sheet-get");
   await A.setDark(true);
   await A.shot("sheet-get");
@@ -1452,7 +1528,7 @@ scenario("11-phone", "phone: the link sheet takes the whole screen, on a tall ph
   await S.page.getByRole("button", { name: "Get progress" }).tap();
   await S.pause();
   const g = await geometry(S.page);
-  await s.expect("375x667 in Get mode with the warning and the waiting line: the card scrolls inside the window instead of squashing the toggle or the square", () => ({ scrim: g.scrim, scrolls: g.scrolls, toggle: g.toggle >= 50, square: g.square, width: g.sheetWidth }), { scrim: [0, 0, 375, 667], scrolls: true, toggle: true, square: 292.5, width: 347 });
+  await s.expect("375x667 in Get mode with the warning and the waiting line: the card scrolls inside the window instead of squashing the toggle or the square", () => ({ scrim: g.scrim, scrolls: g.scrolls, toggle: g.toggle >= 44, square: g.square, width: g.sheetWidth }), { scrim: [0, 0, 375, 667], scrolls: true, toggle: true, square: 292.5, width: 343 });
   await S.page.locator(`${SHEET} .qrsheet`).evaluate((e) => e.scrollTo({ top: 0, behavior: "instant" }));
   await S.shot("sheet-get-top");
   await S.page.locator(`${SHEET} .qrsheet`).evaluate((e) => e.scrollTo({ top: e.scrollHeight, behavior: "instant" }));
@@ -1477,7 +1553,7 @@ scenario("12-sync-errors", "an unreachable or broken cloud: the 30 s retry, the 
   const OFFLINE = "Can't reach the cloud — progress is safe here";
   const ERROR_NOTE = "Progress is safe on this device and will sync when it can.";
   const tail = (D, from) => D.net.log.slice(from).map((e) => `${e.method} ${e.status}`);
-  const errorCard = { title: "Cloud unreachable", when: null, tone: "var(--red)", glyph: "cloud-off" };
+  const errorCard = { title: "Cloud unreachable", when: null, tone: "var(--stop)", glyph: "stop" };
   const online = (D) => D.page.evaluate(() => window.dispatchEvent(new Event("online")));
 
   // ---- turning sync on with no network: queued, retried every 30 s, lands when the network is back
@@ -1870,14 +1946,14 @@ scenario("15-disconnect-midflight", "turning sync off while a sync is in flight 
 });
 
 /* 16 ------------------------------------------------------------------ */
-scenario("16-sheet-hover", "the link sheet keeps its light palette in dark mode, hover included", async (s) => {
+scenario("16-sheet-hover", "the link sheet follows the theme, hover included", async (s) => {
   const A = await s.device({});
   await A.openMe();
   await A.setDark(true);
   await ui(A.page).link.click();
   const close = sheet(A.page).getByRole("button", { name: "Close", exact: true });
   await close.hover();
-  await s.expect("hovering Close in dark mode: a light grey ground under the dark label, so the label stays readable", () => close.evaluate((b) => ({ bg: getComputedStyle(b).backgroundColor, color: getComputedStyle(b).color })), { bg: "rgb(241, 243, 244)", color: "rgb(32, 33, 36)" });
+  await s.expect("hovering Close in Night: the sunk ground under the ink label, as on every secondary Button, so the label stays readable", () => close.evaluate((b) => ({ bg: getComputedStyle(b).backgroundColor, color: getComputedStyle(b).color })), { bg: PF.dark.sunk, color: PF.dark.ink });
   await A.page.mouse.move(640, 3);
   finish(s);
 });

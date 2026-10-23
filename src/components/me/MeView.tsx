@@ -21,10 +21,10 @@ export default function MeView() {
       <div id="meArea">
         <StatsGrid data={data} />
         <Section title="Rank ladder">
-          <RankLadder ranks={T.ranks} colors={T.rankCol} xp={progressOf(data).xp} />
+          <RankLadder ranks={T.ranks} xp={progressOf(data).xp} />
         </Section>
         <Section title="Hardware">
-          <BadgeGrid ids={T.badges} colors={T.rankCol} badges={data.badges} />
+          <BadgeGrid ids={T.badges} badges={data.badges} />
         </Section>
         <Section title="Data">
           <DataPanel />

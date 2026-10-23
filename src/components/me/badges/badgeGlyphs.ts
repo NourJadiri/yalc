@@ -8,7 +8,7 @@ export const BADGE_GLYPHS: Record<string, IconName> = {
   perfect: "target",
   bugs20: "bug",
   streak3: "flame",
-  streak7: "calendar-check",
+  streak7: "calendar",
   half: "milestone",
   line: "flag",
   noogler: "graduation-cap",

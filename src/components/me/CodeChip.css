@@ -1,3 +1,5 @@
-/* A button so one tap copies it; the dashed border says "credential", not "stat". */
-.synccode { display: block; width: 100%; margin-top: 10px; font-family: var(--mono); font-size: 11.5px; letter-spacing: .02em; padding: 9px 12px; border-radius: 12px; border: 1px dashed var(--line); background: var(--surface); color: var(--ink); text-align: center; cursor: pointer; user-select: all; overflow-wrap: anywhere; }
-.synccode:active { background: var(--sunken); }
+/* A button so one tap copies it: the code in the code type on the sunk ground, with a control's edge. */
+.synccode { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); width: 100%; min-height: var(--control-height); margin-top: var(--space-3); padding: var(--space-2) var(--space-3); border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink); font: var(--t-code); letter-spacing: var(--t-code-ls); text-align: left; cursor: pointer; user-select: all; overflow-wrap: anywhere; transition: border-color 120ms ease-out; }
+.synccode svg { flex: none; }
+@media (hover: hover) { .synccode:hover { border-color: var(--ink); } }
+.synccode:active { border-color: var(--ink); background: var(--surface-raised); }

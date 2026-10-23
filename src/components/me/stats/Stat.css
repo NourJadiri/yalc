@@ -1,3 +1,10 @@
-.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 13px 10px 11px; text-align: center; }
-.stat b { display: block; font-family: var(--mono); font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
-.stat span { font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); }
+.stat { container-type: inline-size; display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; padding: var(--space-4) var(--space-3); border: var(--hairline) solid var(--rule); border-radius: var(--radius-md); background: var(--surface-raised); color: var(--ink); }
+.stat b { font: var(--t-numeral); letter-spacing: var(--t-numeral-ls); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stat span { color: var(--ink-muted); font: var(--t-label); letter-spacing: var(--t-label-ls); }
+/* The numeral steps down through the sign sizes so the widest value, "115/115" (3.4em), always fits its tile. */
+@container (width < 12rem) { .stat b { font-size: 40px; line-height: 44px; } }
+@container (width < 8.75rem) { .stat b { font-size: 28px; line-height: 32px; } }
+@container (width < 6rem) { .stat b { font-size: 20px; line-height: 28px; } }
+@media (max-width: 599px) {
+  .stat { padding: var(--space-3) var(--space-1); text-align: center; }
+}

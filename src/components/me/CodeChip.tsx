@@ -1,4 +1,5 @@
 import { useCopyToast } from "../../hooks/useCopyToast";
+import Icon from "../shared/Icon";
 import "./CodeChip.css";
 
 /** A sync code that copies on tap. */
@@ -13,6 +14,7 @@ export default function CodeChip({ code }: { code: string }) {
       title="Tap to copy"
     >
       {code}
+      <Icon name="copy" size={20} />
     </button>
   );
 }

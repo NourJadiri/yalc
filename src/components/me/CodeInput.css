@@ -1,2 +1,5 @@
-.syncinput { flex: 1; min-width: 0; font-family: var(--mono); font-size: 11px; padding: 9px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
-.syncinput:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 1px var(--blue); }
+/* A Field's input: the code in the code type, the placeholder in body. */
+.syncinput { flex: 1; min-width: 0; height: var(--control-height); padding: 0 var(--space-3); border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-sm); background: var(--surface-raised); color: var(--ink); font: var(--t-code); letter-spacing: var(--t-code-ls); transition: border-color 120ms ease-out; }
+.syncinput::placeholder { color: var(--ink-muted); opacity: 1; font: var(--t-body); }
+@media (hover: hover) { .syncinput:hover { border-color: var(--ink); } }
+.syncinput:focus { outline: 2px solid transparent; border-color: var(--ink); box-shadow: var(--focus-ring); }
