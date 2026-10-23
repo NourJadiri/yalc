@@ -20,13 +20,13 @@ export default function ProblemAction({ prob, onOpenEditor }: ProblemActionProps
           aria-label={"Solve " + prob.n + " in the editor"}
           title="Open in the editor"
         >
-          <Icon name="code" size={16} />
+          <Icon name="code" size={20} />
         </button>
       );
     case "link":
       return (
         <a className="golink" href={action.url} target="_blank" rel="noopener" aria-label={"Open " + prob.n}>
-          <Icon name="arrow-up-right" size={16} />
+          <Icon name="external" size={20} />
         </a>
       );
     case "none":

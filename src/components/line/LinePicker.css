@@ -1,1 +1,1 @@
-.lines { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.lines { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-5); }

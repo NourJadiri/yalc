@@ -73,6 +73,7 @@ export default function register(scenario) {
     await A.pause();
     const page = A.page;
     const d5 = planOf("google")[4];
+    const LC = (await import("./tabs-line.mjs")).LPF.light;
     let blob = F.ritual4;
     const agree = async (label) => {
       await s.expect(`${label}: the header follows the saved blob`, async () => hdr(page), hdrModel(blob));
@@ -81,7 +82,7 @@ export default function register(scenario) {
 
     // ---- the rows
     await s.expect("every station of the Google line has a ritual row, with its own text and +15", () => page.locator(".linewrap .ritual").evaluateAll((els) => els.map((e) => e.children[1].textContent + "|" + e.querySelector(".xpv").textContent)), planOf("google").map((d) => d.ritual + "|+15"));
-    await s.expect("day 5 is the focus day (days 1-4 done, four rituals logged): its row is undone", () => ritualAt(page, 4), { cls: "ritual", pressed: "false", text: d5.ritual, xp: "+15", fill: "", tick: "check" });
+    await s.expect("day 5 is the focus day (days 1-4 done, four rituals logged): its row is undone, its check box empty on the raised ground", () => ritualAt(page, 4), { cls: "ritual", pressed: "false", text: d5.ritual, xp: "+15", fill: LC.raised, tick: "check" });
     await s.expect("the Dojo's log is the same day's, undone: 'Day 5 ritual:' and the ritual, a Done button with +15 XP", async () => (await A.tab("Dojo"), await log(page)), { cls: "dojo-log", b: "Day 5 ritual:", p: "Day 5 ritual: " + d5.ritual, btn: "Done+15 XP", pressed: "false", glyph: null, dot: true });
     await A.tab("Line");
 
@@ -94,9 +95,9 @@ export default function register(scenario) {
       b.badges.ritual5 = 1;
     });
     await s.expect("logging the fifth ritual: the XP toast, then the Template Monk badge (gold); no confetti for a ritual", async () => feedOf(await A.fx()), ["+15 XP · ritual", "* Badge — Template Monk"]);
-    await s.expect("…the row is done: solid outline, the check filled in the station's green", () => ritualAt(page, 4), { cls: "ritual done", pressed: "true", text: d5.ritual, xp: "+15", fill: "var(--green)", tick: "check" });
+    await s.expect("…the row is done: its check box filled with the sign's ink", () => ritualAt(page, 4), { cls: "ritual done", pressed: "true", text: d5.ritual, xp: "+15", fill: LC.sign, tick: "check" });
     await agree("after logging on the Line");
-    await s.expect("the done row has a solid outline in the station's colour and a tinted ground; the check circle is 22px", async () => ({ p: await A.props(stn(page, 4).locator(".ritual"), ["border-top-style", "border-top-color"]), c: await A.props(stn(page, 4).locator(".ritual .pcheck"), ["width", "height", "background-color", "color"]) }), { p: { "border-top-style": "solid", "border-top-color": RGB.green }, c: { width: "22px", height: "22px", "background-color": RGB.green, color: "rgb(255, 255, 255)" } });
+    await s.expect("the done row keeps its solid 2px control-edge grey; its check box is 24px, filled with the sign's ink, the check in on-sign", async () => ({ p: await A.props(stn(page, 4).locator(".ritual"), ["border-top-style", "border-top-width", "border-top-color"]), c: await A.props(stn(page, 4).locator(".ritual .pcheck"), ["width", "height", "background-color", "color"]) }), { p: { "border-top-style": "solid", "border-top-width": "2px", "border-top-color": LC.border }, c: { width: "24px", height: "24px", "background-color": LC.sign, color: LC.onSign } });
     await s.pin("the done ritual's tint", (await A.props(stn(page, 4).locator(".ritual"), ["background-color"]))["background-color"]);
 
     // ---- the Dojo sees it
@@ -114,7 +115,7 @@ export default function register(scenario) {
     await agree("after undoing in the Dojo");
     await s.expect("…the badge Template Monk is still there", async () => !!(await A.blob()).badges.ritual5, true);
     await A.tab("Line");
-    await s.expect("…and the Line's row is undone again", () => ritualAt(page, 4), { cls: "ritual", pressed: "false", text: d5.ritual, xp: "+15", fill: "", tick: "check" });
+    await s.expect("…and the Line's row is undone again, its check box empty", () => ritualAt(page, 4), { cls: "ritual", pressed: "false", text: d5.ritual, xp: "+15", fill: LC.raised, tick: "check" });
 
     // ---- logging from the Dojo
     await A.tab("Dojo");

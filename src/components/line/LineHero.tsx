@@ -1,9 +1,9 @@
 import { totalOf } from "../../data/tracks";
 import { useTrack } from "../../hooks/useTrack";
 import { problemsDone, stationsCleared } from "../../lib/engine";
+import Bullet from "../ui/Bullet";
 import Hero from "../ui/Hero";
 import LinePicker from "./LinePicker";
-import TrackDots from "./TrackDots";
 import "./LineHero.css";
 
 export default function LineHero() {
@@ -11,7 +11,11 @@ export default function LineHero() {
 
   return (
     <Hero
-      above={<TrackDots />}
+      above={
+        <Bullet line="track" size="lg" className="gdots" aria-hidden="true">
+          {track.bullet}
+        </Bullet>
+      }
       heading={
         <>
           {track.title[0]} <b>{track.title[1]}</b>

@@ -20,7 +20,6 @@ export default function DayBody({ day }: { day: Day }) {
       {day.ritual && (
         <RitualRow
           ritual={day.ritual}
-          color={day.color}
           done={!!progress.rituals[day.id]}
           onToggle={() => actions.toggleRitual(day.id)}
         />

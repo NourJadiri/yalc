@@ -1,7 +1,7 @@
+/* Platform's Checkbox box, for the problem rows and the ritual row alike: the parent's .done fills it. */
 .pcheck {
-  width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line);
-  flex: none; display: flex; align-items: center; justify-content: center;
-  color: transparent;
-  transition: background .15s ease, border-color .15s ease, color .15s ease, transform .12s ease;
+  flex: none; display: grid; place-items: center; width: var(--target-min); height: var(--target-min);
+  border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-sm); background: var(--surface-raised); color: transparent;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
 }
-.pcheck:active { transform: scale(.92); }
+.done > .pcheck { border-color: var(--sign); background: var(--sign); color: var(--on-sign); }

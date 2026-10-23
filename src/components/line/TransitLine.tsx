@@ -18,7 +18,7 @@ export default function TransitLine() {
         const open = state.openDays.includes(day.id);
 
         return (
-          <Station key={day.id} color={day.color} done={status.done} now={status.now} open={open}>
+          <Station key={day.id} done={status.done} now={status.now} open={open}>
             <DayCard day={day} doneN={status.doneN} open={open} />
           </Station>
         );

@@ -1,5 +1,5 @@
-.daybody { display: none; border-top: 1px solid var(--line); }
+.daybody { display: none; padding: var(--space-3) var(--space-4) var(--space-4); border-top: var(--hairline) solid var(--rule); }
 .stn.open .daybody { display: block; }
-.daynote { padding: 10px 14px 2px; font-size: 12.5px; color: var(--ink2); }
-.daysteps { margin: 6px 14px 0; font-family: var(--mono); font-size: 10.5px; letter-spacing: .02em; color: var(--accent); }
-.plist { list-style: none; margin: 6px 0 0; padding: 0 6px 8px; }
+.daynote { max-width: var(--measure); margin: 0; color: var(--ink-muted); }
+.daysteps { margin: var(--space-2) 0 0; color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls); }
+.plist { margin: var(--space-2) calc(var(--space-2) * -1) 0; padding: 0; list-style: none; }

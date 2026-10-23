@@ -170,6 +170,7 @@ export const rail = (page) =>
     }))
   );
 
+/** `seg` is the colour a station used to carry of its own (`--seg`): none now, the whole line is drawn in `var(--track)`. */
 export function railModel(blob, openIds, track = blob.track) {
   const t = blob.tracks[track];
   const focus = focusOf(blob, track);
@@ -179,7 +180,7 @@ export function railModel(blob, openIds, track = blob.track) {
     const cls = ["stn", isDone && "done", d.id === focus.id && !isDone && "now", openIds.includes(d.id) && "open"].filter(Boolean).join(" ");
     return {
       cls,
-      seg: d.color,
+      seg: "",
       title: d.name,
       eyebrow: `${unitOf(track)} ${d.d} · ${d.stn}`,
       expanded: String(openIds.includes(d.id)),
@@ -191,7 +192,7 @@ export function railModel(blob, openIds, track = blob.track) {
   });
   const T = TERMINUS[track];
   const cleared = clearedOf(blob, track);
-  days.push({ cls: "stn terminus", seg: "var(--line)", title: T.title, eyebrow: null, expanded: null, prog: null, rows: 0, done: 0, tick: null });
+  days.push({ cls: "stn terminus", seg: "", title: T.title, eyebrow: null, expanded: null, prog: null, rows: 0, done: 0, tick: null });
   return { days, terminusCopy: T.copy(cleared) };
 }
 
@@ -255,13 +256,13 @@ export function rowsModel(blob, dayId, track = blob.track) {
       link: inApp
         ? { tag: "BUTTON", cls: "golink code", label: `Solve ${p.n} in the editor`, title: "Open in the editor", href: null, target: null, rel: null, glyph: "code" }
         : p.url
-          ? { tag: "A", cls: "golink", label: `Open ${p.n}`, title: null, href: p.url, target: "_blank", rel: "noopener", glyph: "arrow-up-right" }
+          ? { tag: "A", cls: "golink", label: `Open ${p.n}`, title: null, href: p.url, target: "_blank", rel: "noopener", glyph: "external" }
           : null,
     };
   });
 }
 
-/** The ritual row of the station at `pos`, or null. */
+/** The ritual row of the station at `pos`, or null. `fill` is its check box's ground as drawn. */
 export const ritualAt = (page, pos) =>
   page
     .locator(".linewrap > .stn")
@@ -274,7 +275,7 @@ export const ritualAt = (page, pos) =>
           pressed: r.getAttribute("aria-pressed"),
           text: r.children[1].textContent,
           xp: r.querySelector(".xpv").textContent,
-          fill: r.querySelector(".pcheck").style.background,
+          fill: getComputedStyle(r.querySelector(".pcheck")).backgroundColor,
           tick: window.__glyph(r.querySelector("svg")),
         }
       );

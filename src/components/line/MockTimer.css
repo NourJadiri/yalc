@@ -1,3 +1,20 @@
-.timer { display: flex; align-items: center; gap: 10px; margin: 10px 14px 14px; padding: 10px 12px; background: var(--sunken); border-radius: 10px; }
-.timer b { font-family: var(--mono); font-size: 22px; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
-.timer.low b { color: var(--red); }
+/* The readout is a small departure board: a sunk panel of raised flaps, as Platform's flap Counter draws its value. */
+.timer { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-top: var(--space-2); padding-top: var(--space-4); border-top: var(--hairline) solid var(--rule); }
+/* The time as one text, for assistive technology; the flaps beside it draw it and are hidden from it. */
+.timer > b { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.timer .tboard {
+  padding: var(--space-1); border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink);
+  font: var(--t-heading); font-family: var(--font-condensed); letter-spacing: normal; font-variant-numeric: tabular-nums;
+}
+.timer.low .tboard { color: var(--caution); }
+.timer[data-up] .tboard { color: var(--stop); }
+.timer .tstate, .timer .xpv { margin-left: auto; }
+.timer .tstate + .xpv { margin-left: 0; }
+/* On a phone: the readout and its state, then the two buttons together, then the label. */
+@media (max-width: 599px) {
+  .timer { display: grid; grid-template-columns: auto auto minmax(0, 1fr); justify-items: start; }
+  .timer > .tboard { grid-area: 1 / 1; }
+  .timer > .tstate { grid-area: 1 / 2 / 2 / 4; margin-left: 0; }
+  .timer > .tbtn { grid-row: 2; }
+  .timer > .xpv { grid-area: 3 / 1 / 4 / 4; justify-self: end; margin-left: 0; }
+}

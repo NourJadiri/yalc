@@ -4,7 +4,7 @@
 // have the value written out.
 
 import { finish } from "./me-lib.mjs";
-import { F } from "./tabs-kit.mjs";
+import { F, PF } from "./tabs-kit.mjs";
 import { card, cardOf, MPF } from "./tabs-metro-kit.mjs";
 import { stn, RGB } from "./tabs-line.mjs";
 import { PFX } from "./tabs-fx.mjs";
@@ -37,29 +37,34 @@ export default function register(scenario) {
     const lineStates = [
       ["a closed day's header", day(3).locator(".dayhead"), ["background-color"]],
       ["a problem row", day(2).locator(".prow").nth(2), ["background-color"]],
-      ["a pending check circle", day(2).locator(".prow").nth(2).locator(".pcheck"), ["border-top-color", "color", "transform"]],
-      ["a done check circle", day(2).locator(".prow").nth(0).locator(".pcheck"), ["border-top-color", "color", "transform"]],
+      ["a pending check box", day(2).locator(".prow").nth(2).locator(".pcheck"), ["border-top-color", "color", "transform"]],
+      ["a done check box", day(2).locator(".prow").nth(0).locator(".pcheck"), ["border-top-color", "color", "transform"]],
       ["the editor button", day(2).locator(".prow").nth(2).locator(".golink"), ["background-color", "color", "transform"]],
       ["a pending ritual row", day(2).locator(".ritual"), ["background-color"]],
-      ["the line pill that is off", page.locator(".linepick[data-track='aws']"), ["border-top-color", "transform"]],
-      ["the line pill that is on", page.locator(".linepick[data-track='google']"), ["border-top-color", "transform"]],
+      ["the line pick that is off", page.locator(".linepick[data-track='aws']"), ["border-top-color", "background-color", "transform"]],
+      ["the line pick that is on", page.locator(".linepick[data-track='google']"), ["border-top-color", "background-color", "transform"]],
     ];
     for (const [label, loc, props] of lineStates) {
       for (const mode of ["hover", "active"]) s.pin(`${label} under the pointer (${mode})`, await under(A, loc, props, mode));
     }
-    await s.expect("hovering a row tints it like the sunken ground; hovering a pending circle darkens its ring and shows the tick faintly", async () => ({
+    await s.expect("hovering a row fills it with the sunk ground; hovering a pending check box firms its edge to ink, and no tick shows until it is checked", async () => ({
       row: (await under(A, day(2).locator(".prow").nth(2), ["background-color"], "hover"))["background-color"],
       ring: (await under(A, day(2).locator(".prow").nth(2).locator(".pcheck"), ["border-top-color", "color"], "hover")),
-    }), { row: "rgb(241, 243, 244)", ring: { "border-top-color": RGB.ink2, color: RGB.line } });
-    await s.expect("pressing a check circle squeezes it to 92%, the editor button to 94%, the line pill to 98%", async () => ({
-      circle: (await under(A, day(2).locator(".prow").nth(2).locator(".pcheck"), ["transform"], "active")).transform,
+    }), { row: PF.light.sunk, ring: { "border-top-color": PF.light.ink, color: "rgba(0, 0, 0, 0)" } });
+    await s.expect("pressing: the check box stays put, as Platform's checkbox does; the editor button and a line pick press 1px down, as Platform's Button does", async () => ({
+      box: (await under(A, day(2).locator(".prow").nth(2).locator(".pcheck"), ["transform"], "active")).transform,
       link: (await under(A, day(2).locator(".prow").nth(2).locator(".golink"), ["transform"], "active")).transform,
-      pill: (await under(A, page.locator(".linepick[data-track='aws']"), ["transform"], "active")).transform,
-    }), { circle: "matrix(0.92, 0, 0, 0.92, 0, 0)", link: "matrix(0.94, 0, 0, 0.94, 0, 0)", pill: "matrix(0.98, 0, 0, 0.98, 0, 0)" });
-    await s.expect("hovering the editor button deepens its tint; the arrow link of a mock goes to the grey ground and dark ink", async () => {
-      await page.locator(".linewrap > .stn").nth(6).locator(".dayhead").click();
-      return (await under(A, day(6).locator("a.golink"), ["color"], "hover")).color;
-    }, RGB.ink);
+      pick: (await under(A, page.locator(".linepick[data-track='aws']"), ["transform"], "active")).transform,
+    }), { box: "none", link: "matrix(1, 0, 0, 1, 0, 1)", pick: "matrix(1, 0, 0, 1, 0, 1)" });
+    await s.expect("hovering an off line pick fills it with the sunk ground; the chosen one keeps the raised ground", async () => ({
+      off: (await under(A, page.locator(".linepick[data-track='aws']"), ["background-color"], "hover"))["background-color"],
+      on: (await under(A, page.locator(".linepick[data-track='google']"), ["background-color"], "hover"))["background-color"],
+    }), { off: PF.light.sunk, on: PF.light.raised });
+    await page.locator(".linewrap > .stn").nth(6).locator(".dayhead").click();
+    await s.expect("hovering the editor button, or a mock's arrow link, in a row that is hovered too lifts it to the raised ground over the row's sunk one; its pictogram stays ink", async () => ({
+      editor: await under(A, day(2).locator(".prow").nth(2).locator(".golink"), ["background-color", "color"], "hover"),
+      link: await under(A, day(6).locator("a.golink"), ["background-color", "color"], "hover"),
+    }), { editor: { "background-color": PF.light.raised, color: PF.light.ink }, link: { "background-color": PF.light.raised, color: PF.light.ink } });
     s.pin("the mock's arrow link on hover", await under(A, day(6).locator("a.golink"), ["background-color", "color"], "hover"));
     s.pin("the clock's buttons on hover and pressed", { hover: await under(A, day(6).locator(".timer .tbtn").first(), ["border-top-color"], "hover"), active: await under(A, day(6).locator(".timer .tbtn").first(), ["transform"], "active") });
     await s.expect("nothing was ticked by the pressing (every press was released off the control): day 3's rows are as seeded", async () => day(2).locator(".prow .pcheck").evaluateAll((els) => els.map((e) => e.getAttribute("aria-pressed"))), ["true", "true", "false", "false"]);

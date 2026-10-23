@@ -1,10 +1,13 @@
-.dayhead { width: 100%; display: flex; align-items: center; gap: 10px; padding: 12px 14px; text-align: left; transition: background .15s ease; }
-.dayhead:active { background: var(--sunken); }
-.dayhead .eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--seg); font-weight: 700; }
-.dayhead h2 { font-size: 15.5px; font-weight: 600; margin: 1px 0 0; line-height: 1.3; }
-.dayhead .chev { margin-left: auto; display: grid; place-items: center; color: var(--ink2); transition: transform .2s ease; flex: none; }
+.dayhead {
+  display: flex; align-items: center; gap: var(--space-3); width: 100%; padding: var(--space-4) var(--space-4) var(--space-3);
+  border-radius: var(--radius-md) var(--radius-md) 0 0; color: var(--ink); text-align: left; transition: background-color 120ms ease-out;
+}
+.dayhead > div { min-width: 0; }
+.dayhead .eyebrow { color: var(--ink-muted); font: var(--t-label); letter-spacing: var(--t-label-ls); }
+.dayhead h2 { margin: 0; color: var(--ink); font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); }
+.stn.now .dayhead h2 { font-weight: 700; }
+.dayhead .chev { flex: none; display: grid; place-items: center; margin-left: auto; color: var(--ink); }
 .stn.open .chev { transform: rotate(180deg); }
-
 @media (hover: hover) {
-  .dayhead:hover { background: var(--sunken); }
+  .dayhead:hover { background: var(--surface-sunk); }
 }
