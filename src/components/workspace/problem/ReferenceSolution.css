@@ -1,5 +1,6 @@
-.ws-sol-head { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
-.ws-sol-head .ws-problem-heading { margin: 10px 0 8px; }
-.ws-sol-code { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.ws-sol-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-2); }
+.ws-sol-head .ws-problem-heading { margin: var(--space-4) 0 var(--space-2); }
+/* Read-only code is a well, not a field: the reference sits on the sunk ground, gutter and all. */
+.ws-sol-code { --ed-bg: var(--surface-sunk); --ed-gutter: var(--surface-sunk); border: var(--hairline) solid var(--rule); border-radius: var(--radius-sm); overflow: hidden; }
 .ws-sol-code .cm-host { height: auto; }
 .ws-sol-code .cm-editor { max-height: none; }

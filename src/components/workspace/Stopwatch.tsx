@@ -1,6 +1,7 @@
 import type { RefObject } from "react";
 import { fmtT } from "../../lib/engine";
 import Icon from "../shared/Icon";
+import IconButton from "../ui/IconButton";
 import { useStopwatch, type Clock } from "./hooks/useStopwatch";
 import "./Stopwatch.css";
 
@@ -18,12 +19,10 @@ export default function Stopwatch({ clock }: { clock: RefObject<Clock> }) {
         aria-label={running ? "Pause the clock" : "Resume the clock"}
         title={running ? "Pause" : "Resume"}
       >
-        <Icon name={running ? "timer" : "pause"} size={13} />
+        <Icon name={running ? "clock" : "pause"} size={16} />
         {fmtT(Math.min(secs, MAX_SECS))}
       </button>
-      <button className="wclock-reset" onClick={reset} aria-label="Reset the clock" title="Reset">
-        <Icon name="rotate-ccw" size={12} />
-      </button>
+      <IconButton size="sm" icon="rotate-ccw" label="Reset the clock" className="wclock-reset" onClick={reset} />
     </div>
   );
 }

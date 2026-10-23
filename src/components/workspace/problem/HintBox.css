@@ -1,10 +1,14 @@
-.ws-hintbox {
-  margin: 14px 0 0; padding: 0 12px; border: 1px dashed var(--line); border-radius: 10px;
-}
-.ws-hintbox[open] { padding-bottom: 4px; border-style: solid; }
+.ws-hintbox { margin: var(--space-4) 0 0; border: var(--hairline) solid var(--rule); border-radius: var(--radius-md); }
+.ws-hintbox > :not(summary) { margin-right: var(--space-4); margin-left: var(--space-4); }
+.ws-hintbox[open] { padding-bottom: var(--space-1); }
 .ws-hintbox summary {
-  display: flex; align-items: center; gap: 8px; padding: 10px 0; cursor: pointer;
-  font-size: 13px; font-weight: 600; color: var(--ink2); list-style: none;
+  display: flex; align-items: center; gap: var(--space-2); min-height: var(--control-height); padding: 0 var(--space-4); border-radius: var(--radius-md);
+  color: var(--ink); font: var(--t-ui); letter-spacing: var(--t-ui-ls); list-style: none; cursor: pointer;
+  transition: background-color 120ms ease-out;
 }
 .ws-hintbox summary::-webkit-details-marker { display: none; }
-@media (hover: hover) { .ws-hintbox summary:hover { color: var(--ink); } }
+.ws-hintbox summary > svg { flex: none; }
+.ws-hintbox summary > .ws-hintbox-chevron { margin-left: auto; }
+.ws-hintbox[open] summary { border-radius: var(--radius-md) var(--radius-md) 0 0; }
+.ws-hintbox[open] .ws-hintbox-chevron { transform: rotate(180deg); }
+@media (hover: hover) { .ws-hintbox summary:hover { background: var(--surface-sunk); } }

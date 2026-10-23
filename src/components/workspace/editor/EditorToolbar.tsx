@@ -24,11 +24,11 @@ export default function EditorToolbar({ fontSize, onFontStep, onReset, resetTitl
       <RunnerBadge phase={phase} />
       {phase === "failed" && <LinkButton onClick={() => void runner.warm().catch(() => {})}>Retry</LinkButton>}
       <Spacer />
-      <IconButton size="sm" icon="minus" label="Smaller text" title="Smaller text" onClick={() => onFontStep(-1)} />
+      <IconButton size="sm" icon="minus" label="Smaller text" onClick={() => onFontStep(-1)} />
       <span className="ws-font">{fontSize}px</span>
-      <IconButton size="sm" icon="plus" label="Larger text" title="Larger text" onClick={() => onFontStep(1)} />
+      <IconButton size="sm" icon="plus" label="Larger text" onClick={() => onFontStep(1)} />
       <LinkButton onClick={onReset} title={resetTitle}>
-        <Icon name="rotate-ccw" size={12} />
+        <Icon name="rotate-ccw" size={16} />
         Reset
       </LinkButton>
     </div>

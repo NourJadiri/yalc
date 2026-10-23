@@ -30,7 +30,7 @@ export default function CaseChips({ spec, cases, active, onSelect, onRemove, onA
         />
       ))}
       <button className="ws-chip add" onClick={onAdd} aria-label="Add a case" title="Add a case">
-        <Icon name="plus" size={13} />
+        <Icon name="plus" size={16} />
       </button>
       <LinkButton onClick={onReset} title="Back to the problem's examples">
         Reset

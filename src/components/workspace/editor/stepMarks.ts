@@ -21,7 +21,7 @@ function marks(doc: Text): DecorationSet {
   return Decoration.set(found);
 }
 
-/** The step markers in the accent colour, like the numbers of the steps they belong to. */
+/** The step markers in bold ink, like the numbers of the steps they belong to, out of the comment's muted slant. */
 export const stepMarks = [
   StateField.define<DecorationSet>({
     create: (state) => marks(state.doc),
@@ -29,5 +29,5 @@ export const stepMarks = [
     provide: (f) => EditorView.decorations.from(f),
   }),
   /* The comment's own colour and slant sit on a span inside the mark, so the mark's style has to reach it. */
-  EditorView.baseTheme({ ".cm-stepmark, .cm-stepmark *": { color: "var(--accent)", fontWeight: "600", fontStyle: "normal" } }),
+  EditorView.baseTheme({ ".cm-stepmark, .cm-stepmark *": { color: "var(--ink)", fontWeight: "600", fontStyle: "normal" } }),
 ];

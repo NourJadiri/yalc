@@ -1,8 +1,11 @@
 import type { Problem } from "../../../types";
-import Icon from "../../shared/Icon";
+import Icon, { type IconName } from "../../shared/Icon";
 import Button from "../../ui/Button";
-import type { Verdict } from "../lib/verdict";
+import type { Tone, Verdict } from "../lib/verdict";
 import "./VerdictBanner.css";
+
+/* Stopped and Finished are no status, so only the three status tones carry a pictogram. */
+const MARK: Partial<Record<Tone, IconName>> = { ok: "check", warn: "warning", bad: "stop" };
 
 interface VerdictBannerProps {
   verdict: Verdict;
@@ -14,14 +17,18 @@ interface VerdictBannerProps {
 }
 
 export default function VerdictBanner({ verdict, next, nextIsStep, onNext }: VerdictBannerProps) {
+  const mark = MARK[verdict.tone];
   return (
     <div className={"ws-verdict " + verdict.tone}>
-      <strong>{verdict.title}</strong>
+      <strong>
+        {mark && <Icon name={mark} size={24} />}
+        {verdict.title}
+      </strong>
       <span>{verdict.detail}</span>
       {next && (
-        <Button variant="primary" className="ws-next" onClick={() => onNext(next.id)}>
+        <Button className="ws-next" onClick={() => onNext(next.id)}>
           {(nextIsStep ? "Next step: " : "Next: ") + next.n}
-          <Icon name="arrow-right" size={13} />
+          <Icon name="arrow" size={20} />
         </Button>
       )}
     </div>

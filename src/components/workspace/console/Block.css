@@ -1,2 +1,2 @@
-.ws-block { margin-bottom: 10px; }
-.ws-block-title { font-size: 11.5px; font-weight: 600; color: var(--ink2); margin-bottom: 4px; }
+.ws-block { margin-bottom: var(--space-3); }
+.ws-block-title { margin-bottom: var(--space-1); color: var(--ink-muted); font: var(--t-label); letter-spacing: var(--t-label-ls); }

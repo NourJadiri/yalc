@@ -20,7 +20,7 @@ export default function CaseChip({ n, active, edited, removable, onSelect, onRem
       </button>
       {removable && (
         <button className="ws-chip-x" onClick={onRemove} aria-label={"Remove case " + n}>
-          <Icon name="x" size={11} />
+          <Icon name="cross" size={16} />
         </button>
       )}
     </span>

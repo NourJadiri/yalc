@@ -1,34 +1,30 @@
-.ws-buildtrack { margin: 0 0 16px; padding: 12px 6px 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--sunken); }
+.ws-buildtrack { margin: 0 0 var(--space-6); }
 .ws-buildtrack ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); }
 .ws-buildstop { position: relative; }
-/* The rail into each stop from the one before; lit once that one is done. */
 .ws-buildstop + .ws-buildstop::before {
-  content: ""; position: absolute; top: 12px; right: 50%; width: 100%; height: 2px; background: var(--line);
+  content: ""; position: absolute; top: calc(var(--space-1) / 2 + (var(--space-6) + var(--space-1)) / 2 - var(--line-weight) / 2); right: 50%; width: 100%; height: var(--line-weight);
+  background: repeating-linear-gradient(90deg, var(--border) 0 calc(var(--space-2) + var(--stroke-bold)), transparent 0 var(--space-4));
 }
-.ws-buildstop.done + .ws-buildstop::before { background: var(--accent); }
+.ws-buildstop.done + .ws-buildstop::before { background: var(--track); }
 .ws-buildstop-in {
-  position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;
-  width: 100%; padding: 0 3px; border: 0; background: none; font: inherit; color: var(--ink2); text-align: center;
+  position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-2);
+  width: 100%; padding: calc(var(--space-1) / 2) var(--space-1) var(--space-1); border: 0; border-radius: var(--radius-md); background: none;
+  color: var(--ink); font: var(--t-label); letter-spacing: var(--t-label-ls); text-align: center;
 }
 button.ws-buildstop-in { cursor: pointer; }
 .ws-buildstop-dot {
-  width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex: none;
-  font-family: var(--mono); font-size: 11.5px; font-weight: 700;
-  background: var(--surface); border: 2px solid var(--line); color: var(--ink2);
+  flex: none; display: grid; place-items: center; width: calc(var(--space-6) + var(--space-1)); height: calc(var(--space-6) + var(--space-1));
+  border: calc(var(--stroke-bold) + var(--hairline)) solid var(--border); border-radius: var(--radius-full); background: var(--surface-raised);
+  color: var(--ink); font: var(--t-bullet); letter-spacing: var(--t-bullet-ls); font-variant-numeric: tabular-nums;
+  transition: border-color 120ms ease-out;
 }
-.ws-buildstop.done .ws-buildstop-dot { background: var(--accent); border-color: var(--accent); color: #fff; }
-@media (prefers-color-scheme: dark) { .ws-buildstop.done .ws-buildstop-dot { color: var(--bg); } }
-.ws-buildstop.cur .ws-buildstop-dot {
-  border-color: var(--accent); color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
-}
-.ws-buildstop.cur.done .ws-buildstop-dot { color: #fff; }
-@media (prefers-color-scheme: dark) { .ws-buildstop.cur.done .ws-buildstop-dot { color: var(--bg); } }
-.ws-buildstop-name { font-size: 11px; line-height: 1.25; overflow-wrap: anywhere; }
-.ws-buildstop.cur .ws-buildstop-name { color: var(--ink); font-weight: 650; }
+.ws-buildstop.done .ws-buildstop-dot { border-color: var(--track); background: var(--track); color: var(--on-track); }
+.ws-buildstop.cur .ws-buildstop-dot { border: calc(var(--space-1) + var(--hairline)) solid var(--ink); color: var(--ink); }
+.ws-buildstop.cur.done .ws-buildstop-dot { color: var(--on-track); }
+.ws-buildstop-name { overflow-wrap: anywhere; }
+.ws-buildstop.cur .ws-buildstop-name { font-weight: 700; }
 @media (hover: hover) {
-  button.ws-buildstop-in:hover .ws-buildstop-dot { border-color: var(--accent); }
-  button.ws-buildstop-in:hover .ws-buildstop-name { color: var(--ink); }
+  button.ws-buildstop-in:hover .ws-buildstop-dot { border-color: var(--ink); }
+  button.ws-buildstop-in:hover .ws-buildstop-name { text-decoration: underline; text-decoration-thickness: var(--stroke-bold); text-underline-offset: 3px; }
 }
-button.ws-buildstop-in:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
-.ws-buildtrack-note { margin: 10px 8px 0; font-size: 12px; color: var(--ink2); text-align: center; }
+.ws-buildtrack-note { margin: var(--space-3) 0 0; color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls); text-align: center; }

@@ -1,6 +1,6 @@
 .ws-toolbar {
-  flex: none; display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 8px 0 12px;
-  border-bottom: 1px solid var(--line);
+  flex: none; display: flex; align-items: center; gap: var(--space-2); height: var(--control-height); padding: 0 var(--space-2) 0 var(--space-4);
+  border-bottom: var(--hairline) solid var(--rule);
 }
-.ws-lang { font-family: var(--mono); font-size: 11.5px; font-weight: 700; color: var(--ink); }
-.ws-font { font-family: var(--mono); font-size: 10.5px; color: var(--ink2); min-width: 30px; text-align: center; font-variant-numeric: tabular-nums; }
+.ws-lang { color: var(--ink); font: var(--t-label); letter-spacing: var(--t-label-ls); white-space: nowrap; }
+.ws-font { min-width: var(--space-8); color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls); font-variant-numeric: tabular-nums; text-align: center; }

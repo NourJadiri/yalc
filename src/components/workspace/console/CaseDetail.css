@@ -1,3 +1,3 @@
-.ws-detail-head { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; flex-wrap: wrap; }
-.ws-detail-title { font-size: 12.5px; font-weight: 600; }
-.ws-ms { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+.ws-detail-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin: var(--space-1) 0 var(--space-3); }
+.ws-detail-title { color: var(--ink); font: var(--t-label); letter-spacing: var(--t-label-ls); }
+.ws-ms { margin-left: auto; color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls); font-variant-numeric: tabular-nums; }

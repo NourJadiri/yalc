@@ -353,12 +353,14 @@ const verdictOf = async (page) => ({
 });
 
 /* What the verdict banner offers, as a reader sees it: each button's words, whether it is the primary one, how many icons it carries.
-   Next is the only button it ever has, so [] is a verdict with no way on. */
+   The header's Submit is the view's one primary Button, so Next is a secondary one. Next is the only button it ever has, so [] is a verdict with no way on. */
 const nextButtons = (page) =>
   page.locator(".ws-verdict button").evaluateAll((els) =>
     els.map((b) => ({ text: b.textContent.trim(), primary: b.classList.contains("primary"), icons: b.querySelectorAll("svg").length }))
   );
-const NEXT = (title) => ({ text: "Next: " + title, primary: true, icons: 1 });
+const NEXT = (title) => ({ text: "Next: " + title, primary: false, icons: 1 });
+/* The yellow Buttons on screen, by their words: Platform spends signal once per view. */
+const primaries = (page) => page.locator(".btn.primary").evaluateAll((els) => els.map((e) => e.textContent.trim()));
 const nextButton = (page) => page.locator(".ws-verdict").getByRole("button", { name: /^Next: / });
 
 const chipsOf = (page) =>
@@ -463,7 +465,7 @@ const inView = (page, loc) =>
     return r.top >= b.top - 1 && r.bottom <= b.bottom + 1;
   });
 
-/* A colour token (--accent, --ink2…) resolved to the rgb() a computed style reports. */
+/* A colour token (--ink, --ink-muted…) resolved to the rgb() a computed style reports. */
 const tokenColor = (page, token) =>
   page.evaluate((t) => {
     const probe = document.body.appendChild(document.createElement("i"));
@@ -628,15 +630,16 @@ scenario("02-problem-pane", "the hint ladder and the follow-ups; the Solution ta
     await s.expect("…then 'The trick', 'Steps', 'Watch out for', and further down 'Reference solution'", () => page.locator(".ws-problem-body .ws-problem-heading").allTextContents(), ["The trick", "Steps", "Watch out for", "Reference solution"]);
     await s.expect("the trick is the key idea", () => textOf(page.locator(".ws-problem-body > .md")), NOTES.idea);
     await s.expect("the steps are the four numbered steps, in order", () => textsOf(page.locator(".ws-steps ol > li")), NOTES.steps);
-    await s.expect("…their numbers are in the accent colour, like the markers in the code", async () => ({ marker: await page.locator(".ws-steps li").first().evaluate((li) => getComputedStyle(li, "::marker").color), accent: await tokenColor(page, "--accent") }), (v) => v.marker === v.accent);
-    await s.expect("the cost is one muted line", async () => ({ text: await textOf(page.locator(".ws-cost")), color: await page.locator(".ws-cost .md").evaluate((el) => getComputedStyle(el).color), muted: await tokenColor(page, "--ink2") }), (v) => v.text === NOTES.cost && v.color === v.muted);
+    await s.expect("…their numbers are bold ink, like the markers in the code", async () => ({ marker: await page.locator(".ws-steps li").first().evaluate((li) => { const m = getComputedStyle(li, "::marker"); return [m.color, m.fontWeight]; }), ink: await tokenColor(page, "--ink") }), (v) => v.marker[0] === v.ink && v.marker[1] === "700");
+    await s.expect("the cost is one muted line", async () => ({ text: await textOf(page.locator(".ws-cost")), color: await page.locator(".ws-cost .md").evaluate((el) => getComputedStyle(el).color), muted: await tokenColor(page, "--ink-muted") }), (v) => v.text === NOTES.cost && v.color === v.muted);
 
     const items = page.locator(".ws-checklist li");
-    const marks = () => items.evaluateAll((els) => els.map((li) => { const t = getComputedStyle(li.querySelector(".md")); return [li.querySelector("input").checked, t.textDecorationLine, Number(t.opacity) < 1]; }));
+    const muted = await tokenColor(page, "--ink-muted");
+    const marks = () => items.evaluateAll((els, m) => els.map((li) => { const t = getComputedStyle(li.querySelector(".md")); return [li.querySelector("input").checked, t.textDecorationLine, t.color === m]; }), muted);
     await s.expect("'Watch out for' is a checklist of the three pitfalls, with real checkboxes, none ticked", async () => ({ texts: await textsOf(items), boxes: await items.getByRole("checkbox").count() }), { texts: NOTES.pitfalls, boxes: 3 });
-    await s.expect("…untouched: nothing dimmed or struck", marks, [[false, "none", false], [false, "none", false], [false, "none", false]]);
+    await s.expect("…untouched: nothing muted or struck", marks, [[false, "none", false], [false, "none", false], [false, "none", false]]);
     await items.nth(1).getByRole("checkbox").check();
-    await s.expect("ticking the second dims and strikes that pitfall only", marks, [[false, "none", false], [true, "line-through", true], [false, "none", false]]);
+    await s.expect("ticking the second mutes and strikes that pitfall only", marks, [[false, "none", false], [true, "line-through", true], [false, "none", false]]);
     await s.expect("the full walkthrough is a disclosure, closed", async () => ({ title: await textOf(boxes.nth(0).locator("summary")), n: await boxes.count(), open: await open() }), { title: "Full walkthrough", n: 1, open: [false] });
     await body.evaluate((el) => (el.scrollTop = 0));
     await s.shot(page, "solution-revealed-desktop-light");
@@ -657,7 +660,7 @@ scenario("02-problem-pane", "the hint ladder and the follow-ups; the Solution ta
       return { dfs: t.includes("def dfs(node):"), ro: await page.locator(".ws-sol-code .cm-content").getAttribute("contenteditable"), wrap: await page.locator(".ws-sol-code .cm-lineWrapping").count() };
     }, { dfs: true, ro: "false", wrap: 1 });
     await s.expect("it marks the four steps: # 1. to # 4.", () => page.locator(".ws-sol-code .cm-stepmark").allTextContents(), ["# 1.", "# 2.", "# 3.", "# 4."]);
-    await s.expect("…in the accent colour, semibold, upright", async () => ({ seen: await page.locator(".ws-sol-code .cm-stepmark").evaluateAll((els) => [...new Set(els.map((e) => { const c = getComputedStyle(e.firstElementChild ?? e); return [c.color, c.fontWeight, c.fontStyle].join("/"); }))]), accent: await tokenColor(page, "--accent") }), (v) => v.seen.length === 1 && v.seen[0] === `${v.accent}/600/normal`);
+    await s.expect("…in ink, semibold, upright, out of the comment's muted slant", async () => ({ seen: await page.locator(".ws-sol-code .cm-stepmark").evaluateAll((els) => [...new Set(els.map((e) => { const c = getComputedStyle(e.firstElementChild ?? e); return [c.color, c.fontWeight, c.fontStyle].join("/"); }))]), ink: await tokenColor(page, "--ink") }), (v) => v.seen.length === 1 && v.seen[0] === `${v.ink}/600/normal`);
     await s.expect("two editors on the page now (yours and the reference)", () => page.locator(".cm-editor").count(), 2);
     await s.expect("your own editor is untouched, and has no step markers", async () => ({ code: await codeOf(page, sel.code), marks: await page.locator(`${sel.code} .cm-stepmark`).count() }), { code: STARTER, marks: 0 });
     await s.expect("the Solution tab icon is unlocked", () => page.locator(`${sel.problem} .tablist [role=tab]`).nth(1).locator("svg").count(), 1);
@@ -734,7 +737,8 @@ scenario("04-submit", "submit: accepted, XP and badge toasts, passed on the Line
     const n = await startRun(s, page, "submit-button");
     await s.expect("Submit button: exactly one run started", () => n, 1);
     await s.expect("verdict: Accepted, all 23 tests", () => verdictOf(page), (v) => v.tone === "ok" && v.title === "Accepted" && /^All 23 tests passed · \d+ ms$/.test(v.detail));
-    await s.expect("the Accepted verdict offers the next problem on the line: a primary 'Next: Binary Tree Paths' button with an arrow", () => nextButtons(page), [NEXT("Binary Tree Paths")]);
+    await s.expect("the Accepted verdict offers the next problem on the line: a secondary 'Next: Binary Tree Paths' button with an arrow", () => nextButtons(page), [NEXT("Binary Tree Paths")]);
+    await s.expect("…and the header's Submit stays the view's one primary Button", () => primaries(page), ["Submit"]);
     await s.expect("23 test chips in a grid, numbered 1..23, all green", async () => {
       const chips = await chipsOf(page);
       return { n: chips.length, nums: chips.map((c) => c.text).join(","), tones: [...new Set(chips.map((c) => c.tone))].join(","), grid: await page.locator(".ws-chips.grid").count() };
@@ -2207,10 +2211,11 @@ scenario("22-stuck-nudge", "the stuck nudge: the card at 20 minutes, its buttons
     await jump(page, "05:00");
     await s.expect("20 minutes in a card comes up: a status, not a dialog (the workspace is the only dialog)", async () => ({ role: await card.getAttribute("role"), dialogs: await page.locator("[role=dialog]").count() }), { role: "status", dialogs: 1 });
     await s.expect("…it says '20 minutes in. Want a nudge?' and offers 'Show the technique' and 'Not now'", () => nudgeAsks(card), { text: "20 minutes in. Want a nudge?", buttons: ["Show the technique", "Not now"] });
-    await s.expect("…it floats at the bottom left, 300 px wide, and has taken no focus", async () => ({
+    await s.expect("…it floats at the bottom left, 24rem (384 px) wide, and has taken no focus", async () => ({
       box: await card.evaluate((e) => { const r = e.getBoundingClientRect(); return { left: Math.round(r.left), bottom: Math.round(innerHeight - r.bottom), w: Math.round(r.width) }; }),
       focusInside: await page.evaluate(() => !!document.activeElement?.closest(".ws-nudge")),
-    }), { box: { left: 16, bottom: 16, w: 300 }, focusInside: false });
+    }), { box: { left: 16, bottom: 16, w: 384 }, focusInside: false });
+    await s.expect("…its button is a secondary one: the header's Submit stays the view's one primary", () => primaries(page), ["Submit"]);
     await s.shot(page, "nudge-desktop-light");
     await dark(page);
     await s.shot(page, "nudge-desktop-dark");
@@ -2299,7 +2304,7 @@ scenario("24-stuck-phone", "390x844 touch: the nudge rides over the pane you are
     await press(page, page.locator(".seg").getByRole("tab", { name: "Code" }));
     await s.expect("(setup) the Code pane is showing", seg, ["Problem:false", "Code:true", "Tests:false"]);
     await jump(page, "20:00");
-    await s.expect("20 minutes in, over the Code pane: the card spans the width at the bottom", () => card.evaluate((e) => { const r = e.getBoundingClientRect(); return { left: Math.round(r.left), right: Math.round(innerWidth - r.right), bottom: Math.round(innerHeight - r.bottom) }; }), { left: 10, right: 10, bottom: 10 });
+    await s.expect("20 minutes in, over the Code pane: the card spans the width at the bottom, in line with the panes' 8px gutter", () => card.evaluate((e) => { const r = e.getBoundingClientRect(); return { left: Math.round(r.left), right: Math.round(innerWidth - r.right), bottom: Math.round(innerHeight - r.bottom) }; }), { left: 8, right: 8, bottom: 8 });
     await s.expect("…saying the same, with the same two buttons", () => nudgeAsks(card), { text: "20 minutes in. Want a nudge?", buttons: ["Show the technique", "Not now"] });
     await s.shot(page, "nudge-phone-light");
 
@@ -2390,7 +2395,7 @@ scenario("25-next-problem", "the Next button: an accepted Submit leads straight 
       await startRun(s, page, "button");
       await s.expect("a Run that passes has none: it only tried the cases", () => outcome(page), { title: "Passed", next: [] });
       await startRun(s, page, "submit-button");
-      await s.expect("an accepted Submit does: a primary 'Next: Binary Tree Paths' button with an arrow, in the verdict banner", () => outcome(page), { title: "Accepted", next: [NEXT(BTP)] });
+      await s.expect("an accepted Submit does: a secondary 'Next: Binary Tree Paths' button with an arrow, in the verdict banner", () => outcome(page), { title: "Accepted", next: [NEXT(BTP)] });
       await s.expect("…beside the verdict's title on a desktop-wide console, not wrapped under it", async () => (await fitOf(page)).row, "beside");
       await s.shot(page, "next-accepted-desktop-light");
       await dark(page);
@@ -2584,7 +2589,7 @@ scenario("26-build-steps", "a build's steps: tagged rows, the step track, each s
   const trackModel = (open, done) => station.probs.map((p, k) => ({ name: p.n, done: done.includes(k), open: k === open }));
   const note = (page) => page.locator(".ws-buildtrack-note").allTextContents();
   const outcome = async (page) => ({ title: (await verdictOf(page)).title, next: await nextButtons(page) });
-  const NEXT_STEP = (title) => ({ text: "Next step: " + title, primary: true, icons: 1 });
+  const NEXT_STEP = (title) => ({ text: "Next step: " + title, primary: false, icons: 1 });
   const reset = (page) => page.locator(`${sel.code} .ws-toolbar .linkbtn`);
   /* The editor draws only the lines in view; a reference solution is longer, so read it through a window tall enough to show it all. */
   const wholeCodeOf = async (page) => {

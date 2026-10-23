@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 import type { CaseResult } from "../../../runner/types";
+import Icon, { type IconName } from "../../shared/Icon";
 import { caseMark } from "../lib/verdict";
 import "./Chips.css";
+
+/* Check for go, warning for caution, stop for stop; a case with no verdict keeps a plain dot. */
+const MARK: Partial<Record<string, IconName>> = { ok: "check", warn: "warning", bad: "stop" };
 
 interface ResultChipProps {
   status: CaseResult["status"];
@@ -14,6 +18,7 @@ interface ResultChipProps {
 
 export default function ResultChip({ status, label, selected, onSelect, children }: ResultChipProps) {
   const mark = caseMark(status);
+  const icon = MARK[mark.tone];
   return (
     <button
       role="tab"
@@ -22,6 +27,7 @@ export default function ResultChip({ status, label, selected, onSelect, children
       onClick={onSelect}
       title={label + " — " + mark.word}
     >
+      {icon && <Icon name={icon} size={16} />}
       {children}
     </button>
   );
