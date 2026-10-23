@@ -1,6 +1,7 @@
 // The celebrations (12): toast stacking and the exact moments they leave (3 s; the CSS fade starts at 2.5 s), confetti
 // pieces and their removal (2.8 s), the ids the store stamps, reduced motion (toasts yes, confetti no), and the
-// stacking order of everything that floats (header 30, tabs 40, workspace 50, confetti 55, overlays 58, toasts 60).
+// stacking order of everything that floats (header 30, tabs 40, workspace 50, confetti 55, the Me tab's sheets, toasts on
+// Platform's announcement layer).
 
 import { finish } from "./me-lib.mjs";
 import { F, feedOf, probById, consecutive } from "./tabs-kit.mjs";
@@ -155,7 +156,7 @@ export default function register(scenario) {
     await s.expect("with reduced motion the toasts still come (the XP, the badge) but no confetti is made: not raised, not on the page", async () => ({ feed: feedOf(await R.fx()), live: await R.live(), layers: await rp.locator(".confetti").count() }), { feed: ["+40 XP · N-Queens", "* Badge — Heating Up"], live: { toasts: ["+40 XP · N-Queens", "* Badge — Heating Up"], bursts: [] }, layers: 0 });
     await s.expect("…and the toasts do not animate", async () => R.page.locator(".toast").first().evaluate((e) => ({ name: getComputedStyle(e).animationName, opacity: getComputedStyle(e).opacity, transform: getComputedStyle(e).transform })), { name: "none", opacity: "1", transform: "none" });
     await s.expect("the toast stack: the first 8px from the top, 8px between (Platform's stack), centred, narrower than the window less 16px a side and than 30rem", () => toastGeometry(rp), { n: 2, top: 8, gaps: [8], centred: true, narrow: true });
-    await s.expect("the stack is a polite live region, fixed across the top at level 60, and lets clicks through", async () => ({ aria: await rp.locator(".toasts").getAttribute("aria-live"), p: await R.props(".toasts", ["position", "z-index", "pointer-events", "display", "flex-direction", "align-items", "gap", "top", "left", "right"]) }), { aria: "polite", p: { position: "fixed", "z-index": "60", "pointer-events": "none", display: "flex", "flex-direction": "column", "align-items": "center", gap: "8px", top: "8px", left: "0px", right: "0px" } });
+    await s.expect("the stack is a polite live region, fixed across the top on Platform's announcement layer (1100), and lets clicks through", async () => ({ aria: await rp.locator(".toasts").getAttribute("aria-live"), p: await R.props(".toasts", ["position", "z-index", "pointer-events", "display", "flex-direction", "align-items", "gap", "top", "left", "right"]) }), { aria: "polite", p: { position: "fixed", "z-index": "1100", "pointer-events": "none", display: "flex", "flex-direction": "column", "align-items": "center", gap: "8px", top: "8px", left: "0px", right: "0px" } });
     await s.expect("a toast is Platform's Announcement: a sign panel with 16px bold on-sign text after a 32px tone tile, 12px padding, 8px corners; a plain one's tile is lit on-sign with a sign pictogram, a gold one's is signal yellow with an on-signal one", async () => ({
       plain: await R.props(rp.locator(".toast:not(.gold)"), ["background-color", "color", "font-size", "font-weight", "padding-top", "padding-left", "border-top-left-radius", "text-align", "letter-spacing"]),
       gold: await R.props(rp.locator(".toast.gold"), ["background-color", "color", "font-weight"]),
@@ -227,16 +228,21 @@ export default function register(scenario) {
     await Z.pause();
     await Z.advance(1_500_000);
     await s.expect("the mock clock ran out while the workspace was open: the toast is up over it", () => Z.live(), { toasts: ["* ⏰ Pencils down."], bursts: [] });
-    await s.expect("the stacking order, bottom to top: header 30, tab bar 40, workspace 50, confetti 55, the Me tab's scanner and link sheet 58, toasts 60", async () => ({
-      header: await z("header.hdr"),
-      tabs: await z("nav.tabs"),
-      workspace: await z(".ws"),
-      toasts: await z(".toasts"),
-      confetti: await rule(".confetti"),
-      scan: await rule(".scanwrap"),
-      sheet: await rule(".qrscrim"),
-      boot: await rule(".ws-boot"),
-    }), { header: "30", tabs: "40", workspace: "50", toasts: "60", confetti: "55", scan: "58", sheet: "58", boot: "50" });
+    // The sheets' rules may name a layer token: read it as the number it stands for.
+    const level = (v) => zp.evaluate((x) => Number(/^var\(/.test(x) ? getComputedStyle(document.documentElement).getPropertyValue(x.slice(4, -1).trim()) : x), v);
+    await s.expect("the stacking order, bottom to top: header 30, tab bar 40, workspace 50, confetti 55, the Me tab's scanner and link sheet on one layer above the confetti, toasts on Platform's announcement layer (1100) above everything", async () => {
+      const sheets = [await level(await rule(".scanwrap")), await level(await rule(".qrscrim"))];
+      const toasts = Number(await z(".toasts"));
+      return {
+        header: await z("header.hdr"),
+        tabs: await z("nav.tabs"),
+        workspace: await z(".ws"),
+        toasts: String(toasts),
+        confetti: await rule(".confetti"),
+        boot: await rule(".ws-boot"),
+        sheets: sheets[0] === sheets[1] && sheets[0] > 55 && sheets[0] < toasts,
+      };
+    }, { header: "30", tabs: "40", workspace: "50", toasts: "1100", confetti: "55", boot: "50", sheets: true });
     await s.expect("the open workspace covers the header and the tab bar: the elements under their old places are the workspace's", async () => zp.evaluate(() => [document.elementFromPoint(640, 20), document.elementFromPoint(300, 840)].map((e) => !!e.closest(".ws"))), [true, true]);
     await Z.shot("toast-over-workspace", { locator: zp.locator(".toasts"), hide: SHOW_TOASTS });
     finish(s);

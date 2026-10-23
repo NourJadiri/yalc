@@ -1,2 +1,1 @@
-/* The app's own stacking: over the header (30), the tab bar (40), the workspace (50), the confetti (55) and the Me tab's sheets (58). */
-.toasts { position: fixed; top: calc(var(--space-2) + env(safe-area-inset-top)); left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); pointer-events: none; }
+.toasts { position: fixed; top: calc(var(--space-2) + env(safe-area-inset-top)); left: 0; right: 0; z-index: var(--layer-announcement); display: flex; flex-direction: column; align-items: center; gap: var(--space-2); pointer-events: none; }
