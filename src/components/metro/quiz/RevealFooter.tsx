@@ -1,4 +1,5 @@
 import Icon from "../../shared/Icon";
+import Button from "../../ui/Button";
 import QuizNav from "./QuizNav";
 import "./RevealFooter.css";
 
@@ -15,10 +16,10 @@ export default function RevealFooter({ explanation, last, onNext, onQuit }: Reve
     <>
       <div className="explain">{explanation}</div>
       <QuizNav onQuit={onQuit}>
-        <button className="next" onClick={onNext}>
+        <Button variant="primary" className="next" onClick={onNext}>
           {last ? "Finish" : "Next stop"}
-          <Icon name="arrow-right" size={15} />
-        </button>
+          <Icon name="arrow" size={20} />
+        </Button>
       </QuizNav>
     </>
   );
