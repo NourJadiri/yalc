@@ -307,12 +307,12 @@ export default function register(scenario) {
     }
     const holed = await card(page);
     const hq = cardOf(holed);
-    await s.expect("a missing-line card: the code is a mono block with each ____ lit up in the amber; the block's text is the card's code word for word", async () => ({ code: holed.code, blanks: holed.blanks, want: hq.code.split("____").length - 1, blank: await A.props("#quizArea pre.code .blank", ["color", "font-weight"]), pre: await A.props("#quizArea pre.code", ["font-size", "line-height", "white-space", "overflow-x", "border-top-left-radius", "padding-top", "padding-left"]) }), {
+    await s.expect("a missing-line card: the code is a well in the code style with each ____ lit up in the caution colour; the block's text is the card's code word for word", async () => ({ code: holed.code, blanks: holed.blanks, want: hq.code.split("____").length - 1, blank: await A.props("#quizArea pre.code .blank", ["color", "font-weight"]), pre: await A.props("#quizArea pre.code", ["font-size", "line-height", "white-space", "overflow-x", "border-top-left-radius", "padding-top", "padding-left"]) }), {
       code: hq.code,
       blanks: hq.code.split("____").length - 1,
       want: hq.code.split("____").length - 1,
-      blank: { color: "rgb(232, 113, 10)", "font-weight": "700" },
-      pre: { "font-size": "12px", "line-height": "19.2px", "white-space": "pre", "overflow-x": "auto", "border-top-left-radius": "10px", "padding-top": "12px", "padding-left": "14px" },
+      blank: { color: MPF.light.caution, "font-weight": "700" },
+      pre: { "font-size": "14px", "line-height": "22px", "white-space": "pre", "overflow-x": "auto", "border-top-left-radius": "4px", "padding-top": "12px", "padding-left": "16px" },
     });
     await s.pin("the code block's ground and rule", await A.props("#quizArea pre.code", ["background-color", "border-top-color", "margin-bottom", "tab-size"]));
     await s.marked(A, "a missing-line card (#quizArea)", "#quizArea");
