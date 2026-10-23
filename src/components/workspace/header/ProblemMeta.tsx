@@ -33,7 +33,7 @@ export default function ProblemMeta({ spec, problemRef: { day, track }, done, ac
       {done && (
         <span className="ws-done">
           <Icon name="check" size={16} />
-          <span className="ws-done-word">{accepted ? "passed" : "ticked"}</span>
+          {accepted ? "passed" : "ticked"}
         </span>
       )}
       {lcLink ? (
