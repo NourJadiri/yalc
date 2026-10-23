@@ -17,7 +17,7 @@ export default function RunnerBadge({ phase }: { phase: RunnerPhase }) {
   /* Booting gets the Loader; a run keeps its dot, since the console already shows that run's Loader. */
   return (
     <span className={"ws-runner " + phase}>
-      {phase === "loading" ? <Spinner /> : <StatusDot tone={TONES[phase]} aria-hidden="true" />}
+      {phase === "loading" ? <Spinner size="sm" /> : <StatusDot tone={TONES[phase]} aria-hidden="true" />}
       {LABELS[phase]}
     </span>
   );

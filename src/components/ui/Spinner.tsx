@@ -2,6 +2,11 @@ import type { ComponentProps } from "react";
 import { cx } from "../../lib/cx";
 import "./Spinner.css";
 
-export default function Spinner({ className, ...rest }: ComponentProps<"div">) {
-  return <div className={cx("spinner", className)} aria-hidden="true" {...rest} />;
+interface SpinnerProps extends ComponentProps<"div"> {
+  /** Platform's small Loader, for a line of caption text. */
+  size?: "sm";
+}
+
+export default function Spinner({ size, className, ...rest }: SpinnerProps) {
+  return <div className={cx("spinner", size, className)} aria-hidden="true" {...rest} />;
 }

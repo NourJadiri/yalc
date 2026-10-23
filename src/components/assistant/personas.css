@@ -30,27 +30,8 @@
 }
 .asst[data-persona="tough"] .asst-wait { color: var(--asst-line); }
 
-/* Goth catgirl: dark whatever the page, with her face, her bubbles and her paw prints, in lines 5 and 7. */
-@media (prefers-color-scheme: light) and (not (prefers-contrast: more)) {
-  /* Night's tokens, copied from tokens.css until it can scope them to an element, and the code colours re-resolved on them. */
-  :root:not([data-theme]) .asst[data-persona="catgirl"] {
-    color-scheme: dark;
-    --surface: #121315; --surface-raised: #1c1d21; --surface-sunk: #0b0c0d; --rule: #2f3035;
-    --border: #77787d; --ink: #f2f2ee; --ink-muted: #a9a9a3; --sign: #f2f2ee; --on-sign: #141414;
-    --signal: #ffcd00; --signal-deep: #ffd83d; --on-signal: #141414; --go: #3dcfb9; --go-wash: #0f2f2b;
-    --on-go: #141414; --stop: #ff6b6b; --stop-wash: #3b1517; --on-stop: #141414; --caution: #ffcd00;
-    --caution-wash: #3a3008; --line-1: #f0544a; --line-2: #5b8def; --line-3: #36b76a; --line-4: #ff8a2a;
-    --line-5: #b27ed8; --line-6: #2bbfd0; --line-7: #f0609f; --line-8: #c99561; --on-line: #141414;
-    --focus: var(--ink);
-    --shadow: #000000a6;
-    --scrim: #000000b3;
-    --shadow-float: 0 12px 32px -6px #000000cc;
-    --focus-ring: 0 0 0 2px #f2f2ee, 0 0 0 5px #ffcd00;
-    --focus-ring-on-sign: 0 0 0 2px #141414, 0 0 0 5px #ffcd00;
-    --hl-kw: var(--line-2); --hl-str: var(--line-3); --hl-num: var(--line-1); --hl-com: var(--ink-muted);
-    --hl-fn: var(--line-5); --hl-cls: var(--line-8); --hl-op: var(--ink-muted); --hl-meta: var(--line-4);
-  }
-}
+/* Goth catgirl: dark whatever the page (Assistant sets data-theme="dark" on her window), with her face, her bubbles and
+   her paw prints, in lines 5 and 7. */
 .asst[data-persona="catgirl"] { --asst-line: var(--line-5); }
 .asst[data-persona="catgirl"] .asst-head { border-bottom: var(--line-weight) solid var(--asst-line); }
 .asst[data-persona="catgirl"] .asst-head h3 { font-style: italic; font-weight: 400; }
