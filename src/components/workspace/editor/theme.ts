@@ -17,9 +17,9 @@ export const theme = EditorView.theme({
   ".cm-lineNumbers .cm-gutterElement": { padding: "0 var(--space-2) 0 var(--space-3)", minWidth: "calc(var(--space-8) + var(--space-1))" },
   ".cm-activeLine": { backgroundColor: "var(--ed-active)" },
   ".cm-activeLineGutter": { backgroundColor: "var(--ed-active)", color: "var(--ink)" },
-  ".cm-selectionBackground, &.cm-focused .cm-selectionBackground, ::selection": {
-    backgroundColor: "var(--ed-sel) !important",
-  },
+  ".cm-selectionBackground, &.cm-focused .cm-selectionBackground": { backgroundColor: "var(--ed-sel) !important" },
+  /* base.css sets selected text in on-signal; the editor draws its selection under the text, so code keeps its colours. */
+  ".cm-content ::selection, .cm-content::selection": { color: "currentColor" },
   ".cm-selectionBackground": { outline: "var(--stroke-bold) solid var(--ed-sel-edge)", outlineOffset: "calc(-1 * var(--stroke-bold))" },
   ".cm-cursor, .cm-dropCursor": { borderLeftColor: "var(--ink)", borderLeftWidth: "var(--stroke-bold)" },
   ".cm-errline": { backgroundColor: "var(--ed-err)", boxShadow: "inset var(--space-1) 0 0 var(--stop)" },
