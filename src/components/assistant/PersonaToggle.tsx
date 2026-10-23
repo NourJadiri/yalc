@@ -19,6 +19,7 @@ export default function PersonaToggle({ value, onChange }: Props) {
           size="sm"
           icon={p.icon}
           label={p.label}
+          title={p.label}
           className={cx("asst-voice", value === p.id && "on")}
           aria-pressed={value === p.id}
           onClick={() => onChange(p.id)}

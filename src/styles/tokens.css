@@ -4,7 +4,8 @@
    data-theme="dark" lights it at night whatever the page (the Metro's departures board, Bana's catgirl window),
    except on a High contrast page, which stays High contrast everywhere. Values that refer to other tokens are
    declared on themed elements too, so they resolve against the element's own theme. --focus-ring-inset is Platform's
-   ring drawn inside an edge, for a control that fills a clipping pane (the editor). */
+   ring drawn inside an edge, for a control that fills a clipping pane (the editor). --edge-hc is an edge only High
+   contrast draws, for wells and chips that the other themes tell apart by shade. */
 
 :root {
   color-scheme: light;
@@ -20,6 +21,7 @@
   --shadow-float: 0 2px 4px #14141414, 0 12px 28px -6px #1414142e;
   --focus-ring: 0 0 0 2px #141414, 0 0 0 5px #ffcd00;
   --focus-ring-inset: inset 0 0 0 2px #141414, inset 0 0 0 5px #ffcd00;
+  --edge-hc: transparent;
   --focus-ring-on-sign: 0 0 0 2px #ffffff, 0 0 0 5px #ffcd00;
 }
 
@@ -38,6 +40,7 @@
     --shadow-float: 0 12px 32px -6px #000000cc;
     --focus-ring: 0 0 0 2px #f2f2ee, 0 0 0 5px #ffcd00;
     --focus-ring-inset: inset 0 0 0 2px #f2f2ee, inset 0 0 0 5px #ffcd00;
+    --edge-hc: transparent;
     --focus-ring-on-sign: 0 0 0 2px #141414, 0 0 0 5px #ffcd00;
   }
 }
@@ -55,6 +58,7 @@
   --shadow-float: 0 12px 32px -6px #000000cc;
   --focus-ring: 0 0 0 2px #f2f2ee, 0 0 0 5px #ffcd00;
   --focus-ring-inset: inset 0 0 0 2px #f2f2ee, inset 0 0 0 5px #ffcd00;
+  --edge-hc: transparent;
   --focus-ring-on-sign: 0 0 0 2px #141414, 0 0 0 5px #ffcd00;
 }
 
@@ -74,6 +78,7 @@
     --shadow-float: 0 0 0 2px #ffffff;
     --focus-ring: 0 0 0 2px #000000, 0 0 0 4px #ffffff, 0 0 0 7px #ffcd00;
     --focus-ring-inset: inset 0 0 0 2px #000000, inset 0 0 0 4px #ffffff, inset 0 0 0 7px #ffcd00;
+    --edge-hc: #a6a6a6;
     --focus-ring-on-sign: 0 0 0 2px #000000, 0 0 0 4px #ffffff, 0 0 0 7px #ffcd00;
   }
 }
@@ -91,6 +96,7 @@
   --shadow-float: 0 0 0 2px #ffffff;
   --focus-ring: 0 0 0 2px #000000, 0 0 0 4px #ffffff, 0 0 0 7px #ffcd00;
   --focus-ring-inset: inset 0 0 0 2px #000000, inset 0 0 0 4px #ffffff, inset 0 0 0 7px #ffcd00;
+  --edge-hc: #a6a6a6;
   --focus-ring-on-sign: 0 0 0 2px #000000, 0 0 0 4px #ffffff, 0 0 0 7px #ffcd00;
 }
 
@@ -146,10 +152,10 @@
 /* Code: the editor and every highlighted snippet. The syntax colours take the line hues (keywords line 2, strings 3,
    numbers 1, functions 5, classes 8, decorators 4), set darker by day and lighter by night and in High contrast
    wherever the line itself would fall under 4.5:1 (7:1 in High contrast) on surface-raised, surface-sunk, the active
-   line, the selection or the error band. Line backgrounds stay translucent: the selection is drawn beneath them. */
+   line or the selection. Line backgrounds stay translucent: the selection is drawn beneath them. */
 :root, [data-theme] {
   --ed-bg: var(--surface-raised); --ed-gutter: var(--surface); --ed-active: color-mix(in srgb, var(--surface-sunk) 50%, transparent);
-  --ed-sel: color-mix(in srgb, var(--signal) 35%, transparent); --ed-sel-edge: transparent; --ed-err: color-mix(in srgb, var(--stop) 14%, transparent);
+  --ed-sel: color-mix(in srgb, var(--signal) 35%, transparent); --ed-sel-edge: transparent;
   --hl-kw: var(--line-2); --hl-str: #066f34; --hl-num: #c20c04; --hl-com: var(--ink-muted);
   --hl-fn: var(--line-5); --hl-cls: var(--line-8); --hl-op: var(--ink-muted); --hl-meta: #9f4603;
 }

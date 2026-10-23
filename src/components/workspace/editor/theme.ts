@@ -24,7 +24,8 @@ export const theme = EditorView.theme({
   ".cm-content ::selection, .cm-content::selection": { color: "currentColor" },
   ".cm-selectionBackground": { outline: "var(--stroke-bold) solid var(--ed-sel-edge)", outlineOffset: "calc(-1 * var(--stroke-bold))" },
   ".cm-cursor, .cm-dropCursor": { borderLeftColor: "var(--ink)", borderLeftWidth: "var(--stroke-bold)" },
-  ".cm-errline": { backgroundColor: "var(--ed-err)", boxShadow: "inset var(--space-1) 0 0 var(--stop)" },
+  /* A stop bar and an underline, no tint: a tint under the selection took the code below 4.5:1. */
+  ".cm-errline": { boxShadow: "inset var(--space-1) 0 0 var(--stop), inset 0 calc(-1 * var(--stroke-bold)) 0 var(--stop)" },
   /* With animations off (the OS setting) the band stays as it is until jumpLine takes it away. */
   ".cm-jumpline": {
     backgroundColor: "var(--ed-sel)",

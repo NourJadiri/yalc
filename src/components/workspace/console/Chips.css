@@ -2,7 +2,7 @@
 .ws-chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3); }
 .ws-chip {
   display: inline-flex; align-items: center; min-height: calc(var(--control-height) - var(--space-3));
-  border: var(--stroke-bold) solid transparent; border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink);
+  border: var(--stroke-bold) solid var(--edge-hc); border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink);
   transition: background-color 120ms ease-out, border-color 120ms ease-out;
 }
 .ws-chip > button:first-child, button.ws-chip {

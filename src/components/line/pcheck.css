@@ -5,3 +5,9 @@
   transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
 }
 .done > .pcheck { border-color: var(--sign); background: var(--sign); color: var(--on-sign); }
+/* The tick is hidden, not just transparent: forced colours repaint a transparent tick, and every box would look checked. */
+.pcheck svg { visibility: hidden; }
+.done > .pcheck svg { visibility: visible; }
+@media (forced-colors: active) {
+  .done > .pcheck { forced-color-adjust: none; border-color: CanvasText; background: CanvasText; color: Canvas; }
+}

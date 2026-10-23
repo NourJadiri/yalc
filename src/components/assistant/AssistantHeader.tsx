@@ -34,7 +34,7 @@ export default function AssistantHeader({ drag, hasChat, persona, mood, onPerson
       </div>
       <PersonaToggle value={persona} onChange={onPersona} />
       <Spacer />
-      {hasChat && <IconButton size="sm" icon="rotate-ccw" label="New chat" onClick={onNewChat} />}
+      {hasChat && <IconButton size="sm" icon="rotate-ccw" label="New chat" title="New chat" onClick={onNewChat} />}
       {unlocked && <IconButton size="sm" icon="lock" label="Forget the password" title="Forget the password on this device" onClick={onForget} />}
       <IconButton size="sm" icon="cross" label="Close Bana" title="Close (Esc)" onClick={onClose} />
     </header>

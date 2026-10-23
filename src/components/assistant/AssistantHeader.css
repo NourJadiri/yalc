@@ -14,3 +14,4 @@
 /* A narrow window tightens the header, so every control keeps its size and the name its flaps. */
 @container asst (max-width: 359px) { .asst-head, .asst-title { gap: var(--space-1); } }
 .asst-tagline { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: var(--t-label); letter-spacing: var(--t-label-ls); }
+.asst-said { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

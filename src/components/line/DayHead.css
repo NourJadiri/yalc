@@ -3,6 +3,8 @@
   border-radius: var(--radius-md) var(--radius-md) 0 0; color: var(--ink); text-align: left; transition: background-color 120ms ease-out;
 }
 .dayhead > div { min-width: 0; }
+/* Lifted while focused, so the day's progress track, painted after it, can't cover its ring. */
+.dayhead:focus-visible { position: relative; z-index: 1; }
 .dayhead .eyebrow { color: var(--ink-muted); font: var(--t-label); letter-spacing: var(--t-label-ls); }
 .dayhead h2 { margin: 0; color: var(--ink); font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); }
 .stn.now .dayhead h2 { font-weight: 700; }

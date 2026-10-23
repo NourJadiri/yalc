@@ -1,21 +1,10 @@
-/* A ghost icon button. Its name shows as a small sign under it on keyboard focus, and on hover when it has no title. */
 .golink {
   position: relative; flex: none; display: grid; place-items: center; width: var(--control-height); height: var(--control-height);
   border-radius: var(--radius-md); color: var(--ink); text-decoration: none;
   transition: background-color 120ms ease-out, color 120ms ease-out;
 }
 .golink:active { transform: translateY(1px); }
-.golink::before {
-  position: absolute; top: calc(100% + var(--space-1)); right: 0; z-index: var(--layer-tooltip); pointer-events: none;
-  padding: calc(var(--space-1) * 1.5) var(--space-2); border-radius: var(--radius-sm); background: var(--sign); color: var(--on-sign);
-  box-shadow: var(--shadow-float); font: var(--t-caption); letter-spacing: var(--t-caption-ls); white-space: nowrap;
-}
-.golink:focus-visible::before { content: attr(aria-label); animation: golink-tip 120ms ease-out both; }
 @media (hover: hover) {
   .golink:hover { background: var(--surface-sunk); color: var(--ink); }
   .prow:hover .golink:hover { background: var(--surface-raised); }
-  .golink:not([title]):not(:focus-visible):hover::before { content: attr(aria-label); animation: golink-tip 120ms ease-out 300ms both; }
 }
-@keyframes golink-tip { from { opacity: 0; } }
-/* base.css's reduced-motion rule doesn't reach pseudo-elements. */
-@media (prefers-reduced-motion: reduce) { .golink::before { animation: none !important; } }

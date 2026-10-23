@@ -1,7 +1,8 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 /* Overscroll is pinned because Metro is the only tab shorter than the viewport, and the fixed tab bar rides iOS's rubber-band bounce there.
-   100dvh follows Safari's toolbar as it grows and shrinks; the 100% line is the fallback. */
-html { height: 100%; overscroll-behavior-y: none; }
+   100dvh follows Safari's toolbar as it grows and shrinks; the 100% line is the fallback. The scroll padding keeps whatever
+   the keyboard focuses out from under the sticky header and the fixed tab bar. */
+html { height: 100%; overscroll-behavior-y: none; scroll-padding: calc(var(--space-16) + var(--space-6) + env(safe-area-inset-top)) 0 calc(var(--space-16) + var(--space-4) + env(safe-area-inset-bottom)); }
 body {
   margin: 0; min-height: 100%; min-height: 100dvh; background: var(--surface); color: var(--ink);
   font: var(--t-body); letter-spacing: var(--t-body-ls); -webkit-font-smoothing: antialiased;
