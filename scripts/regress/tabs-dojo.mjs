@@ -4,7 +4,7 @@
 import { finish } from "./me-lib.mjs";
 import { D, F, PF, edit, hdr, hdrModel, ritualAt, feedOf, shape, planOf, focusOf } from "./tabs-kit.mjs";
 import { TODAY } from "./tabs-fixtures.mjs";
-import { stn, RGB } from "./tabs-line.mjs";
+import { stn } from "./tabs-line.mjs";
 import { PFX } from "./tabs-fx.mjs";
 
 const heroDojo = (page) => page.locator("main .hero").evaluate((h) => ({ h1: h.querySelector("h1").textContent, p: h.querySelector("p").textContent }));

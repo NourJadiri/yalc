@@ -45,7 +45,7 @@ async function overlay(s, A, label, loc, spec) {
 
 export default function register(scenario) {
   /* 13 ----------------------------------------------------------------- */
-  scenario("13-touch-targets", "touch targets on a phone: the ::after overlays give the small controls their ~44px hit areas", async (s) => {
+  scenario("13-touch-targets", "touch targets on a phone: every control is a 44px target, the check box through its ::after overlay", async (s) => {
     const P = await s.device({ seed: F.mock, phone: true, motion: true });
     await P.open();
     const page = P.page;
@@ -53,18 +53,18 @@ export default function register(scenario) {
     const row = (k) => stn(page, d7).locator(".prow").nth(k);
 
     // ---- the Line
-    await s.expect("a check box is drawn 24px with base.css's 44px overlay behind it; the editor button is a 44px ghost button of its own (its 44px overlay adds nothing)", async () => ({
+    await s.expect("a check box is drawn 24px with base.css's 44px overlay behind it; the editor button is a 44px ghost button of its own, with no overlay", async () => ({
       circle: await P.rect(row(0).locator(".pcheck")).then((r) => [r.w, r.h]),
       link: await P.rect(row(0).locator(".golink")).then((r) => [r.w, r.h]),
       circleAfter: await P.props(row(0).locator(".pcheck"), ["width", "height"], "::after"),
       linkAfter: await P.props(row(0).locator(".golink"), ["width", "height"], "::after"),
-    }), { circle: [24, 24], link: [44, 44], circleAfter: { width: "44px", height: "44px" }, linkAfter: { width: "44px", height: "44px" } });
+    }), { circle: [24, 24], link: [44, 44], circleAfter: { width: "44px", height: "44px" }, linkAfter: { width: "auto", height: "auto" } });
     await overlay(s, P, "the check box", row(0).locator(".pcheck"), { size: 44 });
     await overlay(s, P, "the editor button", row(0).locator(".golink"), { size: 44 });
     await overlay(s, P, "the mock's external link", row(2).locator("a.golink"), { size: 44 });
-    await overlay(s, P, "the ritual row, a 44px control with a 2px edge (base.css's overlay reaches 1px past its edge above and below)", stn(page, d7).locator(".ritual"), { l: 2, r: 2, t: 3, b: 3 });
-    await overlay(s, P, "the clock's Start button", stn(page, d7).locator(".timer .tbtn").nth(0), { l: 2, r: 2, t: 7, b: 7 });
-    await overlay(s, P, "the clock's Reset button", stn(page, d7).locator(".timer .tbtn").nth(1), { l: 2, r: 2, t: 7, b: 7 });
+    await overlay(s, P, "the ritual row, a 44px control of its own with a 2px edge", stn(page, d7).locator(".ritual"), { l: 2, r: 2, t: 2, b: 2 });
+    await overlay(s, P, "the clock's Start button, a 44px Button of its own", stn(page, d7).locator(".timer .tbtn").nth(0), { l: 2, r: 2, t: 2, b: 2 });
+    await overlay(s, P, "the clock's Reset button, a 44px Button of its own", stn(page, d7).locator(".timer .tbtn").nth(1), { l: 2, r: 2, t: 2, b: 2 });
     await s.expect("the overlays stay inside each row: consecutive check circles are at least 44px apart, so no two targets overlap", async () => {
       const ys = await stn(page, d7).locator(".prow .pcheck").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().top));
       return ys.slice(1).every((y, i) => y - ys[i] >= 44);
@@ -100,8 +100,8 @@ export default function register(scenario) {
     const pre = await card(page);
     const q = cardOf(pre);
     await P.press(page.locator("#quizArea .opt").nth(pre.opts.findIndex((o) => o.text === q.o[q.a])));
-    await overlay(s, P, "End run, a 44px Button: its 2px edge, and base.css's overlay 4px above and below", quitBtn(page), { l: 2, r: 2, t: 4, b: 4 });
-    await overlay(s, P, "Next stop, a 44px Button: its 2px edge, and base.css's overlay 4px above and below", nextBtn(page), { l: 2, r: 2, t: 4, b: 4 });
+    await overlay(s, P, "End run, a 44px Button of its own", quitBtn(page), { l: 2, r: 2, t: 2, b: 2 });
+    await overlay(s, P, "Next stop, a 44px Button of its own", nextBtn(page), { l: 2, r: 2, t: 2, b: 2 });
     await P.press(quitBtn(page));
     await s.expect("the departures rows are 44px or taller, thumb targets of their own, and the Board button 44px or taller", async () => ({ rows: await page.locator("#quizArea .drow").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 44)), board: (await P.rect(boardBtn(page))).h >= 44 }), { rows: [true, true, true, true, true, true], board: true });
     await boardIt(P, 92);
@@ -116,8 +116,8 @@ export default function register(scenario) {
     await P.tab("Dojo");
     await page.locator("#dojoArea .tcard").first().locator(".thead").click();
     await s.expect("the veil's Reveal & diff and the ritual log's Done are 44px Buttons, thumb targets of their own", async () => [await P.rect(page.locator("#dojoArea .tcard").first().locator(".veil button")), await P.rect(page.locator("#dojoArea .dojo-log button"))].map((r) => r.h), [44, 44]);
-    await overlay(s, P, "the veil's Reveal & diff, its 2px edge and the overlay 2px past it above and below", page.locator("#dojoArea .tcard").first().locator(".veil button"), { l: 2, r: 2, t: 4, b: 4 });
-    await overlay(s, P, "the ritual log's button, its 2px edge and the overlay 2px past it above and below", page.locator("#dojoArea .dojo-log button"), { l: 2, r: 2, t: 4, b: 4 });
+    await overlay(s, P, "the veil's Reveal & diff, a 44px Button of its own", page.locator("#dojoArea .tcard").first().locator(".veil button"), { l: 2, r: 2, t: 2, b: 2 });
+    await overlay(s, P, "the ritual log's button, a 44px Button of its own", page.locator("#dojoArea .dojo-log button"), { l: 2, r: 2, t: 2, b: 2 });
     await s.expect("a template's header row is a full 44px thumb target", async () => (await P.rect(page.locator("#dojoArea .thead").first())).h, 44);
 
     // ---- the shell

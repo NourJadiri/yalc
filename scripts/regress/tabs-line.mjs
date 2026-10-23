@@ -5,8 +5,6 @@
 import { finish } from "./me-lib.mjs";
 import { F, PF, heroLine, rail, railModel, rowsAt, rowsModel, ritualAt, terminusCopy, noHScroll, clearedOf, doneCount, totalOf, planOf } from "./tabs-kit.mjs";
 
-export const RGB = { blue: "rgb(26, 115, 232)", red: "rgb(217, 48, 37)", yellow: "rgb(249, 171, 0)", green: "rgb(30, 142, 62)", ink: "rgb(32, 33, 36)", orange: "rgb(217, 105, 11)", teal: "rgb(11, 122, 135)", awsInk: "rgb(35, 47, 62)", rust: "rgb(182, 70, 31)", line: "rgb(218, 220, 224)", ink2: "rgb(95, 99, 104)" };
-
 /* PF and the rest of Platform's colours the Line is drawn in: the sign (a checked box), the text on it, the clock's
    caution and stop. Day and Night, or High contrast for both under REGRESS_CONTRAST=more, as PF. */
 const LDAY = { sign: "rgb(20, 20, 20)", onSign: "rgb(255, 255, 255)", go: "rgb(0, 107, 97)", caution: "rgb(125, 88, 0)", stop: "rgb(196, 18, 47)" };

@@ -1,7 +1,7 @@
 import { PLAN } from "./plan";
 import { AWS_PLAN } from "./aws";
 import { ENG_PLAN } from "./eng";
-import { AWS_RANKCOL, AWS_RANKS, ENG_RANKCOL, ENG_RANKS, RANKCOL, RANKS } from "./meta";
+import { AWS_RANKS, ENG_RANKS, RANKS } from "./meta";
 import type { Day, Problem, Track, TrackId } from "../types";
 
 export const TRACKS: Record<TrackId, Track> = {
@@ -9,6 +9,7 @@ export const TRACKS: Record<TrackId, Track> = {
     id: "google",
     name: "Onsite Express",
     company: "Google",
+    line: 2,
     bullet: "G",
     title: ["Onsite", "Express"],
     blurb: "Two rounds between you and the terminus. Twenty-four stations, one line. Board anywhere.",
@@ -16,7 +17,6 @@ export const TRACKS: Record<TrackId, Track> = {
     unit: "Day",
     plan: PLAN,
     ranks: RANKS,
-    rankCol: RANKCOL,
     badges: [
       "first", "ritual5", "metro100", "perfect", "bugs20", "streak3", "streak7",
       "half", "line", "noogler", "green", "green25",
@@ -33,6 +33,7 @@ export const TRACKS: Record<TrackId, Track> = {
     id: "aws",
     name: "Day One Local",
     company: "Amazon",
+    line: 4,
     bullet: "A",
     title: ["Day One", "Local"],
     blurb: "The slow train to Amazon. Thirteen stops, one idea each, easy problems only — and no timetable. The Local waits for you.",
@@ -40,7 +41,6 @@ export const TRACKS: Record<TrackId, Track> = {
     unit: "Stop",
     plan: AWS_PLAN,
     ranks: AWS_RANKS,
-    rankCol: AWS_RANKCOL,
     badges: [
       "aws1", "metro100", "perfect", "bugs20", "streak3", "streak7",
       "awsHalf", "awsLine", "awsTop", "green", "green25",
@@ -57,6 +57,7 @@ export const TRACKS: Record<TrackId, Track> = {
     id: "eng",
     name: "Engineering Works",
     company: "ElevenLabs · SIG",
+    line: 5,
     bullet: "E",
     title: ["Engineering", "Works"],
     blurb: "Seven systems you'd actually ship, each built in steps: the core first, then one feature at a time until it's whole. Every step opens on your code from the last one. Tuned for ElevenLabs and SIG.",
@@ -64,7 +65,6 @@ export const TRACKS: Record<TrackId, Track> = {
     unit: "Build",
     plan: ENG_PLAN,
     ranks: ENG_RANKS,
-    rankCol: ENG_RANKCOL,
     badges: [
       "eng1", "ritual5", "metro100", "perfect", "bugs20", "streak3", "streak7",
       "engHalf", "engLine", "engTop", "green", "green25",

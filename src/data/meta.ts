@@ -37,23 +37,8 @@ export const AWS_RANKS: NonEmpty<Rank> = [
   ["Day One", 560],
 ];
 
-export const AWS_RANKCOL: string[] = [
-  "var(--aws-orange)", "var(--aws-teal)", "var(--aws-ink)", "var(--aws-rust)",
-  "var(--aws-orange)", "var(--aws-teal)", "var(--aws-orange)",
-];
-
 export const ENG_RANKS: NonEmpty<Rank> = [
   ["Apprentice", 0], ["Junior", 60], ["Engineer", 150], ["Senior", 270],
   ["Staff", 400], ["Principal", 540], ["Fellow", 680],
 ];
 
-export const ENG_RANKCOL: string[] = [
-  "var(--eng-violet)", "var(--eng-magenta)", "var(--eng-lime)", "var(--eng-steel)",
-  "var(--eng-violet)", "var(--eng-magenta)", "var(--eng-lime)",
-];
-
-export const RANKCOL: string[] = [
-  "var(--blue)", "var(--red)", "var(--yellow)", "var(--green)",
-  "var(--blue)", "var(--red)", "var(--yellow)", "var(--green)",
-  "var(--blue)", "var(--red)",
-];

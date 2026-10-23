@@ -168,16 +168,3 @@
   --ed-sel: var(--surface-sunk); --ed-sel-edge: var(--signal);
   --hl-kw: #8ca6fe; --hl-str: var(--line-3); --hl-num: #ff887e; --hl-fn: var(--line-5); --hl-cls: var(--line-8); --hl-meta: #f5922d;
 }
-
-/* MIGRATION ONLY: the old token names on Platform's, so that areas not yet moved still draw. The old --surface (a
-   card) and --shadow (a box-shadow) are not here: Platform's --surface is the page and its --shadow is a colour.
-   Delete this block once nothing reads these names. */
-:root {
-  --bg: var(--surface); --sunken: var(--surface-sunk); --ink2: var(--ink-muted); --line: var(--rule);
-  --accent: var(--track); --sans: var(--font-sans); --mono: var(--font-mono);
-  --blue: var(--line-2); --red: var(--line-1); --green: var(--line-3); --yellow: var(--signal);
-  --easy: var(--go); --med: var(--caution); --hard: var(--stop);
-  --ok-bg: var(--go-wash); --ok-ink: var(--go); --bad-bg: var(--stop-wash); --bad-ink: var(--stop);
-  --aws-orange: var(--line-4); --aws-teal: var(--line-6); --aws-ink: var(--ink); --aws-rust: var(--line-8);
-  --eng-violet: var(--line-5); --eng-magenta: var(--line-7); --eng-lime: var(--line-3); --eng-steel: var(--ink-muted);
-}

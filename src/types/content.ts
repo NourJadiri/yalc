@@ -31,8 +31,6 @@ export interface Day {
   /** Station number along its line, from 1. */
   d: number;
   stn: string;
-  /** CSS custom property reference, e.g. "var(--blue)". */
-  color: string;
   ph: Phase;
   /** The station ends in a timed mock; DayCard mounts the clock. */
   mock?: true;
@@ -92,12 +90,17 @@ export interface Deck {
 
 export type TrackId = "google" | "aws" | "eng";
 
+/** One of Platform's eight line colours, by number. */
+export type LineNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+
 /** Everything that differs between the lines: riding to Google, to Amazon, or through the Engineering Works. */
 export interface Track {
   id: TrackId;
   name: string;
   company: string;
-  /** One letter in a coloured disc. */
+  /** Its Platform line: the colour of its rail, its bullet and everything that marks it, for good. */
+  line: LineNumber;
+  /** The letter on its bullet. */
   bullet: string;
   /** Hero heading: plain part, then bold part. */
   title: readonly [string, string];
@@ -108,8 +111,6 @@ export interface Track {
   unit: string;
   plan: NonEmpty<Day>;
   ranks: NonEmpty<Rank>;
-  /** Rank dot colours, one per rung. */
-  rankCol: readonly string[];
   /** Badge ids this line's Me tab shows, in order. */
   badges: readonly string[];
   /** Badge ids the engine awards for this line's milestones. */

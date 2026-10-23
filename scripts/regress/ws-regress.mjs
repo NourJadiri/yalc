@@ -359,8 +359,8 @@ const nextButtons = (page) =>
     els.map((b) => ({ text: b.textContent.trim(), primary: b.classList.contains("primary"), icons: b.querySelectorAll("svg").length }))
   );
 const NEXT = (title) => ({ text: "Next: " + title, primary: false, icons: 1 });
-/* The yellow Buttons on screen, by their words: Platform spends signal once per view. */
-const primaries = (page) => page.locator(".btn.primary").evaluateAll((els) => els.map((e) => e.textContent.trim()));
+/* The yellow buttons on screen, by their words: Platform spends signal on one way forward per view. */
+const primaries = (page) => page.evaluate(() => [...document.querySelectorAll("button.primary")].filter((b) => b.offsetParent).map((b) => b.textContent.trim()));
 const nextButton = (page) => page.locator(".ws-verdict").getByRole("button", { name: /^Next: / });
 
 const chipsOf = (page) =>
@@ -1112,8 +1112,6 @@ const tintOf = (c) => {
   const k = c.startsWith("color(") ? 255 : 1;
   return { rgb: v.slice(0, 3).map((x) => Math.round(x * k)), a: v[3] ?? 1 };
 };
-/* The yellow buttons on screen: Platform spends signal on one way forward per view. */
-const primaries = (page) => page.evaluate(() => [...document.querySelectorAll("button.primary")].filter((b) => b.offsetParent).map((b) => b.textContent.trim()));
 const mockRequests = () => {
   if (!MOCK_LOG || !fs.existsSync(MOCK_LOG)) return null;
   return fs

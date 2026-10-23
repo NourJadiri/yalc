@@ -1,19 +1,19 @@
 /* Platform's Loader from one element: the stops are gradients whose fills are custom properties the animation flips. */
 .spinner {
   --spinner-1: transparent; --spinner-2: transparent; --spinner-3: transparent;
-  --stop: var(--space-4); --ring: var(--space-1); --seg: var(--space-3); --rail: var(--space-1);
-  flex: none; width: calc(3 * var(--stop) + 2 * var(--seg)); height: var(--stop);
+  --sp-stop: var(--space-4); --sp-ring: var(--space-1); --sp-seg: var(--space-3); --sp-rail: var(--space-1);
+  flex: none; width: calc(3 * var(--sp-stop) + 2 * var(--sp-seg)); height: var(--sp-stop);
   background-image:
-    radial-gradient(circle closest-side, var(--spinner-1) calc(100% - var(--ring) - var(--hairline) / 2), currentColor calc(100% - var(--ring)) calc(100% - var(--hairline) / 2), transparent),
-    radial-gradient(circle closest-side, var(--spinner-2) calc(100% - var(--ring) - var(--hairline) / 2), currentColor calc(100% - var(--ring)) calc(100% - var(--hairline) / 2), transparent),
-    radial-gradient(circle closest-side, var(--spinner-3) calc(100% - var(--ring) - var(--hairline) / 2), currentColor calc(100% - var(--ring)) calc(100% - var(--hairline) / 2), transparent),
+    radial-gradient(circle closest-side, var(--spinner-1) calc(100% - var(--sp-ring) - var(--hairline) / 2), currentColor calc(100% - var(--sp-ring)) calc(100% - var(--hairline) / 2), transparent),
+    radial-gradient(circle closest-side, var(--spinner-2) calc(100% - var(--sp-ring) - var(--hairline) / 2), currentColor calc(100% - var(--sp-ring)) calc(100% - var(--hairline) / 2), transparent),
+    radial-gradient(circle closest-side, var(--spinner-3) calc(100% - var(--sp-ring) - var(--hairline) / 2), currentColor calc(100% - var(--sp-ring)) calc(100% - var(--hairline) / 2), transparent),
     linear-gradient(currentColor, currentColor), linear-gradient(currentColor, currentColor);
-  background-position: 0 0, 50% 0, 100% 0, var(--stop) 50%, calc(2 * var(--stop) + var(--seg)) 50%;
-  background-size: var(--stop) var(--stop), var(--stop) var(--stop), var(--stop) var(--stop), var(--seg) var(--rail), var(--seg) var(--rail);
+  background-position: 0 0, 50% 0, 100% 0, var(--sp-stop) 50%, calc(2 * var(--sp-stop) + var(--sp-seg)) 50%;
+  background-size: var(--sp-stop) var(--sp-stop), var(--sp-stop) var(--sp-stop), var(--sp-stop) var(--sp-stop), var(--sp-seg) var(--sp-rail), var(--sp-seg) var(--sp-rail);
   background-repeat: no-repeat;
   animation: spinner-lit 1200ms linear infinite;
 }
-.spinner.sm { --stop: var(--space-3); --ring: calc(var(--space-3) / 4); --seg: var(--space-2); --rail: calc(var(--space-3) / 4); }
+.spinner.sm { --sp-stop: var(--space-3); --sp-ring: calc(var(--space-3) / 4); --sp-seg: var(--space-2); --sp-rail: calc(var(--space-3) / 4); }
 @keyframes spinner-lit {
   0%, 20% { --spinner-1: transparent; --spinner-2: transparent; --spinner-3: transparent; }
   26%, 45% { --spinner-1: currentColor; --spinner-2: transparent; --spinner-3: transparent; }

@@ -1,15 +1,11 @@
 import type { Spec } from "../../../data/problems";
 import { LC } from "../../../data/plan";
 import { TRACKS, type ProblemRef } from "../../../data/tracks";
-import type { TrackId } from "../../../types";
 import Icon from "../../shared/Icon";
-import Bullet, { type BulletLine } from "../../ui/Bullet";
+import Bullet from "../../ui/Bullet";
 import DifficultyTag from "../../ui/DifficultyTag";
 import Tag from "../../ui/Tag";
 import "./ProblemMeta.css";
-
-/** Each YALC line is one Platform line: Onsite Express 2, Day One Local 4, Engineering Works 5. */
-const LINE: Record<TrackId, BulletLine> = { google: 2, aws: 4, eng: 5 };
 
 interface ProblemMetaProps {
   spec: Spec;
@@ -26,7 +22,7 @@ export default function ProblemMeta({ spec, problemRef: { day, track }, done, ac
   return (
     <div className="ws-meta">
       <DifficultyTag diff={spec.difficulty} />
-      <Bullet line={LINE[track]} size="sm" className="ws-bullet" data-track={track} aria-label={T.name}>
+      <Bullet line={T.line} size="sm" className="ws-bullet" data-track={track} aria-label={T.name}>
         {T.bullet}
       </Bullet>
       <Tag>{`${T.unit} ${day.d} · ${day.stn}`}</Tag>

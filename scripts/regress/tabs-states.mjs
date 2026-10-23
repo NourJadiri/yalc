@@ -6,7 +6,7 @@
 import { finish } from "./me-lib.mjs";
 import { F, PF } from "./tabs-kit.mjs";
 import { card, cardOf, MPF } from "./tabs-metro-kit.mjs";
-import { stn, RGB } from "./tabs-line.mjs";
+import { stn } from "./tabs-line.mjs";
 import { PFX } from "./tabs-fx.mjs";
 import { chooseDeck, boardIt, nextBtn, quitBtn, boardBtn, rowOf } from "./tabs-metro.mjs";
 
