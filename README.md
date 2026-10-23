@@ -42,14 +42,36 @@ that run in the browser on real CPython (Pyodide). No LeetCode account needed.
   your code.
 
 Progress is stored in `localStorage`. Cloud sync and the assistant are optional; without
-them the app is fully local. It loads nothing from other origins: no web fonts, no
-analytics.
+them the app is fully local. It loads nothing from other origins: its fonts are served by
+the app itself, and there are no analytics.
 
 ## Tech
 
 React 19, TypeScript (strict), Vite, CodeMirror 6, Pyodide in a web worker. Deployed as a
 Cloudflare Worker that serves the static build and two small APIs: `/api/state` (sync,
 backed by D1) and `/api/assistant` (Anthropic API).
+
+## Design
+
+The interface is drawn in **Platform**, a design system that borrows its rules from transit
+wayfinding: metro maps, station signs and departure boards. Bold type, one message per sign,
+colour-coded lines, numbers that line up.
+
+- **Themes.** Day, Night and High contrast, all in `src/styles/tokens.css` under the same
+  token names. The app follows the system: Night when it is dark, High contrast when it asks
+  for more contrast. `data-theme` on `<html>` (`light`, `dark` or `contrast`) overrides it,
+  and `data-theme="dark"` on any element lights just that element at night (the Metro's
+  departures board, Bana's catgirl window).
+- **Lines.** Each line of the app is one Platform line, drawn in its colour with its letter
+  everywhere: Onsite Express is line 2 (G), Day One Local line 4 (A), Engineering Works
+  line 5 (E). `Track.line` holds the number; `var(--track)` is the colour of the line being
+  ridden. The Metro's decks are lines too. Signal yellow is never a line: it marks the one
+  way forward on each screen, the primary button.
+- **Type.** Barlow and Barlow Condensed (SIL Open Font License, in `public/fonts/`), set
+  through Platform's type styles: `font: var(--t-label)` in CSS, the `t-label` class in markup.
+- **Parts.** The shared primitives in `src/components/ui/` (Button, Bullet, Tabs,
+  SegmentedControl, the status chips, the Loader) and the pictograms in
+  `src/components/shared/Icon/` are Platform's; every area composes them.
 
 ## Getting started
 
@@ -114,6 +136,7 @@ disagree, the later save wins.
 ```
 src/
   App.tsx, app/      the page shell and tab views
+  styles/            Platform's tokens, the fonts, the base styles
   components/        one folder per area: line/, metro/, dojo/, me/, workspace/,
                      assistant/, layout/, shared/, and ui/ for shared primitives
   lib/engine/        the rules (XP, ranks, badges, streaks, quiz runs) as pure functions
@@ -144,6 +167,10 @@ node scripts/regress/engine-diff.mjs <git-ref>     # engine vs an earlier commit
 ```
 
 Each run records scripted sessions and screenshots under `/tmp/yalc-regress/runs/`;
-`ws-diff.py` reports any changed assertion or pixel.
+`ws-diff.py` reports any changed assertion or pixel. Two switches cover the themes:
+`REGRESS_CONTRAST=more` runs every page in High contrast (give such a run its own label),
+and `REGRESS_AUDIT=1` measures the contrast of all visible text at every screenshot and
+records the misses in the run's `contrast.jsonl` (`REGRESS_AUDIT_AAA=1` holds text to 7:1,
+the bar High contrast promises).
 
 `REFACTOR.md` records the code cleanup and `FOLLOW-UPS.md` lists known issues and ideas.
