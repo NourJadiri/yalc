@@ -4,6 +4,7 @@ export type {
   Deck,
   DeckId,
   Diff,
+  LineNumber,
   NonEmpty,
   Phase,
   Problem,

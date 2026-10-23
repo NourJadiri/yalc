@@ -4,7 +4,7 @@ import { qrMatrix } from "./lib/qrMatrix";
 const QUIET = 4;
 
 /* Drawn as one path of 1x1 squares rather than a rect per module: a version 5 symbol is ~600 dark modules, a real cost on a phone.
-   Deliberately not themed: a scanner wants black on white with a white margin in every theme, so these two colours are the one place in the app that ignores the tokens.
+   Deliberately not themed: a scanner wants black on white with a white margin in every theme, so these two colours and QrSquare's white card are the only colours in the app outside the tokens.
    Nothing but the code is drawn here; framing, padding and size are the caller's CSS. */
 export default function QrCode({ value, label }: { value: string; label: string }) {
   const matrix = useMemo(() => qrMatrix(value), [value]);

@@ -1,8 +1,9 @@
 import type { ComponentProps } from "react";
 import { cx } from "../../lib/cx";
+import type { LineNumber } from "../../types";
 import "./Bullet.css";
 
-export type BulletLine = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | "track" | "ink";
+export type BulletLine = LineNumber | "track" | "ink";
 
 interface BulletProps extends ComponentProps<"span"> {
   /** Whose colour it wears: a Platform line, the line being ridden (`var(--track)`), or ink. */

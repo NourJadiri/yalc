@@ -1,7 +1,7 @@
 /* The small Loader: three stops on a short rail in the text colour, lit one after another. The dots' own glyphs are kept at no size
    rather than hidden, so they still count as text that is there. Under reduced motion the stops stay unlit, beside the words. */
-.waiting .ell { --stop: var(--space-3); --ring: calc(var(--stroke-bold) + var(--hairline)); display: inline-flex; align-items: center; gap: var(--space-2); background: linear-gradient(currentColor, currentColor) center / 100% var(--ring) no-repeat; }
-.waiting .ell i { width: var(--stop); height: var(--stop); border: var(--ring) solid currentColor; border-radius: var(--radius-full); background-color: var(--surface-raised); font-size: 0; font-style: normal; animation: 1200ms linear infinite both; }
+.waiting .ell { --ell-stop: var(--space-3); --ell-ring: calc(var(--stroke-bold) + var(--hairline)); display: inline-flex; align-items: center; gap: var(--space-2); background: linear-gradient(currentColor, currentColor) center / 100% var(--ell-ring) no-repeat; }
+.waiting .ell i { width: var(--ell-stop); height: var(--ell-stop); border: var(--ell-ring) solid currentColor; border-radius: var(--radius-full); background-color: var(--surface-raised); font-size: 0; font-style: normal; animation: 1200ms linear infinite both; }
 .waiting .ell i:nth-child(1) { animation-name: ell-1; }
 .waiting .ell i:nth-child(2) { animation-name: ell-2; }
 .waiting .ell i:nth-child(3) { animation-name: ell-3; }

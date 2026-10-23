@@ -65,6 +65,11 @@ export default function register(scenario) {
     await overlay(s, P, "the ritual row, a 44px control of its own with a 2px edge", stn(page, d7).locator(".ritual"), { l: 2, r: 2, t: 2, b: 2 });
     await overlay(s, P, "the clock's Start button, a 44px Button of its own", stn(page, d7).locator(".timer .tbtn").nth(0), { l: 2, r: 2, t: 2, b: 2 });
     await overlay(s, P, "the clock's Reset button, a 44px Button of its own", stn(page, d7).locator(".timer .tbtn").nth(1), { l: 2, r: 2, t: 2, b: 2 });
+    await s.expect("the ritual row and the clock's Start and Reset are 44px or taller on a phone, targets of their own", async () => ({
+      ritual: (await P.rect(stn(page, d7).locator(".ritual"))).h >= 44,
+      start: (await P.rect(stn(page, d7).locator(".timer .tbtn").nth(0))).h >= 44,
+      reset: (await P.rect(stn(page, d7).locator(".timer .tbtn").nth(1))).h >= 44,
+    }), { ritual: true, start: true, reset: true });
     await s.expect("the overlays stay inside each row: consecutive check circles are at least 44px apart, so no two targets overlap", async () => {
       const ys = await stn(page, d7).locator(".prow .pcheck").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().top));
       return ys.slice(1).every((y, i) => y - ys[i] >= 44);
@@ -102,6 +107,7 @@ export default function register(scenario) {
     await P.press(page.locator("#quizArea .opt").nth(pre.opts.findIndex((o) => o.text === q.o[q.a])));
     await overlay(s, P, "End run, a 44px Button of its own", quitBtn(page), { l: 2, r: 2, t: 2, b: 2 });
     await overlay(s, P, "Next stop, a 44px Button of its own", nextBtn(page), { l: 2, r: 2, t: 2, b: 2 });
+    await s.expect("End run and Next stop are 44px or taller on a phone, targets of their own", async () => ({ quit: (await P.rect(quitBtn(page))).h >= 44, next: (await P.rect(nextBtn(page))).h >= 44 }), { quit: true, next: true });
     await P.press(quitBtn(page));
     await s.expect("the departures rows are 44px or taller, thumb targets of their own, and the Board button 44px or taller", async () => ({ rows: await page.locator("#quizArea .drow").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 44)), board: (await P.rect(boardBtn(page))).h >= 44 }), { rows: [true, true, true, true, true, true], board: true });
     await boardIt(P, 92);

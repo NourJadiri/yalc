@@ -7,7 +7,6 @@
   transition: background-color 120ms ease-out, color 120ms ease-out;
 }
 .ws-lc > svg { flex: none; }
-/* A phone's title column holds the difficulty and the line's bullet; what follows would only show as a sliver. */
 @media (max-width: 420px) {
-  .ws-meta .tag, .ws-done, .ws-lc { display: none; }
+  .ws-meta .tag { display: none; }
 }

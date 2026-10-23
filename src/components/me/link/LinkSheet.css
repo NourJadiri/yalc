@@ -1,6 +1,8 @@
 /* The sheet owns the screen while it is open, at the dialog layer: over the tab bar and the confetti.
+   Darker than Platform's scrim, in black like the code: the phone reading the code meters the whole frame, and a dark surround
+   stops it blowing the white card out.
    `dvh`, not `vh`: on a phone the URL bar comes and goes, and a sheet measured against the tall viewport puts Close under the chrome. */
-.qrscrim { position: fixed; inset: 0; height: 100dvh; z-index: var(--layer-dialog); display: flex; align-items: center; justify-content: center; padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom)); background: var(--scrim); }
+.qrscrim { position: fixed; inset: 0; height: 100dvh; z-index: var(--layer-dialog); display: flex; align-items: center; justify-content: center; padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom)); background: color-mix(in srgb, black 82%, transparent); }
 @media (prefers-reduced-motion: no-preference) {
   .qrscrim { animation: scrimin 160ms ease-out; }
 }

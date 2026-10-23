@@ -9,9 +9,8 @@
 .mbtn:not(:disabled):active { transform: translateY(1px); }
 .mbtn.danger { border-color: transparent; background: var(--stop); color: var(--on-stop); }
 .mbtn:disabled { cursor: not-allowed; border-style: dashed; border-color: var(--border); background: var(--surface-sunk); color: var(--ink-muted); }
-/* `button.` keeps hover above the link sheet's `.qrsheet .mbtn:active`, which ties it on class count and loads later. */
 @media (hover: hover) {
-  button.mbtn:not(:disabled):hover { background: var(--surface-sunk); }
+  .mbtn:not(:disabled):hover { background: var(--surface-sunk); }
   button.mbtn.danger:not(:disabled):hover { background: var(--stop); text-decoration: underline; text-decoration-thickness: var(--stroke-bold); text-underline-offset: 3px; }
 }
 .mbtn[aria-pressed="true"], button.mbtn[aria-pressed="true"]:hover { border-color: transparent; background: var(--sign); color: var(--on-sign); }

@@ -17,7 +17,7 @@ export default function MeView() {
     <section className="view on">
       <MeHero trackName={T.name} />
 
-      {/* The reference app's mount point; scripts/parity diffs this subtree against it. */}
+      {/* The Me suite reads the tab through #meArea. */}
       <div id="meArea">
         <StatsGrid data={data} />
         <Section title="Rank ladder">

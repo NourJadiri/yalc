@@ -5,6 +5,5 @@
 @font-face { font-family: "Barlow"; src: url("/fonts/Barlow-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
 @font-face { font-family: "Barlow"; src: url("/fonts/Barlow-SemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
 @font-face { font-family: "Barlow"; src: url("/fonts/Barlow-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Barlow Condensed"; src: url("/fonts/BarlowCondensed-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
 @font-face { font-family: "Barlow Condensed"; src: url("/fonts/BarlowCondensed-SemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
 @font-face { font-family: "Barlow Condensed"; src: url("/fonts/BarlowCondensed-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }

@@ -9,6 +9,7 @@
   border-radius: var(--radius-sm); background: var(--on-sign); color: var(--sign);
 }
 .toast-msg { min-width: 0; }
-.toast.gold .toast-tile { background: var(--signal); color: var(--on-signal); }
+/* A gold toast is good news, Platform's success tone: a go tile, never signal, which marks the one way forward on a screen. */
+.toast.gold .toast-tile { background: var(--go); color: var(--on-go); }
 @keyframes tin { from { opacity: 0; transform: translateY(var(--space-2)); } }
 @keyframes tout { to { opacity: 0; } }

@@ -22,7 +22,7 @@ export default function Stopwatch({ clock }: { clock: RefObject<Clock> }) {
         <Icon name={running ? "clock" : "pause"} size={16} />
         {fmtT(Math.min(secs, MAX_SECS))}
       </button>
-      <IconButton size="sm" icon="rotate-ccw" label="Reset the clock" className="wclock-reset" onClick={reset} />
+      <IconButton size="sm" icon="rotate-ccw" label="Reset the clock" title="Reset" className="wclock-reset" onClick={reset} />
     </div>
   );
 }

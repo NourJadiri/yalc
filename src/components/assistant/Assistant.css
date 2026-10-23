@@ -1,7 +1,8 @@
+/* layer-menu, inside the workspace's own stack: over the stuck nudge, under CodeMirror's autocomplete and search bar, which can open over the window. */
 .asst {
   --asst-face: calc(var(--space-8) + var(--space-2));
   container: asst / inline-size;
-  position: fixed; z-index: var(--layer-dialog); display: flex; flex-direction: column; overflow: hidden;
+  position: fixed; z-index: var(--layer-menu); display: flex; flex-direction: column; overflow: hidden;
   background: var(--surface-raised); color: var(--ink); border: var(--hairline) solid var(--rule); box-shadow: var(--shadow-float);
   font: var(--t-body); letter-spacing: var(--t-body-ls);
   transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;

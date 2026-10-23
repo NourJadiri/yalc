@@ -2,8 +2,8 @@ import { cx } from "../../lib/cx";
 import { fmtT } from "../../lib/engine";
 import { useTimer } from "../../state/TimerProvider";
 import type { IconName } from "../shared/Icon";
+import Flaps from "../ui/Flaps";
 import XpValue from "../ui/XpValue";
-import Flaps from "./Flaps";
 import TimerButton from "./TimerButton";
 import TimerState from "./TimerState";
 import "./MockTimer.css";
@@ -23,7 +23,7 @@ export default function MockTimer() {
       <b role="timer" aria-live="off">
         {time}
       </b>
-      <Flaps className="tboard" text={time} />
+      <Flaps className="tboard" text={time} eachChar />
       <TimerButton icon={GLYPH[timer.label]} onClick={timer.toggle}>
         {timer.label}
       </TimerButton>

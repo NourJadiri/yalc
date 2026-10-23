@@ -1,11 +1,8 @@
 import type { Problem } from "../../../types";
-import Icon, { type IconName } from "../../shared/Icon";
+import Icon from "../../shared/Icon";
 import Button from "../../ui/Button";
-import type { Tone, Verdict } from "../lib/verdict";
+import { TONE_MARK, type Verdict } from "../lib/verdict";
 import "./VerdictBanner.css";
-
-/* Stopped and Finished are no status, so only the three status tones carry a pictogram. */
-const MARK: Partial<Record<Tone, IconName>> = { ok: "check", warn: "warning", bad: "stop" };
 
 interface VerdictBannerProps {
   verdict: Verdict;
@@ -17,7 +14,7 @@ interface VerdictBannerProps {
 }
 
 export default function VerdictBanner({ verdict, next, nextIsStep, onNext }: VerdictBannerProps) {
-  const mark = MARK[verdict.tone];
+  const mark = TONE_MARK[verdict.tone];
   return (
     <div className={"ws-verdict " + verdict.tone}>
       <strong>

@@ -1,1 +1,6 @@
-.dtag, .dplat { grid-area: tag; justify-self: end; }
+.dtag, .dplat { grid-area: tag; justify-self: end; font: var(--t-board); letter-spacing: var(--t-board-ls); font-variant-numeric: tabular-nums; color: var(--ink); }
+.dtag[data-flaps="delayed"] { color: var(--caution); }
+/* 16px, Platform's board note: NOW BOARDING has to share a phone's row with the longest deck name. */
+@media (max-width: 599px) {
+  .dtag, .dplat { font-size: 16px; line-height: 1.4em; }
+}

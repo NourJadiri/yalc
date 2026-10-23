@@ -4,7 +4,9 @@ import { JUMP_FLASH_MS } from "./jumpLine";
 /* Everything reads the app's CSS variables, so the three themes need no branches here. */
 export const theme = EditorView.theme({
   "&": { height: "100%", backgroundColor: "var(--ed-bg)", color: "var(--ink)" },
-  "&.cm-focused": { outline: "none" },
+  /* Platform's ring, drawn inside the edge: the pane clips anything outside it. Over the gutter and the lines, under the tooltips. */
+  "&.cm-focused": { outline: "2px solid transparent", outlineOffset: "-2px" },
+  "&.cm-focused::after": { content: '""', position: "absolute", inset: "0", zIndex: "2", boxShadow: "var(--focus-ring-inset)", pointerEvents: "none" },
   ".cm-scroller": { fontFamily: "var(--font-mono)", lineHeight: "1.572", overflow: "auto" },
   ".cm-content": { caretColor: "var(--ink)", padding: "var(--space-2) 0 var(--space-8)" },
   ".cm-line": { padding: "0 var(--space-4) 0 var(--space-2)" },

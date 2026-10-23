@@ -1,5 +1,6 @@
-/* A pictogram tile. Not yet earned is out of service, like a turned-off control: a dashed edge on the sunk ground, muted. */
-.badge { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); min-width: 0; padding: var(--space-4) var(--space-2) var(--space-3); border: var(--stroke-bold) solid var(--rule); border-radius: var(--radius-sm); background: var(--surface-raised); color: var(--ink); text-align: center; }
+/* A pictogram tile on a card's hairline edge. Not yet earned is a stop still being built, as Platform draws the line ahead:
+   a dashed edge on the sunk ground, muted. */
+.badge { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); min-width: 0; padding: var(--space-4) var(--space-2) var(--space-3); border: var(--hairline) solid var(--rule); border-radius: var(--radius-sm); background: var(--surface-raised); color: var(--ink); text-align: center; }
 .badge .ic { display: flex; }
 .badge span:last-child { font: var(--t-caption); letter-spacing: var(--t-caption-ls); hyphens: auto; overflow-wrap: anywhere; }
 .badge.locked { border-style: dashed; border-color: var(--border); background: var(--surface-sunk); color: var(--ink-muted); }

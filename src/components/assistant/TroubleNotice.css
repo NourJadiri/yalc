@@ -12,8 +12,8 @@
 .asst-trouble > .btn { justify-self: start; }
 .asst-trouble.warning { padding-top: calc(2 * var(--space-3)); background: var(--caution-wash); }
 .asst-trouble.warning::before {
-  content: ""; position: absolute; top: 0; right: 0; left: 0; height: var(--space-3);
-  background: repeating-linear-gradient(-45deg, var(--signal) 0 var(--space-3), var(--on-signal) 0 calc(2 * var(--space-3)));
+  content: ""; position: absolute; top: 0; right: 0; left: 0; height: calc(var(--space-2) + var(--stroke-bold));
+  background: repeating-linear-gradient(-45deg, var(--signal) 0 calc(var(--space-2) + var(--stroke-bold)), var(--on-signal) 0 calc(2 * calc(var(--space-2) + var(--stroke-bold))));
 }
 .asst-trouble.warning > svg { background: var(--signal); color: var(--on-signal); }
 /* High contrast tells grounds apart by their edges. */

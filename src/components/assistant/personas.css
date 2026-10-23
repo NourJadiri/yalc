@@ -28,7 +28,6 @@
 @media (hover: hover) {
   .asst[data-persona="tough"] .asst-head .iconbtn:not(:disabled):not(.on):hover { background: color-mix(in srgb, var(--on-sign) 16%, transparent); }
 }
-.asst[data-persona="tough"] .asst-wait { color: var(--asst-line); }
 
 /* Goth catgirl: dark whatever the page (Assistant sets data-theme="dark" on her window), with her face, her bubbles and
    her paw prints, in lines 5 and 7. */

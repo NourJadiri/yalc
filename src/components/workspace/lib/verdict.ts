@@ -1,6 +1,10 @@
 import type { CaseResult, RunOutcome } from "../../../runner/types";
+import type { IconName } from "../../shared/Icon";
 
 export type Tone = "ok" | "bad" | "warn" | "info";
+
+/** The status pictograms: check for go, warning for caution, stop for stop. Other tones carry none. */
+export const TONE_MARK: Partial<Record<Tone | "idle", IconName>> = { ok: "check", warn: "warning", bad: "stop" };
 
 export interface Verdict {
   tone: Tone;
