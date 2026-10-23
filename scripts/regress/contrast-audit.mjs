@@ -1,17 +1,18 @@
 // contrast-audit.mjs: the text-contrast check the suites run at every screenshot when REGRESS_AUDIT=1.
 //
 // For every visible run of text it composites the text colour and the backgrounds behind it (colours, opacity) and
-// measures the WCAG contrast ratio: 4.5:1 for text, 3:1 for large text (24px, or 18.66px bold). Text in a disabled
-// control is exempt, as WCAG has it. A background drawn by an image or a gradient can't be measured; such text is
+// measures the WCAG contrast ratio: 4.5:1 for text, 3:1 for large text (24px, or 18.66px bold); with REGRESS_AUDIT_AAA=1,
+// 7:1 and 4.5:1, which Platform's High contrast theme promises. Text in a disabled control is exempt, as WCAG has it. A background drawn by an image or a gradient can't be measured; such text is
 // reported as unmeasured rather than passed. Results go to <out>/contrast.jsonl, one line per screenshot.
 
 import fs from "node:fs";
 import path from "node:path";
 
 export const AUDIT = process.env.REGRESS_AUDIT === "1";
+const AAA = process.env.REGRESS_AUDIT_AAA === "1";
 
 /* Runs in the page. */
-const PAGE_AUDIT = () => {
+const PAGE_AUDIT = (aaa) => {
   const parse = (c) => {
     const m = c.match(/rgba?\(([^)]+)\)/);
     if (!m) return null;
@@ -71,7 +72,7 @@ const PAGE_AUDIT = () => {
     const fg = over({ ...fg0, a: fg0.a * alpha }, bg);
     const px = parseFloat(cs.fontSize);
     const large = px >= 24 || (px >= 18.66 && Number(cs.fontWeight) >= 700);
-    const need = large ? 3 : 4.5;
+    const need = aaa ? (large ? 4.5 : 7) : large ? 3 : 4.5;
     const r = ratio(fg, bg);
     if (unmeasured) out.push({ el: name(el), text: text.slice(0, 40), unmeasured: true });
     else if (r < need) out.push({ el: name(el), text: text.slice(0, 40), fg: hex(fg), bg: hex(bg), ratio: Math.round(r * 100) / 100, need });
@@ -81,7 +82,7 @@ const PAGE_AUDIT = () => {
 
 /** Audit what `page` shows now and record it under the screenshot's file name. */
 export async function auditContrast(page, out, file) {
-  const found = await page.evaluate(PAGE_AUDIT);
+  const found = await page.evaluate(PAGE_AUDIT, AAA);
   const fails = found.filter((f) => !f.unmeasured);
   const unmeasured = found.filter((f) => f.unmeasured);
   fs.appendFileSync(path.join(out, "contrast.jsonl"), JSON.stringify({ file, fails, unmeasured: unmeasured.length }) + "\n");
