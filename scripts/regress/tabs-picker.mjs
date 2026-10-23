@@ -57,7 +57,7 @@ const look = (A, track) =>
 const C = LPF.light;
 
 export default function register(scenario) {
-  scenario("05-line-picker", "the line picker: the three lines and their numbers, switching, which stations open, scroll, saved track, accents, keyboard", async (s) => {
+  scenario("05-line-picker", "the line picker: the three lines and their bullets, switching, which stations open, scroll, saved track, the chosen line's edge, keyboard", async (s) => {
     const A = await s.device({ motion: true });
     await A.open();
     const page = A.page;

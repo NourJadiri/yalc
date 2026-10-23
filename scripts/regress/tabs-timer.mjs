@@ -20,7 +20,7 @@ const clock = (page, pos = 6) =>
 const everyClock = (page) => page.locator(".timer b").allTextContents();
 
 export default function register(scenario) {
-  scenario("06-mock-timer", "the mock clock: start, pause, resume, reset, red under five minutes, pencils down at zero, running across tabs and collapsed cards", async (s) => {
+  scenario("06-mock-timer", "the mock clock: start, pause, resume, reset, caution under five minutes, stop and pencils down at zero, running across tabs and collapsed cards", async (s) => {
     const A = await s.device({ seed: F.mock, motion: true });
     await A.open();
     await A.pause();
