@@ -1,4 +1,4 @@
-/* Case and result chips: sunk tiles; the open one is raised and ringed in ink, as Platform marks the current choice. */
+/* The open chip is raised and ringed in ink, Platform's mark for the current choice. */
 .ws-chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3); }
 .ws-chip {
   display: inline-flex; align-items: center; min-height: calc(var(--control-height) - var(--space-3));
@@ -22,7 +22,6 @@ button.ws-chip { min-height: calc(var(--control-height) - var(--space-3)); borde
   .ws-chip:not(.on):hover, button.ws-chip:not(.on):hover { border-color: var(--border); }
   .ws-chip-x:hover { background: var(--surface-sunk); }
 }
-/* A result chip leads with its case's status: a pictogram in its colour, or a plain dot when there is no verdict. */
 button.ws-chip.mark > svg { flex: none; margin-left: calc(-1 * var(--space-1)); }
 button.ws-chip.mark.ok > svg { color: var(--go); }
 button.ws-chip.mark.bad > svg { color: var(--stop); }

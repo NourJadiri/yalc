@@ -1,4 +1,3 @@
-/* A well: input, output and expected values in the code type on the sunk ground. */
 .ws-value-box {
   max-height: calc(var(--space-16) * 4); margin: 0 0 var(--space-2); padding: var(--space-2) var(--space-3); overflow: auto;
   border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink);

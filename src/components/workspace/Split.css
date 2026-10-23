@@ -8,7 +8,6 @@
 .split-handle { flex: none; position: relative; border-radius: var(--radius-sm); background: transparent; touch-action: none; }
 .split-row > .split-handle { width: var(--space-2); cursor: col-resize; }
 .split-col > .split-handle { height: var(--space-2); cursor: row-resize; }
-/* The grip: a control's edge in border, ink while it is held, hovered or focused. */
 .split-handle::after { content: ""; position: absolute; background: var(--border); transition: background-color 120ms ease-out; }
 .split-row > .split-handle::after { top: 50%; left: calc(50% - var(--stroke-bold) / 2); width: var(--stroke-bold); height: var(--space-8); transform: translateY(-50%); }
 .split-col > .split-handle::after { left: 50%; top: calc(50% - var(--stroke-bold) / 2); height: var(--stroke-bold); width: var(--space-8); transform: translateX(-50%); }

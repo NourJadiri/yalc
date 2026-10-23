@@ -1,4 +1,3 @@
-/* Platform's danger Notice: the stop wash with ink text, led by the error mark on a stop tile. */
 .ws-error { margin: 0 0 var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); background: var(--stop-wash); color: var(--ink); }
 .ws-error-msg { display: flex; align-items: flex-start; gap: var(--space-3); font: var(--t-code); letter-spacing: var(--t-code-ls); font-weight: 600; overflow-wrap: anywhere; }
 .ws-error-msg > svg { flex: none; box-sizing: content-box; padding: var(--space-1); margin-top: calc(-1 * var(--space-1) / 2); border-radius: var(--radius-sm); background: var(--stop); color: var(--on-stop); }

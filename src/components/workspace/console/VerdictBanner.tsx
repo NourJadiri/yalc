@@ -4,8 +4,7 @@ import Button from "../../ui/Button";
 import type { Tone, Verdict } from "../lib/verdict";
 import "./VerdictBanner.css";
 
-/* A status verdict carries its pictogram: check for go, warning for caution, stop for stop. Stopped and
-   Finished are no status, so their word stands alone. */
+/* Stopped and Finished are no status, so only the three status tones carry a pictogram. */
 const MARK: Partial<Record<Tone, IconName>> = { ok: "check", warn: "warning", bad: "stop" };
 
 interface VerdictBannerProps {
