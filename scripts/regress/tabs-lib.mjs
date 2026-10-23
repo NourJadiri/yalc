@@ -54,7 +54,6 @@ const GLYPHS = {
   lock: 'd="M8 11V8a4 4 0 0 1 8 0V11"',
   "chevron-down": 'd="M7.5 9.75L12 14.25L16.5 9.75"',
   "arrow-right": 'd="M3 10.25H12V4.75L21 12L12 19.25V13.75H3Z"',
-  "arrow-up-right": 'd="M4.4 17.13L10.76 10.76L6.87 6.87L18.36 5.64',
   external: 'd="M11 13L18.5 5.5"',
   code: 'd="M13.5 5L10.5 19"',
   route: 'd="M9 18H11.5L18 11.5V9"',

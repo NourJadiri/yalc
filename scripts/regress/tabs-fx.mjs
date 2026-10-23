@@ -14,17 +14,17 @@ import { stn } from "./tabs-line.mjs";
    REGRESS_CONTRAST=more draws both palettes in High contrast. */
 const PFX_DAY = {
   sign: "rgb(20, 20, 20)", onSign: "rgb(255, 255, 255)", signal: "rgb(255, 205, 0)", signalDeep: "rgb(240, 187, 0)", onSignal: "rgb(20, 20, 20)", sunk: "rgb(229, 228, 222)",
-  caution: "rgb(125, 88, 0)", cautionWash: "rgb(255, 240, 179)",
+  caution: "rgb(125, 88, 0)", cautionWash: "rgb(255, 240, 179)", go: "rgb(0, 107, 97)", onGo: "rgb(255, 255, 255)",
   lines: ["rgb(213, 43, 30)", "rgb(29, 91, 198)", "rgb(0, 129, 60)", "rgb(180, 80, 0)", "rgb(122, 62, 157)", "rgb(0, 121, 138)", "rgb(194, 40, 122)", "rgb(135, 86, 41)"],
 };
 const PFX_NIGHT = {
   sign: "rgb(242, 242, 238)", onSign: "rgb(20, 20, 20)", signal: "rgb(255, 205, 0)", signalDeep: "rgb(255, 216, 61)", onSignal: "rgb(20, 20, 20)", sunk: "rgb(11, 12, 13)",
-  caution: "rgb(255, 205, 0)", cautionWash: "rgb(58, 48, 8)",
+  caution: "rgb(255, 205, 0)", cautionWash: "rgb(58, 48, 8)", go: "rgb(61, 207, 185)", onGo: "rgb(20, 20, 20)",
   lines: ["rgb(240, 84, 74)", "rgb(91, 141, 239)", "rgb(54, 183, 106)", "rgb(255, 138, 42)", "rgb(178, 126, 216)", "rgb(43, 191, 208)", "rgb(240, 96, 159)", "rgb(201, 149, 97)"],
 };
 const PFX_CONTRAST = {
   sign: "rgb(255, 255, 255)", onSign: "rgb(0, 0, 0)", signal: "rgb(255, 205, 0)", signalDeep: "rgb(255, 224, 102)", onSignal: "rgb(0, 0, 0)", sunk: "rgb(31, 31, 31)",
-  caution: "rgb(255, 205, 0)", cautionWash: "rgb(58, 48, 0)",
+  caution: "rgb(255, 205, 0)", cautionWash: "rgb(58, 48, 0)", go: "rgb(79, 224, 200)", onGo: "rgb(0, 0, 0)",
   lines: ["rgb(255, 104, 96)", "rgb(117, 147, 255)", "rgb(99, 237, 87)", "rgb(242, 143, 41)", "rgb(206, 170, 255)", "rgb(0, 192, 204)", "rgb(255, 136, 200)", "rgb(230, 178, 133)"],
 };
 export const PFX = process.env.REGRESS_CONTRAST === "more" ? { light: PFX_CONTRAST, dark: PFX_CONTRAST } : { light: PFX_DAY, dark: PFX_NIGHT };
@@ -157,7 +157,7 @@ export default function register(scenario) {
     await s.expect("…and the toasts do not animate", async () => R.page.locator(".toast").first().evaluate((e) => ({ name: getComputedStyle(e).animationName, opacity: getComputedStyle(e).opacity, transform: getComputedStyle(e).transform })), { name: "none", opacity: "1", transform: "none" });
     await s.expect("the toast stack: the first 8px from the top, 8px between (Platform's stack), centred, narrower than the window less 16px a side and than 30rem", () => toastGeometry(rp), { n: 2, top: 8, gaps: [8], centred: true, narrow: true });
     await s.expect("the stack is a polite live region, fixed across the top on Platform's announcement layer (1100), and lets clicks through", async () => ({ aria: await rp.locator(".toasts").getAttribute("aria-live"), p: await R.props(".toasts", ["position", "z-index", "pointer-events", "display", "flex-direction", "align-items", "gap", "top", "left", "right"]) }), { aria: "polite", p: { position: "fixed", "z-index": "1100", "pointer-events": "none", display: "flex", "flex-direction": "column", "align-items": "center", gap: "8px", top: "8px", left: "0px", right: "0px" } });
-    await s.expect("a toast is Platform's Announcement: a sign panel with 16px bold on-sign text after a 32px tone tile, 12px padding, 8px corners; a plain one's tile is lit on-sign with a sign pictogram, a gold one's is signal yellow with an on-signal one", async () => ({
+    await s.expect("a toast is Platform's Announcement: a sign panel with 16px bold on-sign text after a 32px tone tile, 12px padding, 8px corners; a plain one's tile is lit on-sign with a sign pictogram, a gold one's is Platform's success tile, go with an on-go one (never signal, which marks the way forward)", async () => ({
       plain: await R.props(rp.locator(".toast:not(.gold)"), ["background-color", "color", "font-size", "font-weight", "padding-top", "padding-left", "border-top-left-radius", "text-align", "letter-spacing"]),
       gold: await R.props(rp.locator(".toast.gold"), ["background-color", "color", "font-weight"]),
       plainTile: await R.props(rp.locator(".toast:not(.gold) .toast-tile"), ["background-color", "color", "width", "height", "border-top-left-radius"]),
@@ -166,7 +166,7 @@ export default function register(scenario) {
       plain: { "background-color": PFX.light.sign, color: PFX.light.onSign, "font-size": "16px", "font-weight": "700", "padding-top": "12px", "padding-left": "12px", "border-top-left-radius": "8px", "text-align": "start", "letter-spacing": "normal" },
       gold: { "background-color": PFX.light.sign, color: PFX.light.onSign, "font-weight": "700" },
       plainTile: { "background-color": PFX.light.onSign, color: PFX.light.sign, width: "32px", height: "32px", "border-top-left-radius": "4px" },
-      goldTile: { "background-color": PFX.light.signal, color: PFX.light.onSignal },
+      goldTile: { "background-color": PFX.light.go, color: PFX.light.onGo },
     });
     await s.expect("…the tile carries a 20px pictogram, the bell on a plain toast and the star on a gold one, and adds no words: each toast's text is still exactly its message", async () => rp.locator(".toast").evaluateAll((els) => els.map((e) => ({ glyph: window.__glyph(e.querySelector(".toast-tile svg")), size: e.querySelector(".toast-tile svg").getAttribute("width"), text: e.textContent }))), [
       { glyph: "bell", size: "20", text: "+40 XP · N-Queens" },
@@ -179,11 +179,11 @@ export default function register(scenario) {
     }, { header: true, toast: false });
     await R.shot("toasts", { hide: SHOW_TOASTS });
     await R.setDark(true);
-    await s.expect("in Night the toast is the lit white sign with dark text, its plain tile dark; the gold one's tile is still signal yellow with dark ink", async () => ({ plain: await R.props(rp.locator(".toast:not(.gold)"), ["background-color", "color"]), plainTile: await R.props(rp.locator(".toast:not(.gold) .toast-tile"), ["background-color", "color"]), gold: await R.props(rp.locator(".toast.gold"), ["background-color", "color"]), goldTile: await R.props(rp.locator(".toast.gold .toast-tile"), ["background-color", "color"]) }), {
+    await s.expect("in Night the toast is the lit white sign with dark text, its plain tile dark; the gold one's tile is Night's go with its on-go pictogram", async () => ({ plain: await R.props(rp.locator(".toast:not(.gold)"), ["background-color", "color"]), plainTile: await R.props(rp.locator(".toast:not(.gold) .toast-tile"), ["background-color", "color"]), gold: await R.props(rp.locator(".toast.gold"), ["background-color", "color"]), goldTile: await R.props(rp.locator(".toast.gold .toast-tile"), ["background-color", "color"]) }), {
       plain: { "background-color": PFX.dark.sign, color: PFX.dark.onSign },
       plainTile: { "background-color": PFX.dark.onSign, color: PFX.dark.sign },
       gold: { "background-color": PFX.dark.sign, color: PFX.dark.onSign },
-      goldTile: { "background-color": PFX.dark.signal, color: PFX.dark.onSignal },
+      goldTile: { "background-color": PFX.dark.go, color: PFX.dark.onGo },
     });
     await R.shot("toasts", { hide: SHOW_TOASTS });
     await R.setDark(false);

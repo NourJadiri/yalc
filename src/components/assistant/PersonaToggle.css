@@ -1,4 +1,4 @@
-/* Platform's segmented control from its parts: icon buttons in a 2px frame, the chosen one a lit sign square. */
+/* SegmentedControl's look, drawn here: SegmentedControl would make this aria-pressed group a set of tabs. */
 .asst-voices {
   flex: none; display: inline-flex; gap: calc(var(--space-1) / 2); padding: calc(var(--space-1) / 2);
   border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-md); background: var(--surface-raised);

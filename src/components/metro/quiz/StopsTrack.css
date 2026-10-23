@@ -1,4 +1,3 @@
-/* Platform's Route across the card: travelled line in ink, the line ahead dashed like one still being built. */
 .stops-track { display: flex; margin-top: var(--space-5); }
 .stops-track i { position: relative; flex: 1 1 0; display: flex; align-items: center; justify-content: center; min-width: 0; height: calc(var(--stop-size) + var(--space-2)); }
 .stops-track i::before { content: ""; position: absolute; top: calc(50% - var(--line-weight) / 2); right: 50%; width: 100%; height: var(--line-weight); background: var(--ink); }

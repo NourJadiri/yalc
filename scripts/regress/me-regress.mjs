@@ -101,9 +101,6 @@ const GLYPH = {
   "M17.65 10.1A6.4 6.4 0 1 1 12 6.7": "refresh",
   "M12 3.5L21.5 20H2.5Z": "warning",
   "M8.3 3H15.7L21 8.3V15.7L15.7 21H8.3L3 15.7V8.3Z": "stop",
-  "M8.5 14L11 16.5L15.75 11.75": "cloud-check",
-  "M12.25 19V10.75": "cloud-upload",
-  "M3.5 3.5L20.5 20.5": "cloud-off",
 };
 const card = (page) =>
   page.locator("main .synccard").evaluate((c, glyphs) => ({

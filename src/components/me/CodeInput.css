@@ -1,4 +1,3 @@
-/* A Field's input: the code in the code type, the placeholder in body. */
 .syncinput { flex: 1; min-width: 0; height: var(--control-height); padding: 0 var(--space-3); border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-sm); background: var(--surface-raised); color: var(--ink); font: var(--t-code); letter-spacing: var(--t-code-ls); transition: border-color 120ms ease-out; }
 .syncinput::placeholder { color: var(--ink-muted); opacity: 1; font: var(--t-body); }
 @media (hover: hover) { .syncinput:hover { border-color: var(--ink); } }

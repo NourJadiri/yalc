@@ -14,7 +14,7 @@ interface RunResultProps {
   onDecks: () => void;
 }
 
-/* The score leads in the markup, as it always did; the Ticket's grid puts its stub on the right. */
+/* The score leads in the markup; the Ticket's grid puts its stub on the right. */
 export default function RunResult({ session: s, onAgain, onDecks }: RunResultProps) {
   const { track } = useTrack();
   const total = s.ids.length;

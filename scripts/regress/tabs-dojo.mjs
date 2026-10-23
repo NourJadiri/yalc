@@ -288,7 +288,7 @@ export default function register(scenario) {
     await L.tab("Dojo");
     await s.expect("on the Local: no ritual log, a dashed note instead, and all 15 templates still there", () => layout(L.page), layoutModel(F.awsMid));
     await s.expect("…the note says so", () => L.page.locator(".dojo-local").textContent(), "No morning rituals on the Local — but the templates below are fair game whenever a stop leans on one.");
-    await s.expect("…and it is a dashed box, out of service: a hairline dashed edge in the control-edge grey, body text in ink-muted", () => L.props(".dojo-local", ["border-top-style", "border-top-width", "border-top-color", "font-size", "color"]), { "border-top-style": "dashed", "border-top-width": "1px", "border-top-color": PF.light.border, "font-size": "16px", color: PF.light.inkMuted });
+    await s.expect("…and it is a note on the raised ground: a hairline edge in the rule colour, body text in ink-muted (a dashed edge would read as out of service)", () => L.props(".dojo-local", ["border-top-style", "border-top-width", "border-top-color", "font-size", "color"]), { "border-top-style": "solid", "border-top-width": "1px", "border-top-color": PF.light.rule, "font-size": "16px", color: PF.light.inkMuted });
     await L.shot("dojo-local");
     await L.setDark(true);
     await L.shot("dojo-local");
