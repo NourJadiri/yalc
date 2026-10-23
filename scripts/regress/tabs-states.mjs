@@ -7,6 +7,7 @@ import { finish } from "./me-lib.mjs";
 import { F } from "./tabs-kit.mjs";
 import { card, cardOf, MPF } from "./tabs-metro-kit.mjs";
 import { stn, RGB } from "./tabs-line.mjs";
+import { PFX } from "./tabs-fx.mjs";
 import { chooseDeck, boardIt, nextBtn, quitBtn, boardBtn, rowOf } from "./tabs-metro.mjs";
 
 const centre = (loc) => loc.evaluate((e) => e.scrollIntoView({ block: "center", behavior: "instant" }));
@@ -74,10 +75,15 @@ export default function register(scenario) {
     for (const [label, loc, props] of dojoStates) {
       for (const mode of ["hover", "active"]) s.pin(`${label} under the pointer (${mode})`, await under(A, loc, props, mode));
     }
-    await s.expect("pressing the reveal button and the log's button squeezes them to 97%", async () => ({
+    await s.expect("pressing the reveal button and the log's button moves them 1px down, as every Platform Button does", async () => ({
       veil: (await under(A, page.locator("#dojoArea .tcard").first().locator(".veil button"), ["transform"], "active")).transform,
       log: (await under(A, page.locator("#dojoArea .dojo-log button"), ["transform"], "active")).transform,
-    }), { veil: "matrix(0.97, 0, 0, 0.97, 0, 0)", log: "matrix(0.97, 0, 0, 0.97, 0, 0)" });
+    }), { veil: "matrix(1, 0, 0, 1, 0, 1)", log: "matrix(1, 0, 0, 1, 0, 1)" });
+    await s.expect("hovering a template's header or the reveal button fills it with the sunk ground; hovering Done deepens it to signal-deep", async () => ({
+      head: (await under(A, page.locator("#dojoArea .tcard").nth(1).locator(".thead"), ["background-color"], "hover"))["background-color"],
+      veil: (await under(A, page.locator("#dojoArea .tcard").first().locator(".veil button"), ["background-color"], "hover"))["background-color"],
+      log: (await under(A, page.locator("#dojoArea .dojo-log button"), ["background-color"], "hover"))["background-color"],
+    }), { head: PFX.light.sunk, veil: PFX.light.sunk, log: PFX.light.signalDeep });
 
     // ---- Metro
     const M = await s.device({ seed: F.redoOne, motion: true });

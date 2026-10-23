@@ -1,5 +1,6 @@
+/* Over the workspace (50), under the Me tab's sheets and the toasts. */
 .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 55; overflow: hidden; }
-.cf { position: absolute; top: -12px; width: 8px; height: 12px; border-radius: 2px; animation: fall linear forwards; }
+.cf { position: absolute; top: calc(var(--space-3) * -1); width: var(--space-2); height: var(--space-3); border-radius: calc(var(--radius-sm) / 2); animation: fall linear forwards; }
 @keyframes fall { to { transform: translateY(105vh) rotate(560deg); opacity: .9; } }
 
 @media (prefers-reduced-motion: reduce) {

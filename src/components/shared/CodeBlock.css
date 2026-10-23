@@ -1,6 +1,14 @@
 pre.code {
-  margin: 0 0 12px; padding: 12px 14px; border-radius: 10px; background: var(--sunken);
-  font-family: var(--mono); font-size: 12px; line-height: 1.6; tab-size: 4; overflow-x: auto;
-  border: 1px solid var(--line); white-space: pre;
+  margin: 0 0 var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink);
+  font: var(--t-code); letter-spacing: var(--t-code-ls); tab-size: 4; white-space: pre; overflow-x: auto;
 }
-pre.code .blank { color: var(--med); font-weight: 700; }
+pre.code .hl-kw { color: var(--hl-kw); }
+pre.code .hl-str { color: var(--hl-str); }
+pre.code .hl-num { color: var(--hl-num); }
+pre.code .hl-com { color: var(--hl-com); font-style: italic; }
+pre.code .hl-fn { color: var(--hl-fn); }
+pre.code .hl-cls { color: var(--hl-cls); }
+pre.code .hl-def { font-weight: 600; }
+pre.code .hl-op { color: var(--hl-op); }
+pre.code .hl-meta { color: var(--hl-meta); }
+pre.code .blank { border-radius: calc(var(--radius-sm) / 2); background: var(--caution-wash); color: var(--caution); font-weight: 700; }

@@ -1,11 +1,18 @@
-.tcard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); margin-top: 12px; overflow: hidden; }
-.thead { width: 100%; min-height: 44px; text-align: left; padding: 12px 14px; display: flex; align-items: center; gap: 10px; transition: background .15s; }
-.thead:active { background: var(--sunken); }
-.thead h3 { margin: 0; font-size: 14.5px; font-weight: 600; flex: 1; }
-.thead .chev { color: var(--ink2); flex: none; transition: transform .2s; }
+.tcard { margin-top: var(--space-3); border: var(--hairline) solid var(--rule); border-radius: var(--radius-md); background: var(--surface-raised); color: var(--ink); }
+.thead {
+  display: flex; align-items: center; gap: var(--space-3); width: 100%; min-height: var(--control-height); padding: var(--space-2) var(--space-4);
+  border-radius: calc(var(--radius-md) - var(--hairline)); text-align: left; transition: background-color 120ms ease-out;
+}
+.tcard.open .thead { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.thead:active { background: var(--surface-sunk); }
+.thead h3 { flex: 1; min-width: 0; margin: 0; font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); }
+.thead .ttag { flex: none; }
+.thead .chev { flex: none; }
 .tcard.open .chev { transform: rotate(180deg); }
-.ttag { font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: var(--sunken); border: 1px solid color-mix(in srgb, var(--line) 60%, transparent); color: var(--ink2); flex: none; }
-.tbody { display: none; border-top: 1px solid var(--line); padding: 12px 14px 14px; }
+.tbody { display: none; padding: var(--space-4); border-top: var(--hairline) solid var(--rule); }
 .tcard.open .tbody { display: block; }
-.tnote { font-size: 12.5px; color: var(--ink2); margin: 0 0 10px; }
-@media (hover: hover) { .thead:hover { background: color-mix(in srgb, var(--sunken) 55%, transparent); } }
+.tnote { max-width: var(--measure); margin: 0 0 var(--space-3); }
+@media (hover: hover) { .thead:hover { background: var(--surface-sunk); } }
+@media (max-width: 599px) {
+  .thead h3 { font: var(--t-ui); letter-spacing: var(--t-ui-ls); }
+}
