@@ -1,25 +1,5 @@
-/* The follow-ups people reach for, one tap under her latest answer: small pills, as the starters are. */
-.asst-quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: -4px; }
-.asst-quick button {
-  padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface);
-  font-size: 12.5px; font-weight: 600; color: var(--ink);
-  transition: background-color .15s ease, border-color .15s ease;
-}
-.asst-quick button:active { background: var(--sunken); }
-@media (hover: hover) {
-  .asst-quick button:hover { background: var(--sunken); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
-}
-
-/* A messenger's suggested replies: round, outlined in her colour, lined up with her bubble. */
-.asst-quick.chat { padding-left: 44px; }
-.asst-quick.chat button {
-  padding: 6px 9px; border-radius: 999px; border-color: color-mix(in srgb, var(--accent) 65%, transparent);
-  background: transparent; color: var(--accent);
-}
-.asst-quick.chat button:active { background: color-mix(in srgb, var(--accent) 22%, transparent); }
-@media (hover: hover) {
-  .asst-quick.chat button:hover { background: color-mix(in srgb, var(--accent) 16%, transparent); border-color: var(--accent); }
-}
-
-/* Thumbs on the phone sheet, in either look. */
-.asst.sheet .asst-quick button { padding: 9px 13px; }
+/* The follow-ups people reach for, one tap under her latest answer. */
+.asst-quick { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: calc(-1 * var(--space-1)); }
+.asst-quick.chat { padding-left: calc(var(--asst-face) + var(--space-2)); }
+/* Thumbs on the phone sheet get the full control height. */
+.asst.sheet .asst-quick .btn { height: var(--control-height); }

@@ -1,3 +1,4 @@
+import Tag from "../ui/Tag";
 import { textOf, type Msg } from "./lib/messages";
 import "./Question.css";
 
@@ -9,8 +10,8 @@ export default function Question({ message }: { message: Msg }) {
       <p>{textOf(message)}</p>
       {(code || run) && (
         <span className="asst-tags" title="Sent along with this question">
-          {code && <span>+ code</span>}
-          {run && <span>+ last run</span>}
+          {code && <Tag>+ code</Tag>}
+          {run && <Tag>+ last run</Tag>}
         </span>
       )}
     </div>

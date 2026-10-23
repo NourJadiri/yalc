@@ -1,17 +1,17 @@
-.asst-lock {
-  flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 20px 18px;
-  font-size: 13px; line-height: 1.55; color: var(--ink2);
-}
+.asst-lock { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--space-4); padding: var(--space-6); color: var(--ink-muted); }
 .asst-lock p { margin: 0; }
-.asst-lock b { color: var(--ink); }
-.asst-lock code { font-family: var(--mono); font-size: 12px; background: var(--sunken); border-radius: 5px; padding: 1px 5px; }
+.asst-lock b { color: var(--ink); font-weight: 700; }
+.asst-lock code { padding: 0 var(--space-1); border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink); font: var(--t-code); letter-spacing: var(--t-code-ls); }
 .asst-lockmark {
-  width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
-  background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--accent);
+  width: calc(var(--space-8) + var(--space-2)); height: calc(var(--space-8) + var(--space-2)); display: grid; place-items: center;
+  border-radius: var(--radius-sm); background: var(--sign); color: var(--on-sign);
 }
 .asst-lock input {
-  width: 100%; padding: 9px 12px; font-size: 14px; color: var(--ink);
-  background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  width: 100%; height: var(--control-height); padding: 0 var(--space-3);
+  color: var(--ink); background: var(--surface-raised); border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-sm);
+  font: var(--t-body); letter-spacing: var(--t-body-ls); transition: border-color 120ms ease-out;
 }
-.asst-lock input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.asst-lock input::placeholder { color: var(--ink-muted); opacity: 1; }
+.asst-lock input:focus { border-color: var(--ink); }
+@media (hover: hover) { .asst-lock input:hover { border-color: var(--ink); } }
 .asst-lock .btn { align-self: flex-start; }

@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 export default function AskButton({ open, wide, onClick }: { open: boolean; wide: boolean; onClick: () => void }) {
   return (
     <Button variant="ghost" size="compact" onClick={onClick} aria-pressed={open} title={"Ask Bana (" + modKey() + "+K)"}>
-      <Icon name="smile" size={14} />
+      <Icon name="smile" size={16} />
       {wide && "Bana"}
     </Button>
   );

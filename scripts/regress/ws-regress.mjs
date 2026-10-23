@@ -1093,6 +1093,23 @@ scenario("09-copy-for-claude", "Copy for Claude: feedback and clipboard text", a
 });
 
 /* 10 ----------------------------------------------------------------- */
+/* Platform's colours as Bana is drawn in them: `page` is the page's own palette (Day, or High contrast for both under
+   REGRESS_CONTRAST=more), `catgirl` the Goth catgirl's window, which is Night's on a Day page and keeps High contrast's. */
+const BANA_DAY = { raised: "rgb(255, 255, 255)", sunk: "rgb(229, 228, 222)", ink: "rgb(20, 20, 20)", rule: "rgb(211, 210, 203)", border: "rgb(124, 123, 116)", sign: "rgb(20, 20, 20)", stop: "rgb(196, 18, 47)" };
+const BANA_NIGHT = { raised: "rgb(28, 29, 33)", sunk: "rgb(11, 12, 13)", ink: "rgb(242, 242, 238)", rule: "rgb(47, 48, 53)", border: "rgb(119, 120, 125)", sign: "rgb(242, 242, 238)", stop: "rgb(255, 107, 107)", line5: "rgb(178, 126, 216)", line7: "rgb(240, 96, 159)" };
+const BANA_HC = { raised: "rgb(0, 0, 0)", sunk: "rgb(31, 31, 31)", ink: "rgb(255, 255, 255)", rule: "rgb(166, 166, 166)", border: "rgb(166, 166, 166)", sign: "rgb(255, 255, 255)", stop: "rgb(255, 138, 128)", line5: "rgb(206, 170, 255)", line7: "rgb(255, 136, 200)" };
+/* Send with an empty box: out of service, a dashed edge on the sunk ground. */
+const idle = (pal) => [pal.sunk, "dashed", pal.border].join(" ");
+const BANA = CONTRAST === "more" ? { page: BANA_HC, catgirl: BANA_HC } : { page: BANA_DAY, catgirl: BANA_NIGHT };
+const CLEAR = "rgba(0, 0, 0, 0)";
+/* A colour's channels as 0-255 and its alpha, whether the page wrote it rgb() or color(srgb ...). */
+const tintOf = (c) => {
+  const v = (c.match(/[\d.]+/g) || []).map(Number);
+  const k = c.startsWith("color(") ? 255 : 1;
+  return { rgb: v.slice(0, 3).map((x) => Math.round(x * k)), a: v[3] ?? 1 };
+};
+/* The yellow buttons on screen: Platform spends signal on one way forward per view. */
+const primaries = (page) => page.evaluate(() => [...document.querySelectorAll("button.primary")].filter((b) => b.offsetParent).map((b) => b.textContent.trim()));
 const mockRequests = () => {
   if (!MOCK_LOG || !fs.existsSync(MOCK_LOG)) return null;
   return fs
@@ -1126,6 +1143,7 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
     await s.expect("it opens on the lock screen, focus in the password field", async () => ({ lock: await lock().count(), focus: await page.evaluate(() => document.activeElement?.getAttribute("aria-label")) }), { lock: 1, focus: "Bana's password" }, { timeout: 2000 });
     await s.expect("lock copy: 'Locked to you.'", () => lock().locator("b").textContent(), "Locked to you.");
     await s.expect("Unlock is disabled until something is typed", () => lock().getByRole("button", { name: "Unlock" }).isDisabled(), true);
+    await s.expect("…and is a secondary Button: Submit, beside the panel, stays the view's one primary", () => primaries(page), ["Submit"]);
     await s.expect("the floating window sits bottom right, 400 px wide", () => panel.evaluate((e) => { const r = e.getBoundingClientRect(); return { cls: e.className, w: Math.round(r.width), right: Math.round(window.innerWidth - r.right), bottom: Math.round(window.innerHeight - r.bottom) }; }), { cls: "asst float", w: 400, right: 24, bottom: 24 });
     await s.shot(page, "assistant-locked-desktop-light");
 
@@ -1148,6 +1166,7 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
     await s.expect("…the question is shown with '+ code' and '+ last run' tags", () => panel.locator(".asst-q").evaluate((e) => ({ text: e.querySelector("p").textContent, tags: [...e.querySelectorAll(".asst-tags span")].map((t) => t.textContent) })), { text: "Why does my code fail?", tags: ["+ code", "+ last run"] });
     await s.expect("…the password is stored", async () => (await stored()).password, "pw-test");
     await s.expect("…no thinking dots are left, and Send (not Stop) is showing", async () => ({ wait: await panel.locator(".asst-wait").count(), send: await panel.getByRole("button", { name: "Send" }).count(), stop: await panel.getByRole("button", { name: "Stop" }).count() }), { wait: 0, send: 1, stop: 0 }, { timeout: 5000 });
+    await s.expect("…and Send is a secondary Button: Submit, beside the panel, stays the view's one primary", () => primaries(page), ["Submit"]);
     await s.expect("…the header offers the three modes, New chat, Forget the password, Close", () => panel.locator(".asst-head button").evaluateAll((els) => els.map((e) => e.getAttribute("aria-label"))), ["Normal", "Tough love", "Goth catgirl", "New chat", "Forget the password", "Close Bana"]);
     const reqs = mockRequests();
     if (reqs) {
@@ -1208,15 +1227,21 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
     const voices = () => panel.locator(".asst-voices button").evaluateAll((els) => els.map((e) => [e.getAttribute("aria-label"), e.getAttribute("aria-pressed"), !!e.querySelector("svg")].join(":")));
     const lastSystem = () => JSON.stringify(mockRequests()?.at(-1)?.body?.system ?? "");
     await s.expect("the mode toggle offers Normal, Tough love and Goth catgirl, each an icon; Normal is on", voices, ["Normal:true:true", "Tough love:false:true", "Goth catgirl:false:true"]);
-    const look = () => panel.evaluate((p) => ({
-      persona: p.dataset.persona,
-      tagline: p.querySelector(".asst-tagline")?.textContent ?? null,
-      placeholder: p.querySelector("textarea")?.placeholder,
-      send: getComputedStyle(p.querySelector(".asst-send")).backgroundColor,
-      bg: getComputedStyle(p).backgroundColor,
-      name: getComputedStyle(p.querySelector(".asst-head h3")).textTransform,
-    }));
-    await s.expect("in Normal the window looks as it always has: the line's blue, white, no tagline", look, { persona: "normal", tagline: null, placeholder: "Ask about this problem…", send: "rgb(26, 115, 232)", bg: "rgb(255, 255, 255)", name: "none" });
+    const look = () => panel.evaluate((p) => {
+      const head = getComputedStyle(p.querySelector(".asst-head"));
+      const send = getComputedStyle(p.querySelector(".asst-send"));
+      return {
+        persona: p.dataset.persona,
+        tagline: p.querySelector(".asst-tagline")?.textContent ?? null,
+        placeholder: p.querySelector("textarea")?.placeholder,
+        send: [send.backgroundColor, send.borderTopStyle, send.borderTopColor].join(" "),
+        bg: getComputedStyle(p).backgroundColor,
+        head: head.backgroundColor,
+        rail: head.borderBottomWidth + " " + head.borderBottomColor,
+        name: getComputedStyle(p.querySelector(".asst-head h3")).textTransform,
+      };
+    });
+    await s.expect("in Normal the window is plain Platform: raised, a hairline under its header, Send out of service while the box is empty, no tagline", look, { persona: "normal", tagline: null, placeholder: "Ask about this problem…", send: idle(BANA.page), bg: BANA.page.raised, head: BANA.page.raised, rail: "1px " + BANA.page.rule, name: "none" });
     if (MOCK_LOG) await s.expect("…in Normal the model is told it is Bana, with no voice on top", lastSystem, (v) => v.includes("You are Bana") && !v.includes("Voice:"));
     if (MOCK_LOG) await s.expect("…and is asked for plain text: effort low, no JSON format", () => mockRequests()?.at(-1)?.body?.output_config, { effort: "low" });
     await panel.getByRole("button", { name: "Tough love" }).click();
@@ -1224,14 +1249,15 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
     await q().fill("Roast my loop");
     await q().press("Enter");
     await s.expect("…the next question is answered", () => panel.locator(".asst-a").count(), 2, { timeout: 20_000 });
-    await s.expect("…and the window turns drill-sergeant red: red accent, the name in capitals, 'no excuses', a blunter prompt", look, { persona: "tough", tagline: "no excuses", placeholder: "Spit it out. What did you break?", send: "rgb(217, 48, 37)", bg: "rgb(255, 255, 255)", name: "uppercase" });
+    await s.expect("…and the window turns drill sergeant: a sign-panel header on a stop-red line, the name in capitals, 'no excuses', a blunter prompt", look, { persona: "tough", tagline: "no excuses", placeholder: "Spit it out. What did you break?", send: idle(BANA.page), bg: BANA.page.raised, head: BANA.page.sign, rail: "6px " + BANA.page.stop, name: "uppercase" });
+    await s.expect("…its name on four split flaps that still read as one word", async () => ({ flaps: await panel.locator(".asst-head h3 .asst-flap").count(), heading: await panel.getByRole("heading", { name: "Bana", exact: true }).count() }), { flaps: 4, heading: 1 });
     await s.shot(page, "assistant-tough-desktop-light");
     if (MOCK_LOG) await s.expect("…and the Worker asked for the tough-love voice", lastSystem, (v) => v.includes("Voice: tough love") && v.includes("Never at who they are"));
     await panel.getByRole("button", { name: "Goth catgirl" }).click();
     await q().fill("Is this right?");
     await q().press("Enter");
     await s.expect("in Goth catgirl the next question is answered too", () => panel.locator(".asst-a").count(), 3, { timeout: 20_000 });
-    await s.expect("…and the window goes goth: dark purple even in light mode, violet accent, 'nya~', Mommy's prompt", look, { persona: "catgirl", tagline: "nya~", placeholder: "Ask Mommy, kitten… 🐾", send: "rgb(199, 125, 255)", bg: "rgb(27, 20, 33)", name: "none" });
+    await s.expect("…and the window goes goth: Night's tokens even in light mode, her line 5 under the header, 'nya~', Mommy's prompt", look, { persona: "catgirl", tagline: "nya~", placeholder: "Ask Mommy, kitten… 🐾", send: idle(BANA.catgirl), bg: BANA.catgirl.raised, head: BANA.catgirl.raised, rail: "6px " + BANA.catgirl.line5, name: "none" });
     if (MOCK_LOG) await s.expect("…and the Worker asks her for JSON: a mood from the six faces, then the answer, both required", () => mockRequests()?.at(-1)?.body?.output_config, { effort: "low", format: { type: "json_schema", schema: { type: "object", properties: { mood: { type: "string", enum: ["happy", "angry", "sad", "shocked", "smug", "dizzy"] }, answer: { type: "string" } }, required: ["mood", "answer"], additionalProperties: false } } });
     const moods = () => panel.evaluate((p) => ({
       rows: [...p.querySelectorAll(".asst-a")].map((a) => a.querySelector(":scope > img.asst-avatar")?.dataset.mood ?? null),
@@ -1243,7 +1269,13 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
     await q().press("Enter");
     await s.expect("a mood sent as 'Shocked' still finds its face, and the header changes with it", async () => { const m = await moods(); return { rows: m.rows, header: m.header }; }, { rows: ["neutral", "neutral", "smug", "shocked"], header: "shocked" }, { timeout: 20_000 });
     await s.expect("…and the answer's escapes, split across the stream, decode exactly: quotes, a backslash, a line break, an emoji", async () => (await moods()).last, 'Watch the quotes: "a\\b"\nthen 😺 nya~');
-    await s.expect("…with paw prints behind the chat", () => panel.locator(".asst-log").evaluate((l) => getComputedStyle(l).backgroundImage.startsWith('url("data:image/svg+xml')), true);
+    await s.expect("…with paw prints behind the chat: her line 7 through a paw stencil on the window, under the clear log", async () => {
+      const r = await panel.evaluate((p) => {
+        const paws = getComputedStyle(p, "::before");
+        return { stencil: (paws.maskImage || paws.webkitMaskImage).startsWith('url("data:image/svg+xml'), ink: paws.backgroundColor, log: getComputedStyle(p.querySelector(".asst-log")).backgroundColor };
+      });
+      return { stencil: r.stencil, ink: tintOf(r.ink), log: r.log };
+    }, { stencil: true, ink: { rgb: tintOf(BANA.catgirl.line7).rgb, a: 0.12 }, log: CLEAR });
     await s.expect("…and it reads like a messenger: her face in the header, every answer a bubble beside it, the picture loaded", () => panel.evaluate((p) => ({
       header: !!p.querySelector(".asst-head img.asst-avatar"),
       rows: [...p.querySelectorAll(".asst-a")].map((a) => a.matches(".chat") && !!a.querySelector(":scope > img.asst-avatar") && !!a.querySelector(":scope > .asst-bubble .md")),
@@ -1256,7 +1288,7 @@ scenario("10-assistant", "the assistant: lock, wrong and right password, stream,
     if (MOCK_LOG) await s.expect("…in the catgirl voice, kept non-sexual", lastSystem, (v) => v.includes("goth anime catgirl") && v.includes("never sexual or explicit"));
     await panel.getByRole("button", { name: "Normal" }).click();
     await s.expect("back to Normal, remembered", async () => (await stored()).persona, "normal");
-    await s.expect("…and the window is plain again: no face, the usual intro", async () => ({ look: (await look()).persona + ":" + (await look()).send, faces: await panel.locator("img.asst-avatar").count(), intro: await panel.locator(".asst-empty > p").count() }), { look: "normal:rgb(26, 115, 232)", faces: 0, intro: 1 });
+    await s.expect("…and the window is plain again: no face, the usual intro", async () => { const l = await look(); return { look: [l.persona, l.head, l.rail].join(":"), faces: await panel.locator("img.asst-avatar").count(), intro: await panel.locator(".asst-empty > p").count() }; }, { look: ["normal", BANA.page.raised, "1px " + BANA.page.rule].join(":"), faces: 0, intro: 1 });
     const before = mockRequests()?.length ?? 0;
     const odd = await page.request.post(BASE + "/api/assistant", {
       headers: { authorization: "Bearer pw-test", "content-type": "application/json" },
@@ -2016,7 +2048,7 @@ scenario("20-follow-ups", "Bana's follow-ups: quick replies under her latest ans
       const bubble = panel.locator(".asst-a").first().locator(".asst-bubble .md");
       await s.expect("in Goth catgirl, out of her JSON, the same two buttons are in her bubble", () => buttonsIn(bubble), POINTS);
       await s.expect("…and her 'line 5' and 'line 6' in code stay text", async () => ({ inCode: await bubble.locator("code button, pre button").count(), code: await bubble.locator("code").allTextContents() }), { inCode: 0, code: ["line 5", "# line 6"] });
-      await s.expect("…her quick replies are four round chips in her violet, lined up under her bubble", () => panel.evaluate((p) => {
+      await s.expect("…her quick replies are four compact Buttons edged in her line 5, with small firm corners, lined up under her bubble", () => panel.evaluate((p) => {
         const group = p.querySelector('[role=group][aria-label="Quick replies"]');
         const chip = group.querySelector("button");
         const box = chip.getBoundingClientRect();
@@ -2024,11 +2056,12 @@ scenario("20-follow-ups", "Bana's follow-ups: quick replies under her latest ans
         return {
           pills: [...group.querySelectorAll("button")].map((b) => b.textContent),
           chat: group.classList.contains("chat"),
-          round: parseFloat(style.borderTopLeftRadius) >= box.height / 2,
-          violet: style.color === "rgb(199, 125, 255)",
+          corners: style.borderTopLeftRadius,
+          edge: style.borderTopColor,
+          ink: style.color,
           aligned: Math.abs(box.left - p.querySelector(".asst-a .asst-bubble").getBoundingClientRect().left) <= 1,
         };
-      }), { pills: REPLIES, chat: true, round: true, violet: true, aligned: true });
+      }), { pills: REPLIES, chat: true, corners: "8px", edge: BANA.catgirl.line5, ink: BANA.catgirl.ink, aligned: true });
       await s.shot(page, "follow-ups-catgirl-desktop-light");
       const second = requests();
       await quick(panel).getByRole("button", { name: "Shorter" }).click();

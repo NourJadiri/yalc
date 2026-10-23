@@ -21,7 +21,7 @@ export default function LockScreen({ refused, inputRef, onUnlock }: Props) {
   return (
     <form className="asst-lock" onSubmit={submit}>
       <span className="asst-lockmark">
-        <Icon name="lock" size={18} />
+        <Icon name="lock" size={24} />
       </span>
       <p>
         <b>{refused ? "That password didn't work." : "Locked to you."}</b> Paste the password you saved in Cloudflare as <code>ASSISTANT_PASSWORD</code>. This browser keeps it; nothing else does.
@@ -35,7 +35,7 @@ export default function LockScreen({ refused, inputRef, onUnlock }: Props) {
         value={typed}
         onChange={(e) => setTyped(e.target.value)}
       />
-      <Button variant="primary" type="submit" disabled={!typed.trim()}>
+      <Button type="submit" disabled={!typed.trim()}>
         Unlock
       </Button>
     </form>

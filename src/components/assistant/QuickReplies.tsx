@@ -1,4 +1,5 @@
 import { cx } from "../../lib/cx";
+import Button from "../ui/Button";
 import "./QuickReplies.css";
 
 /* The Worker's brief knows these four by their exact words, so they are sent as written. */
@@ -14,9 +15,9 @@ export default function QuickReplies({ chat, onAsk }: Props) {
   return (
     <div className={cx("asst-quick", chat && "chat")} role="group" aria-label="Quick replies">
       {REPLIES.map((reply) => (
-        <button key={reply} type="button" onClick={() => onAsk(reply)}>
+        <Button key={reply} type="button" size="compact" onClick={() => onAsk(reply)}>
           {reply}
-        </button>
+        </Button>
       ))}
     </div>
   );
