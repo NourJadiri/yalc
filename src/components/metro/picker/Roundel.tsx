@@ -1,13 +1,30 @@
-import Bullet from "../../ui/Bullet";
+import { cx } from "../../../lib/cx";
 import type { DeckLook } from "./lib/deckLook";
 import "./Roundel.css";
 
-/** A deck's mark on the board: its line's bullet, or for Mix the map's interchange. */
-export default function Roundel({ look }: { look: DeckLook }) {
-  if (look.mix) return <span className="rdl mix" />;
+interface RoundelProps {
+  look: DeckLook;
+  selected: boolean;
+}
+
+export default function Roundel({ look, selected }: RoundelProps) {
+  if (look.mix) {
+    return (
+      <span className="rdl mix">
+        <i aria-hidden="true" />
+      </span>
+    );
+  }
+
+  const fill = { background: look.color };
+  /* The ring's inset gap is --sunken, the selected row's own background. */
+  const style = selected
+    ? { ...fill, boxShadow: "0 0 0 2px var(--sunken), 0 0 0 3.5px " + look.color }
+    : fill;
+
   return (
-    <Bullet line={look.line} size="lg" className="rdl">
+    <span className={cx("rdl", look.onYellow && "onyellow")} style={style}>
       {look.glyph}
-    </Bullet>
+    </span>
   );
 }

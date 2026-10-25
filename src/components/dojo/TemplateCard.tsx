@@ -1,7 +1,6 @@
 import { cx } from "../../lib/cx";
 import type { Template } from "../../types";
 import Icon from "../shared/Icon";
-import Tag from "../ui/Tag";
 import TemplateCode from "./TemplateCode";
 import "./TemplateCard.css";
 
@@ -18,8 +17,8 @@ export default function TemplateCard({ tpl, open, shown, onToggle, onReveal }: T
     <div className={cx("tcard", open && "open")}>
       <button className="thead" onClick={() => onToggle(tpl.id)} aria-expanded={open}>
         <h3>{tpl.n}</h3>
-        <Tag className="ttag">{tpl.tag}</Tag>
-        <Icon name="chevron-down" size={20} className="chev" />
+        <span className="ttag">{tpl.tag}</span>
+        <Icon name="chevron-down" size={16} className="chev" />
       </button>
       <div className="tbody">
         <p className="tnote">{tpl.note}</p>

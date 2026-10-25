@@ -3,7 +3,7 @@ import type { IconName } from "../../../shared/Icon";
 
 interface Look {
   glyph: IconName;
-  /** A status colour token (go, caution, stop; ink while it works), so every theme comes along for free. */
+  /** A token name, so both themes come along for free. */
   tone: string;
   title: string;
   /** The one sentence the card can't say in three words. */
@@ -13,33 +13,33 @@ interface Look {
 export function look(s: SyncStatus): Look {
   if (s.held && s.phase === "error") {
     return {
-      glyph: "warning",
-      tone: "var(--caution)",
+      glyph: "alert-triangle",
+      tone: "var(--med)",
       title: "Update needed",
       note: "The cloud copy is from a newer version of the app. Reload to update; until then this device leaves it alone.",
     };
   }
   switch (s.phase) {
     case "working":
-      return { glyph: "refresh", tone: "var(--ink)", title: "Syncing…", note: "" };
+      return { glyph: "cloud-upload", tone: "var(--blue)", title: "Syncing…", note: "" };
     case "pending":
       return {
-        glyph: "clock",
-        tone: "var(--caution)",
+        glyph: "cloud-upload",
+        tone: "var(--blue)",
         title: "Changes queued",
         note: "They go up in a moment, or the next time there's a network.",
       };
     case "error":
       return {
-        glyph: "stop",
-        tone: "var(--stop)",
+        glyph: "cloud-off",
+        tone: "var(--red)",
         title: "Cloud unreachable",
         note: "Progress is safe on this device and will sync when it can.",
       };
     default:
       return {
-        glyph: "check",
-        tone: "var(--go)",
+        glyph: "cloud-check",
+        tone: "var(--green)",
         title: s.syncedAt ? "All changes synced" : "Sync is on",
         note: "Enter the code above on another device to link it.",
       };

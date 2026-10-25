@@ -1,8 +1,4 @@
-.hdr-stats { display: flex; align-items: center; gap: var(--space-4); flex: none; font: var(--t-label); letter-spacing: var(--t-label-ls); color: var(--ink-muted); font-variant-numeric: tabular-nums; }
-.hdr-stats > span { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; }
+.hdr-stats { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 12px; color: var(--ink2); flex: none; font-variant-numeric: tabular-nums; }
+.hdr-stats > span { display: inline-flex; align-items: center; gap: 4px; }
 .hdr-stats b { color: var(--ink); font-weight: 700; }
-/* Under 360px the flame names the streak alone, so the rank's name keeps its room; the aria-label still says it. */
-@media (max-width: 359px) {
-  .hdr-stats { gap: var(--space-3); }
-  .hdr-word { display: none; }
-}
+.hdr-stats .flame { color: var(--med); }

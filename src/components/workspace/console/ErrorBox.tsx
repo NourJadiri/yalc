@@ -8,7 +8,7 @@ export default function ErrorBox({ err }: { err: CaseError }) {
   return (
     <div className="ws-error">
       <div className="ws-error-msg">
-        <Icon name="stop" size={16} />
+        <Icon name="alert-triangle" size={14} />
         {err.message}
         {err.line && <span className="ws-line">line {err.line}</span>}
       </div>

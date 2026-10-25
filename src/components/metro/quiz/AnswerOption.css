@@ -1,32 +1,15 @@
-/* A choice drawn like Platform's radio rows: the letter sits in the stop, and the reveal says right or wrong in a word
-   and a pictogram as well as in go or stop. */
 .opt {
-  display: flex; align-items: flex-start; gap: var(--space-3); width: 100%; min-height: var(--control-height);
-  padding: calc((var(--control-height) - var(--target-min)) / 2 - var(--stroke-bold)) var(--space-3);
-  border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-md); background: var(--surface-raised); color: var(--ink);
-  font: var(--t-body); letter-spacing: var(--t-body-ls); text-align: left;
-  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+  text-align: left; padding: 11px 13px; border-radius: 11px; border: 1.5px solid var(--line);
+  background: var(--surface); font-size: 13.5px; line-height: 1.4; min-height: 44px;
+  transition: border-color .12s, background .12s, transform .12s;
 }
-.opt .k {
-  flex: none; display: flex; align-items: center; justify-content: center; width: var(--target-min); height: var(--target-min);
-  border: var(--stroke-bold) solid var(--border); border-radius: var(--radius-full); color: var(--ink);
-  font: var(--t-label); letter-spacing: var(--t-label-ls);
-  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
-}
-.opt .verdict { flex: none; display: flex; align-items: center; gap: var(--space-1); min-height: var(--target-min); margin-left: auto; color: var(--ink); font: var(--t-label); letter-spacing: var(--t-label-ls); }
-.opt .verdict svg { flex: none; }
-.opt:not(:disabled):active { background: var(--surface-sunk); }
-.opt:not(:disabled):active .k { border-color: var(--ink); }
-@media (hover: hover) {
-  .opt:not(:disabled):hover { background: var(--surface-sunk); }
-  .opt:not(:disabled):hover .k { border-color: var(--ink); }
-}
-.opt.right { border-color: var(--go); background: var(--go-wash); }
-.opt.right .k { border-color: var(--go); background: var(--go); color: var(--on-go); }
-.opt.right .verdict svg { color: var(--go); }
-.opt.wrong { border-color: var(--stop); background: var(--stop-wash); }
-.opt.wrong .k { border-color: var(--stop); background: var(--stop); color: var(--on-stop); }
-.opt.wrong .verdict svg { color: var(--stop); }
-.opt.dim { border-color: var(--rule); color: var(--ink-muted); }
-.opt.dim .k { border-color: var(--rule); color: var(--ink-muted); }
+@media (hover: hover) { .opt:not(:disabled):hover { background: var(--sunken); } }
+.opt:not(:disabled):active { transform: scale(.98); background: var(--sunken); }
+.opt .k { font-family: var(--mono); font-size: 10.5px; color: var(--ink2); margin-right: 7px; font-weight: 700; }
+/* Reveal: doubled border via inset ring so nothing shifts; key letter takes the state colour. */
+.opt.right { border-color: var(--ok-ink); background: var(--ok-bg); box-shadow: inset 0 0 0 .5px var(--ok-ink); }
+.opt.wrong { border-color: var(--bad-ink); background: var(--bad-bg); box-shadow: inset 0 0 0 .5px var(--bad-ink); }
+.opt.right .k { color: var(--ok-ink); }
+.opt.wrong .k { color: var(--bad-ink); }
+.opt.dim { opacity: .5; }
 .opt:disabled { cursor: default; }

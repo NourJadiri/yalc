@@ -1,5 +1,4 @@
-.xp-sub { display: flex; justify-content: space-between; gap: var(--space-3); max-width: 720px; margin: var(--space-1) auto 0; font: var(--t-caption); letter-spacing: var(--t-caption-ls); color: var(--ink-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.xp-sub > :last-child { flex: none; }
-.xp-day { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; }
-.xp-stn { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.xp-dot { flex: none; width: var(--space-1); height: var(--space-1); border-radius: var(--radius-full); background: currentColor; }
+.xp-sub { max-width: 720px; margin: 5px auto 0; font-family: var(--mono); font-size: 10.5px; color: var(--ink2); display: flex; justify-content: space-between; gap: 10px; font-variant-numeric: tabular-nums; }
+.xp-day { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.xp-stn { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xp-dot { width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: .55; flex: none; }

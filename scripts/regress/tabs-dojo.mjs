@@ -2,10 +2,9 @@
 // veil and the session-only reveal, the ritual log (11).
 
 import { finish } from "./me-lib.mjs";
-import { D, F, PF, edit, hdr, hdrModel, ritualAt, feedOf, shape, planOf, focusOf } from "./tabs-kit.mjs";
+import { D, F, edit, hdr, hdrModel, ritualAt, feedOf, shape, planOf, focusOf } from "./tabs-kit.mjs";
 import { TODAY } from "./tabs-fixtures.mjs";
-import { stn } from "./tabs-line.mjs";
-import { PFX } from "./tabs-fx.mjs";
+import { stn, RGB } from "./tabs-line.mjs";
 
 const heroDojo = (page) => page.locator("main .hero").evaluate((h) => ({ h1: h.querySelector("h1").textContent, p: h.querySelector("p").textContent }));
 
@@ -54,17 +53,6 @@ const cardModel = (open, shown) =>
 
 const tcard = (page, id) => page.locator("#dojoArea .tcard").nth(D.TPL.findIndex((t) => t.id === id));
 
-/** The colours the page's palette gives `--hl-<kind>` for each kind, as computed colours. */
-const hlOf = (page, kinds) =>
-  page.evaluate((ks) => Object.fromEntries(ks.map((k) => {
-    const probe = document.createElement("span");
-    probe.style.color = `var(--hl-${k})`;
-    document.body.append(probe);
-    const c = getComputedStyle(probe).color;
-    probe.remove();
-    return [k, c];
-  })), kinds);
-
 export default function register(scenario) {
   /* 7 ------------------------------------------------------------------ */
   scenario("07-rituals", "the morning ritual: the Line's row and the Dojo's log are one switch: +15 XP once, a silent refund, Template Monk at five", async (s) => {
@@ -73,7 +61,6 @@ export default function register(scenario) {
     await A.pause();
     const page = A.page;
     const d5 = planOf("google")[4];
-    const LC = (await import("./tabs-line.mjs")).LPF.light;
     let blob = F.ritual4;
     const agree = async (label) => {
       await s.expect(`${label}: the header follows the saved blob`, async () => hdr(page), hdrModel(blob));
@@ -82,7 +69,7 @@ export default function register(scenario) {
 
     // ---- the rows
     await s.expect("every station of the Google line has a ritual row, with its own text and +15", () => page.locator(".linewrap .ritual").evaluateAll((els) => els.map((e) => e.children[1].textContent + "|" + e.querySelector(".xpv").textContent)), planOf("google").map((d) => d.ritual + "|+15"));
-    await s.expect("day 5 is the focus day (days 1-4 done, four rituals logged): its row is undone, its check box empty on the raised ground", () => ritualAt(page, 4), { cls: "ritual", pressed: "false", text: d5.ritual, xp: "+15", fill: LC.raised, tick: "check" });
+    await s.expect("day 5 is the focus day (days 1-4 done, four rituals logged): its row is undone", () => ritualAt(page, 4), { cls: "ritual", pressed: "false", text: d5.ritual, xp: "+15", fill: "", tick: "check" });
     await s.expect("the Dojo's log is the same day's, undone: 'Day 5 ritual:' and the ritual, a Done button with +15 XP", async () => (await A.tab("Dojo"), await log(page)), { cls: "dojo-log", b: "Day 5 ritual:", p: "Day 5 ritual: " + d5.ritual, btn: "Done+15 XP", pressed: "false", glyph: null, dot: true });
     await A.tab("Line");
 
@@ -95,14 +82,14 @@ export default function register(scenario) {
       b.badges.ritual5 = 1;
     });
     await s.expect("logging the fifth ritual: the XP toast, then the Template Monk badge (gold); no confetti for a ritual", async () => feedOf(await A.fx()), ["+15 XP · ritual", "* Badge — Template Monk"]);
-    await s.expect("…the row is done: its check box filled with the sign's ink", () => ritualAt(page, 4), { cls: "ritual done", pressed: "true", text: d5.ritual, xp: "+15", fill: LC.sign, tick: "check" });
+    await s.expect("…the row is done: solid outline, the check filled in the station's green", () => ritualAt(page, 4), { cls: "ritual done", pressed: "true", text: d5.ritual, xp: "+15", fill: "var(--green)", tick: "check" });
     await agree("after logging on the Line");
-    await s.expect("the done row keeps its solid 2px control-edge grey; its check box is 24px, filled with the sign's ink, the check in on-sign", async () => ({ p: await A.props(stn(page, 4).locator(".ritual"), ["border-top-style", "border-top-width", "border-top-color"]), c: await A.props(stn(page, 4).locator(".ritual .pcheck"), ["width", "height", "background-color", "color"]) }), { p: { "border-top-style": "solid", "border-top-width": "2px", "border-top-color": LC.border }, c: { width: "24px", height: "24px", "background-color": LC.sign, color: LC.onSign } });
+    await s.expect("the done row has a solid outline in the station's colour and a tinted ground; the check circle is 22px", async () => ({ p: await A.props(stn(page, 4).locator(".ritual"), ["border-top-style", "border-top-color"]), c: await A.props(stn(page, 4).locator(".ritual .pcheck"), ["width", "height", "background-color", "color"]) }), { p: { "border-top-style": "solid", "border-top-color": RGB.green }, c: { width: "22px", height: "22px", "background-color": RGB.green, color: "rgb(255, 255, 255)" } });
     await s.pin("the done ritual's tint", (await A.props(stn(page, 4).locator(".ritual"), ["background-color"]))["background-color"]);
 
     // ---- the Dojo sees it
     await A.tab("Dojo");
-    await s.expect("in the Dojo the same ritual reads Logged with a check, and the log is marked logged", () => log(page), { cls: "dojo-log logged", b: "Day 5 ritual:", p: "Day 5 ritual: " + d5.ritual, btn: "Logged", pressed: "true", glyph: "check", dot: false });
+    await s.expect("in the Dojo the same ritual reads Logged with a check, and the log is solid", () => log(page), { cls: "dojo-log logged", b: "Day 5 ritual:", p: "Day 5 ritual: " + d5.ritual, btn: "Logged", pressed: "true", glyph: "check", dot: false });
     await A.clearFx();
     await page.locator("#dojoArea .dojo-log button").click();
     blob = edit(blob, (b) => {
@@ -115,7 +102,7 @@ export default function register(scenario) {
     await agree("after undoing in the Dojo");
     await s.expect("…the badge Template Monk is still there", async () => !!(await A.blob()).badges.ritual5, true);
     await A.tab("Line");
-    await s.expect("…and the Line's row is undone again, its check box empty", () => ritualAt(page, 4), { cls: "ritual", pressed: "false", text: d5.ritual, xp: "+15", fill: LC.raised, tick: "check" });
+    await s.expect("…and the Line's row is undone again", () => ritualAt(page, 4), { cls: "ritual", pressed: "false", text: d5.ritual, xp: "+15", fill: "", tick: "check" });
 
     // ---- logging from the Dojo
     await A.tab("Dojo");
@@ -169,23 +156,11 @@ export default function register(scenario) {
     await s.expect("…15 templates, 3 labels", async () => ({ cards: await page.locator("#dojoArea .tcard").count(), labels: await page.locator("#dojoArea .sectionlabel").allTextContents() }), { cards: 15, labels: ["This week's spine", "Graph recall", "Structures"] });
     await s.expect("every card starts closed with its code behind the blur", () => cards(page), cardModel([], []));
     await s.expect("a closed card shows its name and its tag chip (Day 1, unweighted, …) and nothing of its body", async () => ({ head: await page.locator("#dojoArea .thead").first().evaluate((h) => h.textContent), body: (await A.props(tcard(page, "t1").locator(".tbody"), ["display"])).display }), { head: "Root-to-leaf paths (DFS)Day 1", body: "none" });
-    await s.expect("the ritual log: day 3's ritual on a raised card with a hairline rule and 8px corners, a Done +15 XP button", async () => ({ log: await log(page), look: await A.props("#dojoArea .dojo-log", ["border-top-style", "border-top-color", "border-top-width", "border-top-left-radius", "background-color"]) }), {
+    await s.expect("the ritual log: day 3's ritual, a yellow dashed outline, a Done +15 XP button", async () => ({ log: await log(page), look: await A.props("#dojoArea .dojo-log", ["border-top-style", "border-top-color", "border-top-width"]) }), {
       log: { cls: "dojo-log", b: "Day 3 ritual:", p: "Day 3 ritual: " + planOf("google")[2].ritual, btn: "Done+15 XP", pressed: "false", glyph: null, dot: true },
-      look: { "border-top-style": "solid", "border-top-color": PF.light.rule, "border-top-width": "1px", "border-top-left-radius": "8px", "background-color": PF.light.raised },
+      look: { "border-top-style": "dashed", "border-top-color": RGB.yellow, "border-top-width": "1px" },
     });
-    await s.expect("the Done button is the view's one primary Button: signal yellow with on-signal semibold text, 8px corners, 44px tall", () => A.props("#dojoArea .dojo-log button", ["background-color", "color", "font-weight", "border-top-left-radius", "height"]), { "background-color": PFX.light.signal, color: PFX.light.onSignal, "font-weight": "600", "border-top-left-radius": "8px", height: "44px" });
-    await s.expect("…and the only signal fill in the view", () => page.locator("main").evaluate((m) => [...m.querySelectorAll("*")].filter((e) => getComputedStyle(e).backgroundColor === "rgb(255, 205, 0)").map((e) => e.textContent.trim())), ["Done+15 XP"]);
-    await s.expect("a template is a Platform Card: the raised ground, a hairline rule edge, 8px corners, no shadow; its name in the subheading style, its tag a 13px caption chip on the sunk ground, a 20px chevron", async () => ({
-      card: await A.props(tcard(page, "t1"), ["background-color", "border-top-style", "border-top-width", "border-top-color", "border-top-left-radius", "box-shadow"]),
-      name: await A.props(tcard(page, "t1").locator("h3"), ["font-size", "line-height", "font-weight"]),
-      tag: await A.props(tcard(page, "t1").locator(".ttag"), ["font-size", "background-color", "color", "border-top-left-radius", "text-transform"]),
-      chev: await tcard(page, "t1").locator(".chev").getAttribute("width"),
-    }), {
-      card: { "background-color": PF.light.raised, "border-top-style": "solid", "border-top-width": "1px", "border-top-color": PF.light.rule, "border-top-left-radius": "8px", "box-shadow": "none" },
-      name: { "font-size": "20px", "line-height": "28px", "font-weight": "600" },
-      tag: { "font-size": "13px", "background-color": PF.light.sunk, color: PF.light.inkMuted, "border-top-left-radius": "4px", "text-transform": "none" },
-      chev: "20",
-    });
+    await s.expect("the Done button is a yellow pill with dark ink", () => A.props("#dojoArea .dojo-log button", ["background-color", "color", "font-weight", "border-top-left-radius"]), { "background-color": RGB.yellow, color: RGB.ink, "font-weight": "700", "border-top-left-radius": "999px" });
     await s.marked(A, "the Dojo (#dojoArea)", "#dojoArea");
     await A.shot("dojo", { tall: true });
     await A.setDark(true);
@@ -200,17 +175,6 @@ export default function register(scenario) {
       pre: await A.props(tcard(page, "t1").locator("pre.code"), ["filter", "user-select"]),
       veil: await tcard(page, "t1").locator(".veil").evaluate((v) => ({ text: v.querySelector("span").textContent, btn: v.querySelector("button").textContent, glyph: window.__glyph(v.querySelector("svg")), pos: getComputedStyle(v).position, display: getComputedStyle(v).display })),
     }), { pre: { filter: "blur(7px)", "user-select": "none" }, veil: { text: "Write yours from a blank page first.", btn: "Reveal & diff", glyph: "lock", pos: "absolute", display: "flex" } });
-    await s.expect("…the code sits on a well, the sunk ground with 4px corners, in the code style (14px mono on 22px lines); the veil's lock is 24px in ink, its line a 14px label, and Reveal & diff a secondary Button: a 2px ink outline on the raised ground, 44px", async () => ({
-      pre: await A.props(tcard(page, "t1").locator("pre.code"), ["background-color", "border-top-left-radius", "font-size", "line-height", "border-top-width"]),
-      lock: { size: await tcard(page, "t1").locator(".veil svg").first().getAttribute("width"), color: (await A.props(tcard(page, "t1").locator(".veil svg").first(), ["color"])).color },
-      line: await A.props(tcard(page, "t1").locator(".veil span"), ["font-size", "font-weight", "color"]),
-      btn: await A.props(tcard(page, "t1").locator(".veil button"), ["border-top-width", "border-top-style", "border-top-color", "background-color", "color", "height"]),
-    }), {
-      pre: { "background-color": PF.light.sunk, "border-top-left-radius": "4px", "font-size": "14px", "line-height": "22px", "border-top-width": "0px" },
-      lock: { size: "24", color: PF.light.ink },
-      line: { "font-size": "14px", "font-weight": "600", color: PF.light.ink },
-      btn: { "border-top-width": "2px", "border-top-style": "solid", "border-top-color": PF.light.ink, "background-color": PF.light.raised, color: PF.light.ink, height: "44px" },
-    });
     await tcard(page, "t8").locator(".thead").click();
     await tcard(page, "t14").locator(".thead").click();
     await s.expect("cards are independent: three can be open at once", async () => (await cards(page)).filter((c) => c.expanded === "true").map((c) => c.h3), [D.TPL[0].n, D.TPL[7].n, D.TPL[13].n]);
@@ -230,19 +194,6 @@ export default function register(scenario) {
       veil: (await A.props(tcard(page, "t1").locator(".veil"), ["display"])).display,
       other: (await A.props(tcard(page, "t8").locator("pre.code"), ["filter"])).filter,
     }), { cards: [[D.TPL[0].n, false], [D.TPL[7].n, true], [D.TPL[13].n, true]], pre: { filter: "none", "user-select": "auto" }, veil: "none", other: "blur(7px)" });
-    const hl = await hlOf(page, ["kw", "fn", "com", "op"]);
-    await s.expect("the revealed code is coloured as the editor colours it, from the --hl-* palette: def and if in --hl-kw, dfs (being defined) in --hl-fn and semibold, the calls in --hl-fn, the comment in --hl-com and italic, the dots in --hl-op, the names plain ink", async () => tcard(page, "t1").locator("pre.code").evaluate((pre) => {
-      const run = (text) => {
-        const el = [...pre.querySelectorAll("span")].find((e) => e.textContent === text);
-        const cs = el && getComputedStyle(el);
-        return el ? [el.className, cs.color, cs.fontWeight, cs.fontStyle].join(" | ") : null;
-      };
-      const bare = [...pre.childNodes].some((n) => n.nodeType === 3 && n.textContent.includes("node"));
-      return { def: run("def"), if: run("if"), dfs: run("dfs"), append: run("append"), comment: run("# copy at the leaf"), dot: run("."), names: { bare, color: getComputedStyle(pre).color } };
-    }), {
-      def: `hl-kw | ${hl.kw} | 400 | normal`, if: `hl-kw | ${hl.kw} | 400 | normal`, dfs: `hl-fn hl-def | ${hl.fn} | 600 | normal`, append: `hl-fn | ${hl.fn} | 400 | normal`,
-      comment: `hl-com | ${hl.com} | 400 | italic`, dot: `hl-op | ${hl.op} | 400 | normal`, names: { bare: true, color: PF.light.ink },
-    });
     await tcard(page, "t1").locator(".thead").click();
     await tcard(page, "t1").locator(".thead").click();
     await s.expect("closing and reopening a revealed card keeps it revealed", async () => (await cards(page))[0], cardModel(["t1", "t8", "t14"], ["t1"])[0]);
@@ -261,8 +212,8 @@ export default function register(scenario) {
     // ---- the ritual log
     await A.clearFx();
     await page.locator("#dojoArea .dojo-log button").click();
-    await s.expect("logging the ritual adds +15 XP · ritual and carries the streak to 3 (Heating Up), no confetti; the log reads Logged with a check and is marked logged", async () => ({ feed: feedOf(await A.fx()), log: await log(page) }), { feed: ["+15 XP · ritual", "* Badge — Heating Up"], log: { cls: "dojo-log logged", b: "Day 3 ritual:", p: "Day 3 ritual: " + planOf("google")[2].ritual, btn: "Logged", pressed: "true", glyph: "check", dot: false } });
-    await s.expect("a logged log's button is a pressed toggle: the lit sign square with on-sign text, its check before the word, and no signal left in the view", async () => ({ btn: await A.props("#dojoArea .dojo-log button", ["background-color", "color"]), first: await page.locator("#dojoArea .dojo-log button").evaluate((b) => b.firstElementChild.tagName.toLowerCase()), signal: await page.locator("main").evaluate((m) => [...m.querySelectorAll("*")].filter((e) => getComputedStyle(e).backgroundColor === "rgb(255, 205, 0)").length) }), { btn: { "background-color": PFX.light.sign, color: PFX.light.onSign }, first: "svg", signal: 0 });
+    await s.expect("logging the ritual adds +15 XP · ritual and carries the streak to 3 (Heating Up), no confetti; the log reads Logged with a check and goes solid", async () => ({ feed: feedOf(await A.fx()), log: await log(page) }), { feed: ["+15 XP · ritual", "* Badge — Heating Up"], log: { cls: "dojo-log logged", b: "Day 3 ritual:", p: "Day 3 ritual: " + planOf("google")[2].ritual, btn: "Logged", pressed: "true", glyph: "check", dot: false } });
+    await s.expect("a logged log is solid-outlined with a quiet grey button", () => A.props("#dojoArea .dojo-log button", ["background-color", "color"]), { "background-color": "rgb(241, 243, 244)", color: RGB.ink2 });
     await s.expect("the header took the 15 XP (200 to 215)", async () => (await hdr(page)).xp, "215");
     await A.shot("dojo-logged");
     await A.setDark(true);
@@ -288,7 +239,7 @@ export default function register(scenario) {
     await L.tab("Dojo");
     await s.expect("on the Local: no ritual log, a dashed note instead, and all 15 templates still there", () => layout(L.page), layoutModel(F.awsMid));
     await s.expect("…the note says so", () => L.page.locator(".dojo-local").textContent(), "No morning rituals on the Local — but the templates below are fair game whenever a stop leans on one.");
-    await s.expect("…and it is a note on the raised ground: a hairline edge in the rule colour, body text in ink-muted (a dashed edge would read as out of service)", () => L.props(".dojo-local", ["border-top-style", "border-top-width", "border-top-color", "font-size", "color"]), { "border-top-style": "solid", "border-top-width": "1px", "border-top-color": PF.light.rule, "font-size": "16px", color: PF.light.inkMuted });
+    await s.expect("…and it is a dashed grey box", () => L.props(".dojo-local", ["border-top-style", "border-top-color", "font-size", "color"]), { "border-top-style": "dashed", "border-top-color": RGB.line, "font-size": "13px", color: RGB.ink2 });
     await L.shot("dojo-local");
     await L.setDark(true);
     await L.shot("dojo-local");

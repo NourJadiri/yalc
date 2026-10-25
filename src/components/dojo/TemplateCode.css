@@ -1,11 +1,13 @@
 .tcode { position: relative; }
 .tcode pre { margin: 0; }
-.tcode.hidden { overflow: hidden; border-radius: var(--radius-sm); }
 .tcode.hidden pre { filter: blur(7px); user-select: none; }
 .veil {
-  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2);
-  padding: var(--space-3); color: var(--ink); text-align: center;
+  position: absolute; inset: 0; display: flex; flex-direction: column; gap: 6px;
+  align-items: center; justify-content: center; text-align: center; padding: 10px;
 }
-.veil span { max-width: var(--measure); font: var(--t-label); letter-spacing: var(--t-label-ls); }
-.veil .btn { background: var(--surface-raised); }
+.veil .vlock { color: var(--ink2); }
+.veil span { font-size: 12px; color: var(--ink2); max-width: 30ch; }
+.veil button { padding: 8px 16px; border-radius: 999px; background: var(--ink); color: var(--bg); font-size: 13px; font-weight: 600; transition: transform .12s, box-shadow .15s; }
+.veil button:active { transform: scale(.97); }
 .tcode:not(.hidden) .veil { display: none; }
+@media (hover: hover) { .veil button:hover { box-shadow: var(--shadow); } }

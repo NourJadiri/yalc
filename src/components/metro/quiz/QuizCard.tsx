@@ -29,7 +29,7 @@ export default function QuizCard({ session: s, onAnswer, onNext, onQuit }: QuizC
       ) : (
         <QuizNav onQuit={onQuit} />
       )}
-      <StopsTrack ids={s.ids} results={s.results} current={s.i} />
+      <StopsTrack ids={s.ids} results={s.results} />
     </RunCard>
   );
 }

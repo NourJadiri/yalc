@@ -1,2 +1,1 @@
-.ws-running { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; color: var(--ink-muted); font: var(--t-body); letter-spacing: var(--t-body-ls); font-variant-numeric: tabular-nums; }
-.ws-running p { margin: 0; }
+.ws-running { display: flex; align-items: center; gap: 10px; color: var(--ink2); font-size: 13px; padding: 6px 0; }

@@ -1,7 +1,7 @@
 import type { Problem } from "../../../types";
 import Icon from "../../shared/Icon";
 import Button from "../../ui/Button";
-import { TONE_MARK, type Verdict } from "../lib/verdict";
+import type { Verdict } from "../lib/verdict";
 import "./VerdictBanner.css";
 
 interface VerdictBannerProps {
@@ -14,18 +14,14 @@ interface VerdictBannerProps {
 }
 
 export default function VerdictBanner({ verdict, next, nextIsStep, onNext }: VerdictBannerProps) {
-  const mark = TONE_MARK[verdict.tone];
   return (
     <div className={"ws-verdict " + verdict.tone}>
-      <strong>
-        {mark && <Icon name={mark} size={24} />}
-        {verdict.title}
-      </strong>
+      <strong>{verdict.title}</strong>
       <span>{verdict.detail}</span>
       {next && (
-        <Button className="ws-next" onClick={() => onNext(next.id)}>
+        <Button variant="primary" className="ws-next" onClick={() => onNext(next.id)}>
           {(nextIsStep ? "Next step: " : "Next: ") + next.n}
-          <Icon name="arrow" size={20} />
+          <Icon name="arrow-right" size={13} />
         </Button>
       )}
     </div>

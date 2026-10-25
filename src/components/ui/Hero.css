@@ -1,9 +1,3 @@
-.hero { margin-bottom: var(--space-6); }
-.hero h1 { margin: 0 0 var(--space-2); color: var(--ink); font: var(--t-title); letter-spacing: var(--t-title-ls); }
-.hero h1 b { font-weight: inherit; }
-.hero p { max-width: var(--measure); margin: 0; color: var(--ink-muted); }
-.hero h1 + p { font: var(--t-lead); letter-spacing: var(--t-lead-ls); }
-@media (max-width: 599px) {
-  .hero h1 { font: var(--t-heading); letter-spacing: var(--t-heading-ls); }
-  .hero h1 + p { font: var(--t-body); letter-spacing: var(--t-body-ls); }
-}
+.hero h1 { font-size: clamp(26px, 6vw, 36px); font-weight: 400; letter-spacing: -0.6px; line-height: 1.15; margin: 6px 0 4px; }
+.hero h1 b { font-weight: 700; }
+.hero p { margin: 0 0 4px; color: var(--ink2); font-size: 14px; line-height: 1.55; max-width: 52ch; }

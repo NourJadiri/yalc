@@ -26,7 +26,7 @@ export default function DeckRow({ deck, platform, stat, selected, onSelect }: De
       aria-pressed={selected}
       onClick={() => onSelect(deck.id)}
     >
-      <Roundel look={look} />
+      <Roundel look={look} selected={selected} />
       <span className="drow-info">
         <span className="drow-name">{deck.n}</span>
         <span className="drow-sub">{subline(look, n, pct)}</span>

@@ -1,9 +1,7 @@
 .iconbtn {
-  position: relative; flex: none; display: grid; place-items: center;
-  width: var(--control-height); height: var(--control-height); border-radius: var(--radius-md); color: var(--ink);
-  transition: background-color 120ms ease-out, color 120ms ease-out;
+  flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+  color: var(--ink2); transition: background .15s, color .15s, transform .12s;
 }
-.iconbtn.sm { width: var(--target-min); height: var(--target-min); border-radius: var(--radius-sm); }
-.iconbtn:not(:disabled):active { transform: translateY(1px); }
-.iconbtn:disabled { cursor: not-allowed; border: var(--stroke-bold) dashed var(--border); color: var(--ink-muted); }
-@media (hover: hover) { .iconbtn:not(:disabled):hover { background: var(--surface-sunk); } }
+.iconbtn.sm { width: 26px; height: 26px; }
+.iconbtn:active { transform: scale(.94); }
+@media (hover: hover) { .iconbtn:hover { background: var(--sunken); color: var(--ink); } }

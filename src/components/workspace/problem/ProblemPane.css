@@ -1,5 +1,4 @@
-.ws-problem-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: var(--space-4) var(--space-5) var(--space-8); }
-.ws-problem-body > * { max-width: var(--measure); }
+.ws-problem-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 14px 18px 32px; }
 @media (max-width: 899px) {
-  .ws-problem-body { padding: var(--space-3) var(--space-4) var(--space-8); }
+  .ws-problem-body { padding: 12px 14px 28px; }
 }

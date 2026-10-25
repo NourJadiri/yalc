@@ -1,10 +1,4 @@
-/* A pictogram tile on a card's hairline edge. Not yet earned is a stop still being built, as Platform draws the line ahead:
-   a dashed edge on the sunk ground, muted. */
-.badge { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); min-width: 0; padding: var(--space-4) var(--space-2) var(--space-3); border: var(--hairline) solid var(--rule); border-radius: var(--radius-sm); background: var(--surface-raised); color: var(--ink); text-align: center; }
-.badge .ic { display: flex; }
-.badge span:last-child { font: var(--t-caption); letter-spacing: var(--t-caption-ls); hyphens: auto; overflow-wrap: anywhere; }
-.badge.locked { border-style: dashed; border-color: var(--border); background: var(--surface-sunk); color: var(--ink-muted); }
-/* Centred names need no side padding, which leaves the longest ("Exterminator") one line at 375px and up. */
-@media (max-width: 599px) {
-  .badge { padding: var(--space-3) 0; }
-}
+.badge { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 6px 10px; text-align: center; }
+.badge .ic { width: 38px; height: 38px; margin: 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, currentColor 12%, transparent); }
+.badge span { font-size: 10px; color: var(--ink2); display: block; margin-top: 6px; line-height: 1.25; }
+.badge.locked { opacity: .35; filter: grayscale(1); }

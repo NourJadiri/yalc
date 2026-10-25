@@ -37,7 +37,7 @@ export default function ProblemPane({ content, notes, tab, onTab, open, onReveal
   return (
     <section className="ws-problem" aria-label="Problem">
       <Tabs>
-        <Tab icon="document" selected={tab === "desc"} onSelect={() => onTab("desc")}>
+        <Tab icon="file-text" selected={tab === "desc"} onSelect={() => onTab("desc")}>
           Description
         </Tab>
         <Tab icon={open ? "book-open" : "lock"} selected={tab === "solution"} onSelect={() => onTab("solution")}>

@@ -1,10 +1,2 @@
-/* Platform's warning Notice: the caution wash under ink, a hazard band along the top so it is never taken for the yellow of a way forward, and the warning tile. */
-.qrwarn { position: relative; display: grid; grid-template-columns: calc(var(--space-8) + var(--space-2)) minmax(0, 1fr); align-items: start; gap: var(--space-4); margin: 0; overflow: hidden; padding: calc(var(--space-4) + var(--space-2)) var(--space-4) var(--space-4); border: var(--hairline) solid transparent; border-radius: var(--radius-md); background: var(--caution-wash); color: var(--ink); }
-.qrwarn::before { content: ""; position: absolute; top: 0; right: 0; left: 0; height: calc(var(--space-2) + var(--stroke-bold)); background: repeating-linear-gradient(-45deg, var(--signal) 0 calc(var(--space-2) + var(--stroke-bold)), var(--on-signal) 0 calc(2 * calc(var(--space-2) + var(--stroke-bold)))); }
-.qrwarn-tile { display: flex; align-items: center; justify-content: center; aspect-ratio: 1; border-radius: var(--radius-sm); background: var(--signal); color: var(--on-signal); }
-.qrwarn-text { padding-top: var(--space-2); }
-/* High contrast tells surfaces apart by their edges. */
-@media (prefers-contrast: more) {
-  :root:not([data-theme]) .qrwarn { border-color: var(--rule); }
-}
-:root[data-theme="contrast"] .qrwarn { border-color: var(--rule); }
+/* Not a footnote: full ink, like .storenote.warn. */
+.qrwarn { margin: 0; max-width: 34ch; text-align: center; font-size: 11.5px; line-height: 1.45; color: #202124; }

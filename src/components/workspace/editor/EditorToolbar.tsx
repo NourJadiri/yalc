@@ -28,7 +28,7 @@ export default function EditorToolbar({ fontSize, onFontStep, onReset, resetTitl
       <span className="ws-font">{fontSize}px</span>
       <IconButton size="sm" icon="plus" label="Larger text" title="Larger text" onClick={() => onFontStep(1)} />
       <LinkButton onClick={onReset} title={resetTitle}>
-        <Icon name="rotate-ccw" size={16} />
+        <Icon name="rotate-ccw" size={12} />
         Reset
       </LinkButton>
     </div>

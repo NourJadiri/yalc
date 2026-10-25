@@ -1,9 +1,8 @@
 .ws-veil {
-  display: flex; flex-direction: column; align-items: center; gap: var(--space-3); max-width: 24rem; margin: var(--space-12) auto;
-  color: var(--ink-muted); font: var(--t-body); letter-spacing: var(--t-body-ls); text-align: center;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;
+  margin: 40px auto; max-width: 340px; color: var(--ink2);
 }
-.ws-veil > svg { color: var(--ink); }
-.ws-veil > p { margin: 0; }
-.ws-veil b { color: var(--ink); font-weight: 600; }
-.ws-veil.hinted { max-width: var(--measure); margin: var(--space-6) 0 var(--space-8); }
-.ws-veil.hinted .ws-ladder { align-self: stretch; margin: var(--space-2) 0 0; color: var(--ink); text-align: left; }
+.ws-veil > p { margin: 0; font-size: 13.5px; line-height: 1.6; }
+.ws-veil b { color: var(--ink); }
+.ws-veil.hinted { margin-top: 28px; max-width: 460px; }
+.ws-veil.hinted .ws-ladder { align-self: stretch; margin: 6px 0 0; text-align: left; color: var(--ink); }

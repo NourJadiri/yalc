@@ -19,7 +19,7 @@ export { PLAN, DIFFN, XPD, RITUAL_XP, LC } from "./src/data/plan.ts";
 export { AWS_PLAN } from "./src/data/aws.ts";
 export { ENG_PLAN } from "./src/data/eng.ts";
 export { TPL } from "./src/data/templates.ts";
-export { RANKS, AWS_RANKS, ENG_RANKS, BADGES } from "./src/data/meta.ts";
+export { RANKS, AWS_RANKS, ENG_RANKS, RANKCOL, AWS_RANKCOL, ENG_RANKCOL, BADGES } from "./src/data/meta.ts";
 `;
 
 export async function loadData() {

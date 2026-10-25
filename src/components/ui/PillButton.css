@@ -1,16 +1,17 @@
 .mbtn {
-  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
-  height: var(--control-height); padding: 0 var(--space-5);
-  border: var(--stroke-bold) solid var(--ink); border-radius: var(--radius-md); background: transparent; color: var(--ink);
-  font: var(--t-ui); letter-spacing: var(--t-ui-ls); white-space: nowrap;
-  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+  padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); font-size: 13px; font-weight: 500;
+  transition: background-color .15s ease, border-color .15s ease, transform .15s ease;
 }
-.mbtn.ico svg { flex: none; }
-.mbtn:not(:disabled):active { transform: translateY(1px); }
-.mbtn.danger { border-color: transparent; background: var(--stop); color: var(--on-stop); }
-.mbtn:disabled { cursor: not-allowed; border-style: dashed; border-color: var(--border); background: var(--surface-sunk); color: var(--ink-muted); }
+.mbtn.ico { display: inline-flex; align-items: center; gap: 6px; }
+.mbtn.ico svg { flex: none; opacity: .75; }
+.mbtn[aria-pressed="true"] { border-color: var(--blue); color: var(--blue); background: color-mix(in srgb, var(--blue) 10%, var(--surface)); }
+.mbtn:not(:disabled):active { transform: scale(.97); background: var(--sunken); }
+.mbtn:disabled { opacity: .5; cursor: default; }
+.mbtn.danger { color: var(--red); border-color: var(--red); }
+.mbtn.danger:not(:disabled):active { background: var(--bad-bg); }
+/* `button.` keeps hover above the link sheet's `.qrsheet .mbtn:active`, which ties it on class count and loads later. */
 @media (hover: hover) {
-  .mbtn:not(:disabled):hover { background: var(--surface-sunk); }
-  button.mbtn.danger:not(:disabled):hover { background: var(--stop); text-decoration: underline; text-decoration-thickness: var(--stroke-bold); text-underline-offset: 3px; }
+  button.mbtn:not(:disabled):hover { background: var(--sunken); border-color: color-mix(in srgb, var(--ink2) 35%, var(--line)); }
+  .mbtn.danger:not(:disabled):hover { background: var(--bad-bg); border-color: var(--red); }
 }
-.mbtn[aria-pressed="true"], button.mbtn[aria-pressed="true"]:hover { border-color: transparent; background: var(--sign); color: var(--on-sign); }

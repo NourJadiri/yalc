@@ -33,7 +33,7 @@ export default function HintLadder({ notes, hints, open, onClimb, ref }: HintLad
   return (
     <div className="ws-ladder" role="group" aria-labelledby={title} ref={ref}>
       <div className="ws-ladder-head">
-        <Icon name="lightbulb" size={20} />
+        <Icon name="lightbulb" size={14} />
         <span id={title}>Stuck? One hint at a time.</span>
         <LadderDots hints={hints} open={open} />
       </div>

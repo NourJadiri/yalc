@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import type { CaseResult } from "../../../runner/types";
-import Icon from "../../shared/Icon";
-import { TONE_MARK, caseMark } from "../lib/verdict";
+import { caseMark } from "../lib/verdict";
 import "./Chips.css";
 
 interface ResultChipProps {
@@ -15,7 +14,6 @@ interface ResultChipProps {
 
 export default function ResultChip({ status, label, selected, onSelect, children }: ResultChipProps) {
   const mark = caseMark(status);
-  const icon = TONE_MARK[mark.tone];
   return (
     <button
       role="tab"
@@ -24,7 +22,6 @@ export default function ResultChip({ status, label, selected, onSelect, children
       onClick={onSelect}
       title={label + " — " + mark.word}
     >
-      {icon && <Icon name={icon} size={16} />}
       {children}
     </button>
   );

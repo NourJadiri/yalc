@@ -1,1 +1,1 @@
-.mrow { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-4); margin-top: var(--space-3); }
+.mrow { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }

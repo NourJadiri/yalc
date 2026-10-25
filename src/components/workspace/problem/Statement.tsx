@@ -34,7 +34,7 @@ export default function Statement({ statement, topics, ladder }: StatementProps)
           </HintBox>
         ))}
       {follow && (
-        <HintBox icon="message-circle" title="Follow-ups an interviewer might ask">
+        <HintBox icon="arrow-right" title="Follow-ups an interviewer might ask">
           <Markdown text={follow.body} />
         </HintBox>
       )}

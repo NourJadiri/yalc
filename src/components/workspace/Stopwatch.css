@@ -1,14 +1,10 @@
-.wclock { display: inline-flex; align-items: center; gap: calc(var(--space-1) / 2); }
+.wclock { display: inline-flex; align-items: center; gap: 2px; }
 .wclock-time {
-  display: inline-flex; align-items: center; gap: var(--space-1); height: calc(var(--control-height) - var(--space-2)); padding: 0 var(--space-2);
-  border-radius: var(--radius-md); color: var(--ink-muted); font: var(--t-label); letter-spacing: var(--t-label-ls); font-variant-numeric: tabular-nums;
-  transition: background-color 120ms ease-out, color 120ms ease-out;
+  display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 8px; border-radius: 6px;
+  font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--ink2);
 }
-.wclock-time > svg { flex: none; }
-.wclock.paused .wclock-time { color: var(--caution); }
-.wclock-reset { color: var(--ink-muted); }
+.wclock.paused .wclock-time { color: var(--med); }
+.wclock-reset { width: 24px; height: 24px; border-radius: 6px; display: grid; place-items: center; color: var(--ink2); opacity: .7; }
 @media (hover: hover) {
-  .wclock-time:hover { background: var(--surface-sunk); color: var(--ink); }
-  .wclock.paused .wclock-time:hover { color: var(--caution); }
-  .wclock-reset:hover { color: var(--ink); }
+  .wclock-time:hover, .wclock-reset:hover { background: var(--sunken); color: var(--ink); opacity: 1; }
 }

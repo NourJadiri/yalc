@@ -1,3 +1,4 @@
-.qnav { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); margin-top: var(--space-4); }
-/* A ghost Button: its label lines up with the card's text, its fill reaches into the card's padding. */
-.qnav .quit { margin-left: calc(var(--space-3) * -1); }
+.qnav { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.quit { font-size: 12.5px; color: var(--ink2); padding: 8px; transition: color .15s; }
+@media (hover: hover) { .quit:hover { color: var(--ink); } }
+.quit:active { color: var(--ink); }

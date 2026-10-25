@@ -1,3 +1,3 @@
-.storenote { max-width: var(--measure); margin: var(--space-3) 0 0; color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls); }
-.storenote + .storenote { margin-top: var(--space-1); }
-.storenote.warn { padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); background: var(--caution-wash); color: var(--ink); }
+.storenote { font-size: 11.5px; color: var(--ink2); margin-top: 14px; line-height: 1.5; }
+.storenote + .storenote { margin-top: 6px; }
+.storenote.warn { color: var(--ink); }

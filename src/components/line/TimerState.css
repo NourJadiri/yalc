@@ -1,2 +1,0 @@
-.tstate { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--caution); font: var(--t-label); letter-spacing: var(--t-label-ls); white-space: nowrap; }
-.tstate.up { color: var(--stop); }

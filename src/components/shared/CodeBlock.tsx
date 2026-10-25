@@ -1,5 +1,4 @@
-import { Fragment, useMemo } from "react";
-import { codeRuns } from "./lib/codeRuns";
+import { Fragment } from "react";
 import "./CodeBlock.css";
 
 interface CodeBlockProps {
@@ -7,20 +6,17 @@ interface CodeBlockProps {
   className?: string;
 }
 
-/** A Python snippet on a well, in the editor's colours; `____` marks the hole in a missing-line card. */
+/** Monospace snippet; `____` marks the hole in a missing-line card and gets the amber highlight. */
 export default function CodeBlock({ code, className = "code" }: CodeBlockProps) {
-  const runs = useMemo(() => codeRuns(String(code)), [code]);
+  const parts = String(code).split("____");
   return (
     <pre className={className}>
-      {runs.map((run, i) =>
-        run.className ? (
-          <span key={i} className={run.className}>
-            {run.text}
-          </span>
-        ) : (
-          <Fragment key={i}>{run.text}</Fragment>
-        )
-      )}
+      {parts.map((part, i) => (
+        <Fragment key={i}>
+          {part}
+          {i < parts.length - 1 && <span className="blank">____</span>}
+        </Fragment>
+      ))}
     </pre>
   );
 }

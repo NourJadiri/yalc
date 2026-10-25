@@ -1,31 +1,29 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 /* Overscroll is pinned because Metro is the only tab shorter than the viewport, and the fixed tab bar rides iOS's rubber-band bounce there.
-   100dvh follows Safari's toolbar as it grows and shrinks; the 100% line is the fallback. The scroll padding keeps whatever
-   the keyboard focuses out from under the sticky header and the fixed tab bar. */
-html { height: 100%; overscroll-behavior-y: none; scroll-padding: calc(var(--space-16) + var(--space-6) + env(safe-area-inset-top)) 0 calc(var(--space-16) + var(--space-4) + env(safe-area-inset-bottom)); }
+   100dvh follows Safari's toolbar as it grows and shrinks; the 100% line is the fallback. */
+html { height: 100%; overscroll-behavior-y: none; }
 body {
-  margin: 0; min-height: 100%; min-height: 100dvh; background: var(--surface); color: var(--ink);
-  font: var(--t-body); letter-spacing: var(--t-body-ls); -webkit-font-smoothing: antialiased;
-  padding-bottom: calc(var(--space-16) + var(--space-4) + env(safe-area-inset-bottom));
+  margin: 0; min-height: 100%; min-height: 100dvh; background: var(--bg); color: var(--ink);
+  font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased;
+  padding-bottom: calc(74px + env(safe-area-inset-bottom));
   overscroll-behavior-y: none;
 }
 button { font-family: inherit; font-size: inherit; color: inherit; background: none; border: none; padding: 0; cursor: pointer; }
-/* Platform's focus ring: ink hugging the control, then a signal halo, so one of the two shows on any ground. The
-   transparent outline is what forced-colours mode draws instead. */
-:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
-a { color: var(--ink); text-decoration: underline; text-decoration-thickness: var(--stroke-bold); text-underline-offset: 3px; border-radius: 2px; }
-@media (hover: hover) {
-  a:hover { background: var(--signal); color: var(--on-signal); }
-}
-::selection { background: var(--signal); color: var(--on-signal); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+a { color: var(--blue); text-decoration: none; }
 
-/* Thumb target: a problem's check box is drawn 24px, so a transparent overlay lifts its tappable area to 44px without moving
-   anything. It stays inside the row's padding, so it never overlaps another target. Every other control is 44px of its own. */
-.prow .pcheck { position: relative; }
-.prow .pcheck::after {
+/* Thumb targets: several controls are drawn small on purpose (the 26px check circle, the 34px link button), so a transparent overlay
+   lifts each tappable area to ~44px without moving anything. The expansions stay inside their row's padding, so no two targets overlap. */
+.prow .pcheck, .prow .golink { position: relative; }
+.prow .pcheck::after, .prow .golink::after {
   content: ""; position: absolute; top: 50%; left: 50%;
   width: 44px; height: 44px; transform: translate(-50%, -50%);
 }
+.ritual, .timer .tbtn, .mbtn, .quit, .next, .veil button, .dojo-log button { position: relative; }
+.ritual::after { content: ""; position: absolute; inset: -3px 0; }
+.timer .tbtn::after { content: ""; position: absolute; inset: -7px -2px; }
+.mbtn::after, .veil button::after, .dojo-log button::after,
+.quit::after, .next::after { content: ""; position: absolute; inset: -4px 0; }
 
 /* With animation off, a toast leaves only when its JS timer fires. */
 @media (prefers-reduced-motion: reduce) {

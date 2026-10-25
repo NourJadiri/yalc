@@ -23,15 +23,12 @@ export default function QuizHeader({ type, step, total, streak, xp }: QuizHeader
         <span>{step + "/" + total}</span>
         {streak >= 2 && (
           <span className="streak">
-            <Icon name="flame" size={16} />
+            <Icon name="flame" size={12} />
             {streak}
           </span>
         )}
         {mult > 1 && <span className="mult">{"×" + mult}</span>}
-        <span>
-          <Icon name="zap" size={16} />
-          {"+" + xp}
-        </span>
+        <span>{"+" + xp}</span>
       </span>
     </div>
   );

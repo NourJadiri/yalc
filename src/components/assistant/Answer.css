@@ -1,31 +1,22 @@
 .asst-a { max-width: 100%; min-width: 0; }
-.asst-a .md { font: var(--t-body); letter-spacing: var(--t-body-ls); overflow-wrap: anywhere; }
-.asst-a .md p { margin: 0 0 var(--space-3); }
+.asst-a .md { font-size: 13.5px; line-height: 1.6; overflow-wrap: anywhere; }
 .asst-a .md > :last-child { margin-bottom: 0; }
-.asst-a .md strong { font-weight: 700; }
-.asst-a .md em { color: inherit; }
-.asst-a .md ul, .asst-a .md ol { margin: 0 0 var(--space-3); padding-left: var(--space-6); }
-.asst-a .md li { margin-bottom: var(--space-1); }
-.asst-a .md h1, .asst-a .md h2 { margin: var(--space-4) 0 var(--space-2); color: var(--ink); font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); text-transform: none; }
-.asst-a .md h3, .asst-a .md h4 { margin: var(--space-4) 0 var(--space-1); color: var(--ink); font: var(--t-ui); letter-spacing: var(--t-ui-ls); text-transform: none; }
-.asst-a .md code { padding: 0 var(--space-1); border-radius: var(--radius-sm); background: var(--surface-sunk); font: var(--t-code); letter-spacing: var(--t-code-ls); }
-.asst-a .md pre {
-  margin: 0 0 var(--space-3); padding: var(--space-2) var(--space-3); border: 0; border-radius: var(--radius-sm);
-  background: var(--surface-sunk); font: var(--t-code); letter-spacing: var(--t-code-ls); white-space: pre; overflow-x: auto; overflow-wrap: normal;
-}
-.asst-a .md pre code { padding: 0; background: none; font: inherit; }
-.asst-a .md blockquote { margin: 0 0 var(--space-3); padding-left: var(--space-3); border-left: var(--stroke-bold) solid var(--border); }
-.asst-a .md hr { margin: var(--space-4) 0; border: 0; border-top: var(--hairline) solid var(--rule); }
+.asst-a .md pre { margin: 6px 0 10px; padding: 9px 11px; font-size: 12px; overflow-wrap: normal; }
+.asst-a .md a { text-decoration: underline; text-underline-offset: 2px; }
+.asst-a .md h1, .asst-a .md h2, .asst-a .md h3, .asst-a .md h4 { font-size: 13.5px; margin: 12px 0 6px; }
 
-/* A "line 7" she names: a link into the editor, at least a target tall. */
+/* A "line 7" she names: a chip in the sentence that takes you to that line. The text leans toward the ink so it holds its contrast on its own tint, in every mode and theme. */
 .asst-a .md .asst-line {
-  display: inline-block; min-height: var(--target-min); padding: 0 calc(var(--space-1) / 2); border-radius: calc(var(--radius-sm) / 2);
-  color: var(--ink); font: inherit; white-space: nowrap;
-  text-decoration: underline; text-decoration-thickness: var(--stroke-bold); text-underline-offset: 3px;
-  transition: background-color 120ms ease-out, color 120ms ease-out;
+  position: relative; display: inline-block; padding: 0 5px; border-radius: 6px; white-space: nowrap;
+  line-height: 1.35; font-weight: 600; color: color-mix(in srgb, var(--accent) 70%, var(--ink));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  transition: background-color .15s ease;
 }
+/* A bigger target for a thumb, as base.css does for the other small controls. */
+.asst-a .md .asst-line::after { content: ""; position: absolute; inset: -5px -3px; }
+.asst-a .md .asst-line:active { background: color-mix(in srgb, var(--accent) 24%, transparent); }
 @media (hover: hover) {
-  .asst-a .md .asst-line:hover { background: var(--signal); color: var(--on-signal); }
+  .asst-a .md .asst-line:hover { background: color-mix(in srgb, var(--accent) 24%, transparent); }
 }
 
 /* The editor's palette, by class (src/lib/highlightRules.ts). */

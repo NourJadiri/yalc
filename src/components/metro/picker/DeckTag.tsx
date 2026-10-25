@@ -1,5 +1,4 @@
-import Flaps from "../../ui/Flaps";
-import { tagLabel, type DeckLook } from "./lib/deckLook";
+import { tagLabel, tagStyle, type DeckLook } from "./lib/deckLook";
 import "./DeckTag.css";
 
 interface DeckTagProps {
@@ -11,6 +10,10 @@ interface DeckTagProps {
 
 export default function DeckTag({ look, n, selected, platform }: DeckTagProps) {
   const label = tagLabel(look, n, selected);
-  if (label === null) return <Flaps className="dplat" tone="platform" text={"P" + platform} said />;
-  return <Flaps className="dtag" tone={selected ? "boarding" : "delayed"} text={label} said />;
+  if (label === null) return <span className="dplat">{"P" + platform}</span>;
+  return (
+    <span className="dtag" style={tagStyle(look)}>
+      {label}
+    </span>
+  );
 }

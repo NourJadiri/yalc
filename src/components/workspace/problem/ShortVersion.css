@@ -1,9 +1,9 @@
 .ws-technique {
-  display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-1); margin: var(--space-1) 0 0; padding: calc(var(--space-1) / 2) var(--space-2);
-  border-radius: var(--radius-sm); background: var(--surface-sunk); color: var(--ink-muted); font: var(--t-label); letter-spacing: var(--t-label-ls);
+  display: inline-block; margin: 6px 0 0; padding: 3px 10px; border-radius: 12px; background: var(--sunken);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--ink2);
 }
-.ws-technique b { color: var(--ink); font-weight: 700; }
-/* The numbers are bold ink, as the "# 1." markers are in the code below. */
-.ws-steps li::marker { color: var(--ink); font-weight: 700; }
-.ws-cost .md { margin: calc(-1 * var(--space-1)) 0 var(--space-1); color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls); }
+.ws-technique b { color: var(--ink); font-weight: 600; }
+/* The numbers wear the accent, as the "# 1." markers do in the code below. */
+.ws-steps li::marker { color: var(--accent); font-weight: 700; }
+.ws-cost .md { margin: -2px 0 4px; font-size: 12.5px; color: var(--ink2); }
 .ws-cost .md p { margin: 0; }

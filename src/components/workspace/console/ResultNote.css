@@ -1,1 +1,1 @@
-.ws-result-note { max-width: var(--measure); margin: 0 0 var(--space-3); color: var(--ink); font: var(--t-body); letter-spacing: var(--t-body-ls); }
+.ws-result-note { margin: 0 0 10px; font-size: 12.5px; color: var(--ink2); line-height: 1.55; }

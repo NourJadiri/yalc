@@ -1,5 +1,0 @@
-/* It scrolls rather than overflows (an iPhone SE in Get mode, with the warning and the waiting line, is taller than 667px), and a scrolling column must not also squash its parts. */
-.dlgpanel { display: flex; flex-direction: column; gap: var(--space-3); width: 100%; max-width: 32rem; max-height: 100%; overflow-y: auto; overscroll-behavior: contain; padding: var(--space-6) var(--space-6) 0; border-radius: var(--radius-md); background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-float); }
-.dlgpanel > * { flex: none; }
-.dlgpanel-title { margin: 0; font: var(--t-heading); letter-spacing: var(--t-heading-ls); }
-.dlgpanel-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-3); margin: var(--space-1) calc(-1 * var(--space-6)) 0; padding: var(--space-4) var(--space-6) var(--space-6); border-top: var(--hairline) solid var(--rule); }

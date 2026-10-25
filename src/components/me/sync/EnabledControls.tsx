@@ -27,8 +27,9 @@ export default function EnabledControls({ status, pop, now, onSyncNow, onLink, l
         <PillButton icon="qr-code" onClick={onLink} ref={linkRef}>
           Link a device
         </PillButton>
-        {/* Not the danger Button: turning sync off loses nothing, here or in the cloud. */}
-        <PillButton onClick={onDisable}>Turn off</PillButton>
+        <PillButton tone="danger" onClick={onDisable}>
+          Turn off
+        </PillButton>
       </ButtonRow>
     </>
   );

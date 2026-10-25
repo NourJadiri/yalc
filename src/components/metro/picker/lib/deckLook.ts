@@ -1,31 +1,35 @@
+import type { CSSProperties } from "react";
 import type { DeckId } from "../../../../types";
-import type { BulletLine } from "../../../ui/Bullet";
 
 interface LookBase {
+  /** Tag text colour. Yellow is never used as text, so the yellow line pairs with --med. */
+  text: string;
   /** Redemption, the delayed service: closed until you owe it cards. */
   delayed?: true;
 }
 
 interface MixLook extends LookBase {
-  /** The interchange: no line of its own, scored across every line. */
+  /** The interchange: drawn as the four-colour roundel, scored across every line. */
   mix: true;
 }
 
 interface LineLook extends LookBase {
   mix?: undefined;
-  line: BulletLine;
+  color: string;
   glyph: string;
+  /** The yellow line's letter stays dark in both themes. */
+  onYellow?: true;
 }
 
 export type DeckLook = MixLook | LineLook;
 
 const LOOK: Record<DeckId, DeckLook> = {
-  mix: { mix: true },
-  graphs: { line: 6, glyph: "G" },
-  bt: { line: 1, glyph: "B" },
-  dp: { line: 8, glyph: "D" },
-  ds: { line: 3, glyph: "H" },
-  redo: { line: 7, glyph: "R", delayed: true },
+  mix: { mix: true, text: "var(--ink)" },
+  graphs: { color: "var(--blue)", glyph: "G", text: "var(--blue)" },
+  bt: { color: "var(--red)", glyph: "B", text: "var(--red)" },
+  dp: { color: "var(--yellow)", glyph: "D", text: "var(--med)", onYellow: true },
+  ds: { color: "var(--green)", glyph: "H", text: "var(--green)" },
+  redo: { color: "var(--med)", glyph: "R", text: "var(--med)", delayed: true },
 };
 
 export const deckLook = (id: DeckId): DeckLook => LOOK[id];
@@ -38,8 +42,13 @@ export function subline(look: DeckLook, n: number, pct: number | null): string {
 
 export const isClosed = (look: DeckLook, n: number): boolean => !!look.delayed && n === 0;
 
-/** The status on a row's flaps, or null when the row shows its platform instead. */
+/** The pill on a row, or null when the row shows its platform instead. */
 export function tagLabel(look: DeckLook, n: number, selected: boolean): string | null {
   if (selected) return "NOW BOARDING";
   return look.delayed && n > 0 ? "DELAYED · " + n : null;
 }
+
+export const tagStyle = (look: DeckLook): CSSProperties => ({
+  color: look.text,
+  background: "color-mix(in srgb, " + look.text + " 14%, transparent)",
+});

@@ -10,7 +10,7 @@ interface Props {
 
 /* Decorative: the window's header already says who is talking. */
 export default function Avatar({ src, small, mood = "neutral" }: Props) {
-  const size = small ? 32 : 40;
+  const size = small ? 24 : 36;
   return (
     <img
       className={cx("asst-avatar", small && "sm")}

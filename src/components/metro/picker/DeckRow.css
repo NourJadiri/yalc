@@ -1,24 +1,12 @@
-/* A departure: the deck's line bullet, its name and numbers, then its platform or status on flaps. On a phone the
-   numbers drop under the name so NOW BOARDING keeps a line of its own beside it. */
 .drow {
-  position: relative; display: grid; grid-template-columns: auto 8.5rem minmax(0, 1fr) auto; grid-template-areas: "rdl name sub tag";
-  align-items: center; column-gap: var(--space-3); width: 100%; padding: var(--space-2) var(--space-4);
-  border-top: var(--hairline) solid var(--rule); color: var(--ink); text-align: left;
-  transition: background-color 120ms ease-out;
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 60px;
+  padding: 8px 14px; border-top: 1px solid var(--sunken); text-align: left;
+  transition: background .15s;
 }
-.drow-info { display: contents; }
-.drow-name { grid-area: name; font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); }
-.drow-sub { grid-area: sub; color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls); font-variant-numeric: tabular-nums; }
-.drow.sel, .drow:not(:disabled):active { background: color-mix(in srgb, var(--surface-raised) 50%, var(--surface-sunk)); }
-@media (hover: hover) {
-  .drow:not(:disabled):hover { background: color-mix(in srgb, var(--surface-raised) 50%, var(--surface-sunk)); }
-}
-.drow.sel::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--line-weight); background: var(--ink); }
-.drow:focus-visible { z-index: 1; }
-.drow:disabled { cursor: not-allowed; color: var(--ink-muted); }
-.drow:disabled [data-flaps] { color: var(--ink-muted); }
-.drow:disabled .rdl { border: var(--stroke-bold) dashed var(--border); background: var(--surface-sunk); color: var(--ink-muted); }
-@media (max-width: 599px) {
-  .drow { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "rdl name tag" "rdl sub sub"; column-gap: var(--space-2); padding: var(--space-2) var(--space-3); }
-  .drow-name { font: var(--t-ui); letter-spacing: var(--t-ui-ls); }
-}
+@media (hover: hover) { .drow:not(:disabled):not(.sel):hover { background: var(--sunken); } }
+.drow:not(:disabled):active { background: var(--sunken); }
+.drow.sel { background: var(--sunken); }
+.drow:disabled { opacity: .4; cursor: default; }
+.drow-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.drow-name { font-size: 14.5px; font-weight: 600; letter-spacing: -.1px; }
+.drow-sub { font-family: var(--mono); font-size: 11px; color: var(--ink2); font-variant-numeric: tabular-nums; }

@@ -12,7 +12,7 @@ interface WorkspaceHeaderProps {
 export default function WorkspaceHeader({ title, onClose, meta, actions }: WorkspaceHeaderProps) {
   return (
     <header className="ws-head">
-      <IconButton icon="arrow-left" label="Back to the line" title="Back (Esc)" onClick={onClose} />
+      <IconButton icon="chevron-left" label="Back to the line" title="Back (Esc)" onClick={onClose} />
       <div className="ws-title">
         <h2>{title}</h2>
         {meta}

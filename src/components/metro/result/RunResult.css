@@ -1,35 +1,9 @@
-/* Platform's Ticket, a confirmation you could keep: the line's band on top, the score on the stub, notched where the
-   stub would tear. The one paper object, so it casts a small shadow. On a phone the stub turns to the top. */
-.qwrap.result { padding: 0; border: 0; background: none; filter: drop-shadow(0 0 var(--hairline) var(--border)) drop-shadow(0 var(--space-2) calc(var(--space-3) + var(--stroke-bold)) var(--shadow)); }
-.ticket {
-  --cut: 68%;
-  display: grid; grid-template-columns: var(--cut) minmax(0, 1fr); grid-template-areas: "main stub";
-  border-radius: var(--radius-md); background: var(--surface-raised); color: var(--ink);
-  -webkit-mask: radial-gradient(circle calc(var(--space-3) - var(--hairline)) at var(--cut) 0, transparent 98%, var(--ink)) top / 100% 51% no-repeat, radial-gradient(circle calc(var(--space-3) - var(--hairline)) at var(--cut) 100%, transparent 98%, var(--ink)) bottom / 100% 51% no-repeat;
-  mask: radial-gradient(circle calc(var(--space-3) - var(--hairline)) at var(--cut) 0, transparent 98%, var(--ink)) top / 100% 51% no-repeat, radial-gradient(circle calc(var(--space-3) - var(--hairline)) at var(--cut) 100%, transparent 98%, var(--ink)) bottom / 100% 51% no-repeat;
-}
-.ticket-main { grid-area: main; min-width: 0; padding: var(--space-6); border-top: var(--line-weight) solid var(--track); }
-.ticket-stub { grid-area: stub; position: relative; display: flex; align-items: center; justify-content: center; padding: var(--space-6) var(--space-4); border-top: var(--line-weight) solid var(--track); }
-.ticket-stub::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--stroke-bold); background: linear-gradient(var(--border) 50%, transparent 0) 0 0 / var(--stroke-bold) calc(var(--space-1) * 2.5) repeat-y; }
-.result .big { color: var(--ink); font: var(--t-numeral); letter-spacing: var(--t-numeral-ls); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.result .sub { color: var(--ink); font: var(--t-subheading); letter-spacing: var(--t-subheading-ls); }
-.result .row {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3) var(--space-4);
-  margin-top: var(--space-4); padding-top: var(--space-4); border-top: var(--hairline) solid var(--rule);
-  color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls);
-}
-/* Each detail is the value then its label in the markup; the label reads first, above it. */
-.result .row > span { display: flex; flex-direction: column-reverse; }
-.result .row b { color: var(--ink); font: var(--t-ui); letter-spacing: var(--t-ui-ls); font-variant-numeric: tabular-nums; }
-.result .mrow { margin-top: var(--space-6); }
-@media (max-width: 599px) {
-  .ticket {
-    --stub: calc(var(--space-16) + var(--space-8) + var(--space-2));
-    grid-template-columns: minmax(0, 1fr); grid-template-areas: "stub" "main";
-    -webkit-mask: radial-gradient(circle calc(var(--space-3) - var(--hairline)) at 0 var(--stub), transparent 98%, var(--ink)) left / 51% 100% no-repeat, radial-gradient(circle calc(var(--space-3) - var(--hairline)) at 100% var(--stub), transparent 98%, var(--ink)) right / 51% 100% no-repeat;
-    mask: radial-gradient(circle calc(var(--space-3) - var(--hairline)) at 0 var(--stub), transparent 98%, var(--ink)) left / 51% 100% no-repeat, radial-gradient(circle calc(var(--space-3) - var(--hairline)) at 100% var(--stub), transparent 98%, var(--ink)) right / 51% 100% no-repeat;
-  }
-  .ticket-stub { height: var(--stub); padding: 0 var(--space-4); }
-  .ticket-stub::before { top: auto; right: 0; width: auto; height: var(--stroke-bold); background: linear-gradient(to right, var(--border) 50%, transparent 0) 0 0 / calc(var(--space-1) * 2.5) var(--stroke-bold) repeat-x; }
-  .ticket-main { padding: var(--space-5) var(--space-4); border-top: 0; }
-}
+.result { text-align: center; padding: 30px 16px 22px; }
+.result .big { font-size: 46px; font-weight: 700; font-family: var(--mono); letter-spacing: -1.5px; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .sub { color: var(--ink2); font-size: 13.5px; margin-top: 7px; }
+.result .row { display: flex; justify-content: center; gap: 22px; margin-top: 18px; font-family: var(--mono); font-size: 12px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+.result .row b { color: var(--ink); font-size: 16px; display: block; margin-bottom: 1px; }
+.result .mrow { justify-content: center; margin-top: 20px; }
+.result .mbtn { transition: background .15s, transform .12s; }
+@media (hover: hover) { .result .mbtn:hover { background: var(--sunken); } }
+.result .mbtn:active { transform: scale(.97); background: var(--sunken); }

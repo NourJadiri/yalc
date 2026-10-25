@@ -1,1 +1,1 @@
-.xpv { flex: none; color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.xpv { font-family: var(--mono); font-size: 10.5px; color: var(--ink2); flex: none; font-variant-numeric: tabular-nums; }

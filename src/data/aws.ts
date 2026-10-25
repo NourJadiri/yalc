@@ -4,7 +4,7 @@ const E = (slug: string, n: string): Problem => ({ id: slug, n, slug, diff: "E" 
 
 // Station ids ("a1".."a13") and problem ids (slugs) never collide with the Google line's short ids.
 export const AWS_PLAN: NonEmpty<Day> = [
-  { id:"a1", d:1, stn:"Pike Place", ph:"ds",
+  { id:"a1", d:1, stn:"Pike Place", color:"var(--aws-orange)", ph:"ds",
     name:"Hash sets and hash maps",
     note:"A set answers \"have I seen this?\" in O(1); a map remembers where, or how often. Trading a little memory for a lot of time is the move behind half of all Easy problems — start here.",
     probs:[
@@ -13,7 +13,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("valid-anagram", "Valid Anagram"),
       E("majority-element", "Majority Element"),
     ]},
-  { id:"a2", d:2, stn:"Pioneer Square", ph:"ds",
+  { id:"a2", d:2, stn:"Pioneer Square", color:"var(--aws-teal)", ph:"ds",
     name:"Strings, one character at a time",
     note:"A string is an array of characters with opinions. Count with a dictionary, compare with two indices, build with a list and \"\".join — never += in a loop. Amazon loves a parsing question; Most Common Word is the classic.",
     probs:[
@@ -23,7 +23,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("first-unique-character-in-a-string", "First Unique Character in a String"),
       E("most-common-word", "Most Common Word"),
     ]},
-  { id:"a3", d:3, stn:"Ballard Locks", ph:"ds",
+  { id:"a3", d:3, stn:"Ballard Locks", color:"var(--aws-ink)", ph:"ds",
     name:"Two pointers",
     note:"Two gates, two indices: one at each end walking inward, or one reading while the other writes. Sorted input is the tell — it lets every step throw away a whole side without looking at it.",
     probs:[
@@ -33,7 +33,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("squares-of-a-sorted-array", "Squares of a Sorted Array"),
       E("is-subsequence", "Is Subsequence"),
     ]},
-  { id:"a4", d:4, stn:"Fremont", ph:"ds",
+  { id:"a4", d:4, stn:"Fremont", color:"var(--aws-rust)", ph:"ds",
     name:"Running state: best-so-far, prefix sums, windows",
     note:"Carry the answer forward instead of recomputing it: the cheapest price so far, a running total, a window that slides one step at a time. That's how O(n²) becomes O(n).",
     probs:[
@@ -42,7 +42,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("maximum-average-subarray-i", "Maximum Average Subarray I"),
       E("contains-duplicate-ii", "Contains Duplicate II"),
     ]},
-  { id:"a5", d:5, stn:"Union Station", ph:"ds",
+  { id:"a5", d:5, stn:"Union Station", color:"var(--aws-orange)", ph:"ds",
     name:"Stacks and queues",
     note:"A stack remembers what's still open — brackets, undo, backspace. A queue serves in arrival order — requests, timestamps, BFS. In Python: a list for a stack, collections.deque for a queue.",
     probs:[
@@ -51,7 +51,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("implement-queue-using-stacks", "Implement Queue using Stacks"),
       E("number-of-recent-calls", "Number of Recent Calls"),
     ]},
-  { id:"a6", d:6, stn:"Monorail", ph:"ds",
+  { id:"a6", d:6, stn:"Monorail", color:"var(--aws-teal)", ph:"ds",
     name:"Linked lists",
     note:"Pointer surgery. Save next before you overwrite it, start from a dummy head so the first node isn't special, and let a fast pointer take two steps for every one the slow pointer takes.",
     probs:[
@@ -61,7 +61,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("middle-of-the-linked-list", "Middle of the Linked List"),
       E("palindrome-linked-list", "Palindrome Linked List"),
     ]},
-  { id:"a7", d:7, stn:"Space Needle", ph:"ds",
+  { id:"a7", d:7, stn:"Space Needle", color:"var(--aws-ink)", ph:"ds",
     name:"Binary search",
     note:"A needle in a sorted haystack: halve the search space every step. Choose lo and hi, decide which half can still hold the answer, and keep an invariant you could say out loud. A billion items take about thirty looks.",
     probs:[
@@ -70,7 +70,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("first-bad-version", "First Bad Version"),
       E("sqrtx", "Sqrt(x)"),
     ]},
-  { id:"a8", d:8, stn:"Discovery Park", ph:"graphs",
+  { id:"a8", d:8, stn:"Discovery Park", color:"var(--aws-rust)", ph:"graphs",
     name:"Trees, recursively",
     note:"Every tree problem asks one question: what should a call return for its subtree? Trust the recursion for the children, combine at the node, and let an empty tree be the base case.",
     probs:[
@@ -79,7 +79,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("same-tree", "Same Tree"),
       E("symmetric-tree", "Symmetric Tree"),
     ]},
-  { id:"a9", d:9, stn:"Arboretum", ph:"graphs",
+  { id:"a9", d:9, stn:"Arboretum", color:"var(--aws-orange)", ph:"graphs",
     name:"Trees: two answers at once, and levels",
     note:"Sometimes a call has to return one thing and record another — height up the tree, diameter on the side. And when a problem says \"level\", reach for a queue: BFS, one level per loop.",
     probs:[
@@ -88,7 +88,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("subtree-of-another-tree", "Subtree of Another Tree"),
       E("average-of-levels-in-binary-tree", "Average of Levels in Binary Tree"),
     ]},
-  { id:"a10", d:10, stn:"Smith Tower", ph:"ds",
+  { id:"a10", d:10, stn:"Smith Tower", color:"var(--aws-teal)", ph:"ds",
     name:"Heaps",
     note:"heapq keeps the smallest item on top, O(log n) per push or pop. Negate the values for a max-heap; keep a heap of size k and its top is the k-th largest.",
     probs:[
@@ -97,7 +97,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("relative-ranks", "Relative Ranks"),
       E("the-k-weakest-rows-in-a-matrix", "The K Weakest Rows in a Matrix"),
     ]},
-  { id:"a11", d:11, stn:"Puget Sound", ph:"graphs",
+  { id:"a11", d:11, stn:"Puget Sound", color:"var(--aws-ink)", ph:"graphs",
     name:"Grids and graphs",
     note:"Islands in the Sound: a grid is a graph whose neighbours are up, down, left and right. BFS or DFS from a cell, mark it visited before moving on, and count what you touch.",
     probs:[
@@ -106,7 +106,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("find-if-path-exists-in-graph", "Find if Path Exists in Graph"),
       E("find-the-town-judge", "Find the Town Judge"),
     ]},
-  { id:"a12", d:12, stn:"Mount Rainier", ph:"dp",
+  { id:"a12", d:12, stn:"Mount Rainier", color:"var(--aws-rust)", ph:"dp",
     name:"First steps in dynamic programming",
     note:"Climbing, one step at a time. Name the subproblem (ways to reach step i), write how it builds on smaller ones, seed the base cases, fill in order. A memoised recursion and a bottom-up loop are the same idea.",
     probs:[
@@ -115,7 +115,7 @@ export const AWS_PLAN: NonEmpty<Day> = [
       E("pascals-triangle", "Pascal's Triangle"),
       E("counting-bits", "Counting Bits"),
     ]},
-  { id:"a13", d:13, stn:"Doppler", ph:"mix",
+  { id:"a13", d:13, stn:"Doppler", color:"var(--aws-orange)", ph:"mix",
     name:"Bits and math",
     note:"Last stop before the doors: XOR cancels pairs, a sum reveals what's missing, % 10 peels a digit. Small tricks, a lot of interview mileage.",
     probs:[

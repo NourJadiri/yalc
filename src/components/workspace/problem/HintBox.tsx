@@ -12,9 +12,8 @@ export default function HintBox({ icon, title, children }: HintBoxProps) {
   return (
     <details className="ws-hintbox">
       <summary>
-        <Icon name={icon} size={20} />
+        <Icon name={icon} size={14} />
         {title}
-        <Icon name="chevron-down" size={20} className="ws-hintbox-chevron" />
       </summary>
       {children}
     </details>

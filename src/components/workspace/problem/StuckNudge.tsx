@@ -15,17 +15,17 @@ interface StuckNudgeProps {
 export default function StuckNudge({ minutes, action, onTake, onLater }: StuckNudgeProps) {
   return (
     <div className="ws-nudge" role="status">
-      <span className="ws-nudge-tile">
-        <Icon name="clock" size={24} />
-      </span>
-      <div className="ws-nudge-body">
-        <p>{minutes} minutes in. Want a nudge?</p>
-        <div className="ws-nudge-actions">
-          <Button onClick={onTake}>{action}</Button>
-          <Button variant="ghost" onClick={onLater}>
-            Not now
-          </Button>
-        </div>
+      <p>
+        <Icon name="timer" size={14} />
+        {minutes} minutes in. Want a nudge?
+      </p>
+      <div className="ws-nudge-actions">
+        <Button variant="primary" onClick={onTake}>
+          {action}
+        </Button>
+        <Button variant="ghost" onClick={onLater}>
+          Not now
+        </Button>
       </div>
     </div>
   );

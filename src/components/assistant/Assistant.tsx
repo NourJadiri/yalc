@@ -86,7 +86,6 @@ function Assistant({ open, summon, onClose, context, oneShot, wide, onLine }: Pr
       role="dialog"
       aria-label="Bana"
       data-persona={voice.persona}
-      data-theme={voice.persona === "catgirl" ? "dark" : undefined}
       onKeyDown={(e) => onWindowKeyDown(e, onClose)}
     >
       <AssistantHeader

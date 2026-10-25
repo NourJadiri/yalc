@@ -14,7 +14,7 @@ interface SolutionVeilProps {
 export default function SolutionVeil({ ladder, onReveal }: SolutionVeilProps) {
   return (
     <div className={cx("ws-veil", !!ladder && "hinted")}>
-      <Icon name="lock" size={24} />
+      <Icon name="lock" size={22} />
       {ladder ? (
         <>
           <p>
@@ -30,7 +30,7 @@ export default function SolutionVeil({ ladder, onReveal }: SolutionVeilProps) {
             themselves once every test passes.
           </p>
           <Button onClick={onReveal}>
-            <Icon name="eye" size={20} />
+            <Icon name="eye" size={15} />
             Reveal the solution
           </Button>
         </>

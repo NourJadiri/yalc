@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { AppProvider } from "./state/AppState";
 import App from "./App";
 // After App on purpose: the global sheets sit last in the bundle, below every component's own CSS.
-import "./styles/fonts.css";
 import "./styles/tokens.css";
 import "./styles/base.css";
 import "./styles/layout.css";

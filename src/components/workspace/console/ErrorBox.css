@@ -1,6 +1,8 @@
-.ws-error { margin: 0 0 var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); background: var(--stop-wash); color: var(--ink); }
-.ws-error-msg { display: flex; align-items: flex-start; gap: var(--space-3); font: var(--t-code); letter-spacing: var(--t-code-ls); font-weight: 600; overflow-wrap: anywhere; }
-.ws-error-msg > svg { flex: none; box-sizing: content-box; padding: var(--space-1); margin-top: calc(-1 * var(--space-1) / 2); border-radius: var(--radius-sm); background: var(--stop); color: var(--on-stop); }
-.ws-error .ws-value-box { margin: var(--space-2) 0 0; padding: 0; background: transparent; }
-.ws-error .ws-console-hint { margin-top: var(--space-2); color: var(--ink); }
-.ws-line { flex: none; margin-left: auto; font: var(--t-label); letter-spacing: var(--t-label-ls); font-variant-numeric: tabular-nums; }
+.ws-error { margin: 0 0 10px; border-radius: 8px; border: 1px solid color-mix(in srgb, var(--red) 30%, var(--line)); overflow: hidden; }
+.ws-error-msg {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px; font-family: var(--mono); font-size: 12.5px;
+  background: var(--bad-bg); color: var(--bad-ink); font-weight: 600;
+}
+.ws-error .ws-value-box { border-radius: 0; margin: 0; background: transparent; }
+.ws-error .ws-console-hint { padding: 0 10px 8px; }
+.ws-line { margin-left: auto; font-weight: 500; opacity: .8; }

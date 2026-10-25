@@ -1,10 +1,12 @@
 .golink {
-  position: relative; flex: none; display: grid; place-items: center; width: var(--control-height); height: var(--control-height);
-  border-radius: var(--radius-md); color: var(--ink); text-decoration: none;
-  transition: background-color 120ms ease-out, color 120ms ease-out;
+  flex: none; width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink2); background: var(--sunken);
+  transition: background .15s ease, color .15s ease, transform .12s ease;
 }
-.golink:active { transform: translateY(1px); }
+.golink:active { transform: scale(.94); }
 @media (hover: hover) {
-  .golink:hover { background: var(--surface-sunk); color: var(--ink); }
-  .prow:hover .golink:hover { background: var(--surface-raised); }
+  .golink:hover { background: var(--line); color: var(--ink); }
 }
+.golink.code { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+@media (hover: hover) { .golink.code:hover { background: color-mix(in srgb, var(--accent) 22%, var(--surface)); color: var(--accent); } }

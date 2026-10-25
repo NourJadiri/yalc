@@ -1,8 +1,4 @@
-/* Over the tab bar and the confetti, at the dialog layer. Nothing is set on the scrim itself: it only dims the page. */
-.scanwrap { position: fixed; inset: 0; z-index: var(--layer-dialog); display: flex; align-items: center; justify-content: center; padding: var(--space-4) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom)); background: var(--scrim); }
-.scanvid { display: block; width: 100%; max-height: 58vh; border-radius: var(--radius-sm); background: var(--surface-sunk); object-fit: cover; }
-.scannote { margin: 0; max-width: var(--measure); }
-@media (prefers-reduced-motion: no-preference) {
-  .scanwrap { animation: scanin 160ms ease-out; }
-}
-@keyframes scanin { from { opacity: 0; } }
+/* Above the tab bar (40) and the confetti (55), under the toasts (60), which have to read over everything. */
+.scanwrap { position: fixed; inset: 0; z-index: 58; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: rgba(0,0,0,.72); padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); }
+.scanvid { width: min(85vw, 420px); max-height: 58vh; border-radius: 16px; background: #000; object-fit: cover; }
+.scannote { margin: 0; max-width: 34ch; text-align: center; font-size: 12.5px; line-height: 1.5; color: #ffffff; }

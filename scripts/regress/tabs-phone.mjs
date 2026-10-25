@@ -3,7 +3,7 @@
 
 import { finish } from "./me-lib.mjs";
 import { F, hdr, hdrModel, heroLine, rail, railModel, noHScroll, tabBar, view, scrollToStn } from "./tabs-kit.mjs";
-import { board, boardModel, card, result, cardOf, ticket, ticketModel, MPF } from "./tabs-metro-kit.mjs";
+import { board, boardModel, card, result, cardOf } from "./tabs-metro-kit.mjs";
 import { stn, dayHead } from "./tabs-line.mjs";
 import { chooseDeck, boardIt, rush, boardBtn, nextBtn, quitBtn } from "./tabs-metro.mjs";
 
@@ -45,7 +45,7 @@ async function overlay(s, A, label, loc, spec) {
 
 export default function register(scenario) {
   /* 13 ----------------------------------------------------------------- */
-  scenario("13-touch-targets", "touch targets on a phone: every control is a 44px target, the check box through its ::after overlay", async (s) => {
+  scenario("13-touch-targets", "touch targets on a phone: the ::after overlays give the small controls their ~44px hit areas", async (s) => {
     const P = await s.device({ seed: F.mock, phone: true, motion: true });
     await P.open();
     const page = P.page;
@@ -53,23 +53,18 @@ export default function register(scenario) {
     const row = (k) => stn(page, d7).locator(".prow").nth(k);
 
     // ---- the Line
-    await s.expect("a check box is drawn 24px with base.css's 44px overlay behind it; the editor button is a 44px ghost button of its own, with no overlay", async () => ({
+    await s.expect("a check circle is drawn 26px and its editor button 34px; each has a 44px overlay behind it", async () => ({
       circle: await P.rect(row(0).locator(".pcheck")).then((r) => [r.w, r.h]),
       link: await P.rect(row(0).locator(".golink")).then((r) => [r.w, r.h]),
       circleAfter: await P.props(row(0).locator(".pcheck"), ["width", "height"], "::after"),
       linkAfter: await P.props(row(0).locator(".golink"), ["width", "height"], "::after"),
-    }), { circle: [24, 24], link: [44, 44], circleAfter: { width: "44px", height: "44px" }, linkAfter: { width: "auto", height: "auto" } });
-    await overlay(s, P, "the check box", row(0).locator(".pcheck"), { size: 44 });
+    }), { circle: [26, 26], link: [34, 34], circleAfter: { width: "44px", height: "44px" }, linkAfter: { width: "44px", height: "44px" } });
+    await overlay(s, P, "the check circle", row(0).locator(".pcheck"), { size: 44 });
     await overlay(s, P, "the editor button", row(0).locator(".golink"), { size: 44 });
     await overlay(s, P, "the mock's external link", row(2).locator("a.golink"), { size: 44 });
-    await overlay(s, P, "the ritual row, a 44px control of its own with a 2px edge", stn(page, d7).locator(".ritual"), { l: 2, r: 2, t: 2, b: 2 });
-    await overlay(s, P, "the clock's Start button, a 44px Button of its own", stn(page, d7).locator(".timer .tbtn").nth(0), { l: 2, r: 2, t: 2, b: 2 });
-    await overlay(s, P, "the clock's Reset button, a 44px Button of its own", stn(page, d7).locator(".timer .tbtn").nth(1), { l: 2, r: 2, t: 2, b: 2 });
-    await s.expect("the ritual row and the clock's Start and Reset are 44px or taller on a phone, targets of their own", async () => ({
-      ritual: (await P.rect(stn(page, d7).locator(".ritual"))).h >= 44,
-      start: (await P.rect(stn(page, d7).locator(".timer .tbtn").nth(0))).h >= 44,
-      reset: (await P.rect(stn(page, d7).locator(".timer .tbtn").nth(1))).h >= 44,
-    }), { ritual: true, start: true, reset: true });
+    await overlay(s, P, "the ritual row", stn(page, d7).locator(".ritual"), { l: 0, r: 0, t: 3, b: 3 });
+    await overlay(s, P, "the clock's Start button", stn(page, d7).locator(".timer .tbtn").nth(0), { l: 2, r: 2, t: 7, b: 7 });
+    await overlay(s, P, "the clock's Reset button", stn(page, d7).locator(".timer .tbtn").nth(1), { l: 2, r: 2, t: 7, b: 7 });
     await s.expect("the overlays stay inside each row: consecutive check circles are at least 44px apart, so no two targets overlap", async () => {
       const ys = await stn(page, d7).locator(".prow .pcheck").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().top));
       return ys.slice(1).every((y, i) => y - ys[i] >= 44);
@@ -90,12 +85,12 @@ export default function register(scenario) {
     await centre(row(0).locator(".pcheck"));
     const c2 = await P.rect(row(0).locator(".pcheck"));
     await page.touchscreen.tap(c2.x + c2.w + 7, c2.y + c2.h / 2);
-    await s.expect("a tap 7px outside the drawn box (inside the overlay) ticks the problem", async () => (await row(0).locator(".pcheck").getAttribute("aria-pressed")), "true");
+    await s.expect("a tap 7px outside the drawn circle (inside the overlay) ticks the problem", async () => (await row(0).locator(".pcheck").getAttribute("aria-pressed")), "true");
     await page.touchscreen.tap(c2.x + c2.w + 8, c2.y + c2.h / 2);
-    await s.expect("a tap 8px outside it (the overlay reaches 10px beyond the box) is still on it: it unticks again", async () => (await row(0).locator(".pcheck").getAttribute("aria-pressed")), "false");
+    await s.expect("a tap 8px outside it (the overlay reaches 9px beyond the circle) is still on it: it unticks again", async () => (await row(0).locator(".pcheck").getAttribute("aria-pressed")), "false");
     const g = await P.rect(row(0).locator(".golink"));
-    await page.touchscreen.tap(g.x + 2, g.y + g.h / 2);
-    await s.expect("a tap 2px inside the editor button's left edge, far from its pictogram, opens the workspace: the whole 44px box is the target", async () => page.locator('.ws[role="dialog"]').count(), 1);
+    await page.touchscreen.tap(g.x - 4, g.y + g.h / 2);
+    await s.expect("a tap 4px outside the editor button (inside its overlay) opens the workspace", async () => page.locator('.ws[role="dialog"]').count(), 1);
     await page.getByRole("button", { name: "Back to the line" }).click();
 
     // ---- Metro: a run's own buttons and the result's
@@ -105,25 +100,22 @@ export default function register(scenario) {
     const pre = await card(page);
     const q = cardOf(pre);
     await P.press(page.locator("#quizArea .opt").nth(pre.opts.findIndex((o) => o.text === q.o[q.a])));
-    await overlay(s, P, "End run, a 44px Button of its own", quitBtn(page), { l: 2, r: 2, t: 2, b: 2 });
-    await overlay(s, P, "Next stop, a 44px Button of its own", nextBtn(page), { l: 2, r: 2, t: 2, b: 2 });
-    await s.expect("End run and Next stop are 44px or taller on a phone, targets of their own", async () => ({ quit: (await P.rect(quitBtn(page))).h >= 44, next: (await P.rect(nextBtn(page))).h >= 44 }), { quit: true, next: true });
+    await overlay(s, P, "End run", quitBtn(page), { l: 0, r: 0, t: 4, b: 4 });
+    await overlay(s, P, "Next stop", nextBtn(page), { l: 0, r: 0, t: 4, b: 4 });
     await P.press(quitBtn(page));
-    await s.expect("the departures rows are 44px or taller, thumb targets of their own, and the Board button 44px or taller", async () => ({ rows: await page.locator("#quizArea .drow").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 44)), board: (await P.rect(boardBtn(page))).h >= 44 }), { rows: [true, true, true, true, true, true], board: true });
+    await s.expect("the departures rows are 60px or taller and the Board button 44px or taller", async () => ({ rows: await page.locator("#quizArea .drow").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height >= 60)), board: (await P.rect(boardBtn(page))).h >= 44 }), { rows: [true, true, true, true, true, true], board: true });
     await boardIt(P, 92);
     await rush(P, "RRRRRRRRRR", { seedBase: 300 });
     await P.press(nextBtn(page));
-    await s.expect("the result's two buttons are 44px tall, thumb targets of their own with no overlay", async () => page.locator("#quizArea .mbtn").evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height))), [44, 44]);
-    await overlay(s, P, "Run it again, its own 44px box", page.locator("#quizArea .mbtn").nth(0), { l: 2, r: 2, t: 2, b: 2 });
-    await overlay(s, P, "Decks, its own 44px box", page.locator("#quizArea .mbtn").nth(1), { l: 2, r: 2, t: 2, b: 2 });
+    await overlay(s, P, "Run it again", page.locator("#quizArea .mbtn").nth(0), { l: 0, r: 0, t: 4, b: 4 });
+    await overlay(s, P, "Decks", page.locator("#quizArea .mbtn").nth(1), { l: 0, r: 0, t: 4, b: 4 });
     await s.pin("the .mbtn overlay", await P.props(page.locator("#quizArea .mbtn").first(), ["position", "inset"], "::after"));
 
     // ---- the Dojo: the veil's button and the log's
     await P.tab("Dojo");
     await page.locator("#dojoArea .tcard").first().locator(".thead").click();
-    await s.expect("the veil's Reveal & diff and the ritual log's Done are 44px Buttons, thumb targets of their own", async () => [await P.rect(page.locator("#dojoArea .tcard").first().locator(".veil button")), await P.rect(page.locator("#dojoArea .dojo-log button"))].map((r) => r.h), [44, 44]);
-    await overlay(s, P, "the veil's Reveal & diff, a 44px Button of its own", page.locator("#dojoArea .tcard").first().locator(".veil button"), { l: 2, r: 2, t: 2, b: 2 });
-    await overlay(s, P, "the ritual log's button, a 44px Button of its own", page.locator("#dojoArea .dojo-log button"), { l: 2, r: 2, t: 2, b: 2 });
+    await overlay(s, P, "the veil's Reveal & diff", page.locator("#dojoArea .tcard").first().locator(".veil button"), { l: 0, r: 0, t: 4, b: 4 });
+    await overlay(s, P, "the ritual log's button", page.locator("#dojoArea .dojo-log button"), { l: 0, r: 0, t: 4, b: 4 });
     await s.expect("a template's header row is a full 44px thumb target", async () => (await P.rect(page.locator("#dojoArea .thead").first())).h, 44);
 
     // ---- the shell
@@ -141,7 +133,7 @@ export default function register(scenario) {
     await s.expect("390px: nothing overflows the width of the window", () => noHScroll(page), true);
     await s.expect("the header and tab bar are the desktop's, in a narrower window", async () => ({ hdr: await hdr(page), bar: (await tabBar(page)).tabs.map((t) => t.text), view: await view(page) }), { hdr: hdrModel(F.mid), bar: ["Line", "Metro", "Dojo", "Me"], view: { views: 1, h1: "Onsite Express", on: "view on" } });
     await s.expect("the rail is the same model on a phone: the focus day open, two done, one now", () => rail(page), railModel(F.mid, ["d3"]).days);
-    await s.expect("the hero's title steps down from the title style to the heading style on a phone (28px under 600px)", async () => (await P.props("main .hero h1", ["font-size"]))["font-size"], "28px");
+    await s.expect("the hero's title shrinks with the window (clamp(26px, 6vw, 36px) is 26px at 390)", async () => (await P.props("main .hero h1", ["font-size"]))["font-size"], "26px");
     await s.expect("both line pills fit on one row", async () => { const rs = await page.locator(".linepick").evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top))); return rs[0] === rs[1]; }, true);
     await s.expect("a station card's body is narrower than on desktop but never wider than the window", async () => page.locator(".linewrap").evaluate((e) => e.getBoundingClientRect().right <= innerWidth), true);
     await s.pin("phone geometry of the rail and the picker", { pick: await P.rect(page.locator(".linepick").first()), card: await P.rect(page.locator(".daycard").first()), stop: await P.rect(page.locator(".stop").first()) });
@@ -204,13 +196,6 @@ export default function register(scenario) {
     await s.marked(P, "the board", "#quizArea");
     await both("board");
     await chooseDeck(P, "redo");
-    await s.expect("on a phone a row's numbers drop under the deck's name, so the flaps share the name's line: no name wraps, the flaps step down to 16px, NOW BOARDING included", async () => page.locator("#quizArea .drow").evaluateAll((els) => els.map((r) => {
-      const n = r.querySelector(".drow-name").getBoundingClientRect();
-      const sub = r.querySelector(".drow-sub").getBoundingClientRect();
-      const tag = r.querySelector(".dtag, .dplat");
-      const f = tag.getBoundingClientRect();
-      return { oneLine: n.height <= 24, under: sub.top >= n.bottom - 1, beside: f.top < n.bottom && f.left > n.right, flaps: getComputedStyle(tag).fontSize };
-    })), Array(6).fill({ oneLine: true, under: true, beside: true, flaps: "16px" }));
     await both("board-redemption");
     await chooseDeck(P, "dp");
 
@@ -244,7 +229,7 @@ export default function register(scenario) {
         await nextStop(P);
       }
     }
-    await s.expect("a missing-line or bug-hunt card shows its code in a scrollable block in the code style (14px mono) inside the card", async () => ({ has: !!codeCard, scroll: (await P.props("#quizArea pre.code", ["overflow-x", "white-space", "font-size"])) }), { has: true, scroll: { "overflow-x": "auto", "white-space": "pre", "font-size": "14px" } });
+    await s.expect("a missing-line or bug-hunt card shows its code in a scrollable mono block inside the card", async () => ({ has: !!codeCard, scroll: (await P.props("#quizArea pre.code", ["overflow-x", "white-space", "font-size"])) }), { has: true, scroll: { "overflow-x": "auto", "white-space": "pre", "font-size": "12px" } });
     await both("card-code");
     await P.press(quitBtn(page));
 
@@ -253,7 +238,6 @@ export default function register(scenario) {
     await rush(P, "RRWRRRRWRR", { seedBase: 300 });
     await P.press(nextBtn(page));
     await s.expect("the result on a phone: 8/10, the Solid copy, three columns of numbers inside the card", async () => ({ res: await result(page), over: await noHScroll(page) }), { res: { cls: "qwrap result", big: "8/10", sub: "Solid. The missed ones went to Redemption.", row: ["+20|XP", "4|best streak", "2|to redemption"], btns: ["Run it again", "Decks"] }, over: true });
-    await s.expect("…a Ticket turned for a phone, like a boarding pass: the stub with the score on top, the perforation across, the band over the stub", () => ticket(page), ticketModel(MPF.light, MPF.light.line2, "top"));
     await both("result");
 
     // ---- the Dojo

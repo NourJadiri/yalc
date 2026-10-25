@@ -1,7 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- The app icon: a departure-board flap showing Y, Barlow Condensed in signal yellow, in the Board's night colours. -->
-  <rect width="512" height="512" rx="72" fill="#0b0c0d"/>
-  <rect x="40" y="40" width="432" height="432" rx="36" fill="#1c1d21"/>
-  <path transform="matrix(0.4857 0 0 -0.4857 140.9 426.0)" d="M166 13V273L165 279L25 686Q24 688 24 691Q24 700 35 700H158Q169 700 172 690L234 451Q235 448 237 448Q239 448 240 451L302 690Q305 700 316 700H439Q445 700 448 696.5Q451 693 449 686L308 279L307 273V13Q307 8 303.5 4.5Q300 1 295 1H178Q173 1 169.5 4.5Q166 8 166 13Z" fill="#ffcd00"/>
-  <rect x="40" y="251" width="432" height="10" fill="#0b0c0d"/>
+  <!-- The app icon: the terminus dot as a roundel, four logo colours on dark. -->
+  <rect width="512" height="512" fill="#202124"/>
+  <g fill="none" stroke-width="46">
+    <path d="M256 126A130 130 0 0 1 386 256" stroke="#1a73e8"/>
+    <path d="M386 256A130 130 0 0 1 256 386" stroke="#d93025"/>
+    <path d="M256 386A130 130 0 0 1 126 256" stroke="#f9ab00"/>
+    <path d="M126 256A130 130 0 0 1 256 126" stroke="#1e8e3e"/>
+  </g>
 </svg>

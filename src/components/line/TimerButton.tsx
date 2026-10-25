@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Icon, { type IconName } from "../shared/Icon";
-import Button from "../ui/Button";
+import "./TimerButton.css";
 
 interface TimerButtonProps {
   icon: IconName;
@@ -10,9 +10,9 @@ interface TimerButtonProps {
 
 export default function TimerButton({ icon, onClick, children }: TimerButtonProps) {
   return (
-    <Button className="tbtn" onClick={onClick}>
-      <Icon name={icon} size={20} />
+    <button className="tbtn" onClick={onClick}>
+      <Icon name={icon} size={12} strokeWidth={2.5} />
       {children}
-    </Button>
+    </button>
   );
 }

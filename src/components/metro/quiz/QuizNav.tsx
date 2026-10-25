@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import Button from "../../ui/Button";
 import "./QuizNav.css";
 
 interface QuizNavProps {
@@ -11,9 +10,9 @@ interface QuizNavProps {
 export default function QuizNav({ onQuit, children = <span /> }: QuizNavProps) {
   return (
     <div className="qnav">
-      <Button variant="ghost" className="quit" onClick={onQuit}>
+      <button className="quit" onClick={onQuit}>
         End run
-      </Button>
+      </button>
       {children}
     </div>
   );

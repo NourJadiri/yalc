@@ -2,7 +2,6 @@ import { RITUAL_XP } from "../../data/plan";
 import { cx } from "../../lib/cx";
 import type { Day } from "../../types";
 import Icon from "../shared/Icon";
-import Button from "../ui/Button";
 import "./RitualLog.css";
 
 interface RitualLogProps {
@@ -21,11 +20,11 @@ export default function RitualLog({ day, ritual, logged, onToggle }: RitualLogPr
         <b>{"Day " + day.d + " ritual:"}</b>
         {" " + ritual}
       </p>
-      <Button variant={logged ? undefined : "primary"} onClick={() => onToggle(day.id)} aria-pressed={logged}>
+      <button onClick={() => onToggle(day.id)} aria-pressed={logged}>
         {logged ? (
           <>
-            <Icon name="check" size={20} />
             Logged
+            <Icon name="check" size={13} strokeWidth={2.5} />
           </>
         ) : (
           <>
@@ -34,7 +33,7 @@ export default function RitualLog({ day, ritual, logged, onToggle }: RitualLogPr
             {"+" + RITUAL_XP + " XP"}
           </>
         )}
-      </Button>
+      </button>
     </div>
   );
 }

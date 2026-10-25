@@ -1,5 +1,7 @@
 .tabs {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 40; display: flex;
-  padding: 0 max(var(--space-2), (100% - 720px) / 2) calc(var(--space-2) + env(safe-area-inset-bottom));
-  background: var(--surface-raised); border-top: var(--hairline) solid var(--rule);
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line); display: flex;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
 }

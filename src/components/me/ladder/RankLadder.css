@@ -1,13 +1,9 @@
-/* A vertical Route in the line's colour: --here is the current stop, the others are stop-size, all centred on one axis. */
-.ladder { --here: calc(var(--stop-size) + var(--space-2)); --dash: repeating-linear-gradient(180deg, var(--border) 0 calc(var(--space-2) + var(--stroke-bold)), transparent 0 var(--space-4)); list-style: none; margin: 0; padding: 0; }
-.ladder li { position: relative; display: grid; grid-template-columns: var(--here) minmax(0, 1fr); column-gap: var(--space-4); padding: calc((var(--here) - var(--space-5)) / 2) 0 var(--space-4); color: var(--ink); font: var(--t-label); letter-spacing: var(--t-label-ls); }
-.ladder li:last-child { padding-bottom: 0; }
-.ladder li:not(:last-child)::after { content: ""; position: absolute; top: calc(var(--here) / 2); bottom: calc(var(--here) / -2); left: calc((var(--here) - var(--line-weight)) / 2); width: var(--line-weight); background: var(--track); }
-.ladder li:not(.past)::after { background: var(--dash); }
+.ladder { list-style: none; margin: 10px 0 0; padding: 0; }
+.ladder li { display: flex; align-items: center; gap: 10px; padding: 9px 4px; border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent); font-size: 13.5px; }
+.ladder li.past { color: var(--ink2); }
 .ladder li.cur { font-weight: 700; }
-.ladder li:not(.past):not(.cur) { color: var(--ink-muted); font-weight: 500; }
-.lmark { grid-row: 1 / span 2; display: flex; justify-content: center; margin-top: calc((var(--here) - var(--space-5)) / -2); }
-.lmark .ldot { position: relative; z-index: 1; width: var(--stop-size); height: var(--stop-size); margin-top: calc((var(--here) - var(--stop-size)) / 2); border: calc(var(--stop-size) / 4) solid var(--track); border-radius: var(--radius-full); background: var(--surface-raised); }
-.ladder li.cur .ldot { width: var(--here); height: var(--here); margin-top: 0; border: calc(var(--here) / 4) solid var(--ink); }
-.lmark .ldot.dim { border-width: calc(var(--stroke-bold) + var(--hairline)); border-color: var(--border); }
-.ladder .lxp { color: var(--ink-muted); font: var(--t-caption); letter-spacing: var(--t-caption-ls); font-variant-numeric: tabular-nums; }
+/* Fixed-width marker column: check = climbed, coloured dot = you are here. */
+.lmark { width: 18px; flex: none; display: inline-flex; align-items: center; justify-content: center; color: var(--ink2); }
+.lmark .ldot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 22%, transparent); }
+.lmark .ldot.dim { width: 6px; height: 6px; background: var(--line); box-shadow: none; }
+.ladder .lxp { margin-left: auto; font-family: var(--mono); font-size: 11.5px; color: var(--ink2); font-variant-numeric: tabular-nums; }

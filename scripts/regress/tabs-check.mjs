@@ -111,7 +111,7 @@ export default function register(scenario) {
     await X.open();
     await pcheck(X.page, "Letter Combinations of a Phone Number", true).click();
     await X.advance(10).catch(() => {});
-    await s.expect("unticking a 20 XP problem with 10 XP in hand leaves 0, not -10: the header says Wanderer, XP 0, the bar empty", () => hdr(X.page), { rank: "Wanderer", bullet: "G", streak: "Streak 3/3", xp: "0", fill: "0%", where: "Day 3 | Constraint St.", next: "100 XP to Pathfinder" });
+    await s.expect("unticking a 20 XP problem with 10 XP in hand leaves 0, not -10: the header says Wanderer, XP 0, the bar empty", () => hdr(X.page), { rank: "Wanderer", dot: "var(--blue)", streak: "Streak 3/3", xp: "0", fill: "0%", where: "Day 3 | Constraint St.", next: "100 XP to Pathfinder" });
     await s.expect("…and the saved blob says 0 too", async () => (await X.saved()).tracks.google.xp, 0);
 
     // ---- the streak: a week, and a gap
@@ -213,7 +213,7 @@ export default function register(scenario) {
     await s.expect("clearing day 3: the XP toast comes first, then the rank-up and its 60-piece burst, then the station's and its 50", async () => feedOf(await nc.A.fx()), ["+20 XP · Top K Frequent Elements", "* Rank up — Backtracker", "confetti 60", "* Constraint St. cleared", "confetti 50"]);
     await s.expect("…day 3 is done and still open, day 4 is now the focus and opens; the header says Backtracker, Day 4 Memo Bridge, and the bar is empty", async () => ({ rail: (await rail(nc.page)).slice(1, 5).map((r) => r.cls), hdr: await hdr(nc.page) }), {
       rail: ["stn done", "stn done open", "stn now open", "stn"],
-      hdr: { rank: "Backtracker", bullet: "G", streak: "Streak 3/3", xp: "250", fill: "0%", where: "Day 4 | Memo Bridge", next: "200 XP to Memoizer" },
+      hdr: { rank: "Backtracker", dot: "var(--yellow)", streak: "Streak 3/3", xp: "250", fill: "0%", where: "Day 4 | Memo Bridge", next: "200 XP to Memoizer" },
     });
     await s.expect("…the terminus counts three stations", () => terminusCopy(nc.page), "3 of 24 stations behind you. The terminus isn't going anywhere — you are.");
     await scrollToStn(nc.A, 2);
@@ -248,7 +248,7 @@ export default function register(scenario) {
     await s.expect("the last station: nothing is left to ride, so no station is 'now'; the header is at the top rung and says so", async () => ({ now: (await rail(end.page)).filter((r) => r.cls.includes("now")).length, done: (await rail(end.page)).filter((r) => r.cls.includes("done")).length, hdr: await hdr(end.page) }), {
       now: 0,
       done: 24,
-      hdr: { rank: "Offer Letter", bullet: "G", streak: "Streak 23/23", xp: "2765", fill: "100%", where: "Day 24 | Final Approach", next: "Terminus rank reached" },
+      hdr: { rank: "Offer Letter", dot: "var(--red)", streak: "Streak 23/23", xp: "2765", fill: "100%", where: "Day 24 | Final Approach", next: "Terminus rank reached" },
     });
     await s.expect("…the hero counts every problem, the terminus says the whiteboard is yours", async () => ({ stats: (await heroLine(end.page)).stats, copy: await terminusCopy(end.page) }), { stats: "115 / 115 problems · 24 / 24 stations cleared", copy: "All 24 stations cleared. Walk in like you own the whiteboard." });
     await end.A.shot("line-end", { tall: true });
@@ -265,7 +265,7 @@ export default function register(scenario) {
       id: "is-subsequence",
       feed: [xpToast(sub), "* Rank up — On the Loop", "confetti 60", "* Ballard Locks cleared", "confetti 50"],
     });
-    await s.expect("…on the Local the header is the Local's: On the Loop beside the A bullet, Stop 4 next", () => hdr(loc.page), { rank: "On the Loop", bullet: "A", streak: "Streak 2/2", xp: "185", fill: "5%", where: "Stop 4 | Fremont", next: "95 XP to Bar Raiser" });
+    await s.expect("…on the Local the header is the Local's: On the Loop, in its ink, Stop 4 next", () => hdr(loc.page), { rank: "On the Loop", dot: "var(--aws-rust)", streak: "Streak 2/2", xp: "185", fill: "5%", where: "Stop 4 | Fremont", next: "95 XP to Bar Raiser" });
     const sq = probById("aws", "sqrtx");
     await ride({
       label: "clearing stop 7 on the Local (the half-way stop)",
@@ -283,7 +283,7 @@ export default function register(scenario) {
       more: (b) => { b.badges.awsTop = 1; b.badges.awsLine = 1; },
     });
     await s.expect("…the Local's top rung: Day One, the bar full, and its terminus says the doors are open", async () => ({ hdr: await hdr(aend.page), copy: await terminusCopy(aend.page) }), {
-      hdr: { rank: "Day One", bullet: "A", streak: "Streak 12/12", xp: "565", fill: "100%", where: "Stop 13 | Doppler", next: "Terminus rank reached" },
+      hdr: { rank: "Day One", dot: "var(--aws-orange)", streak: "Streak 12/12", xp: "565", fill: "100%", where: "Stop 13 | Doppler", next: "Terminus rank reached" },
       copy: "All 13 stops behind you. The doors at Day One are open.",
     });
     await aend.A.shot("line-end-local", { tall: true });

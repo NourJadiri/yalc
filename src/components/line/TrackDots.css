@@ -1,0 +1,12 @@
+.gdots { display: flex; gap: 5px; margin: 2px 0 6px; }
+.gdots i { width: 8px; height: 8px; border-radius: 50%; }
+.gdots i:nth-child(1){background:var(--blue)} .gdots i:nth-child(2){background:var(--red)}
+.gdots i:nth-child(3){background:var(--yellow)} .gdots i:nth-child(4){background:var(--green)}
+:root[data-track="aws"] .gdots i:nth-child(1){background:var(--aws-orange)}
+:root[data-track="aws"] .gdots i:nth-child(2){background:var(--aws-teal)}
+:root[data-track="aws"] .gdots i:nth-child(3){background:var(--aws-ink)}
+:root[data-track="aws"] .gdots i:nth-child(4){background:var(--aws-rust)}
+:root[data-track="eng"] .gdots i:nth-child(1){background:var(--eng-violet)}
+:root[data-track="eng"] .gdots i:nth-child(2){background:var(--eng-magenta)}
+:root[data-track="eng"] .gdots i:nth-child(3){background:var(--eng-lime)}
+:root[data-track="eng"] .gdots i:nth-child(4){background:var(--eng-steel)}

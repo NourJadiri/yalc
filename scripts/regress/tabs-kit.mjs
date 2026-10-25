@@ -14,26 +14,6 @@ export const SECTIONS = ["Line", "Metro", "Dojo", "Me"];
 export const H1 = { Line: "Onsite Express", Metro: "Metro mode", Dojo: "The dojo", Me: "Your line" };
 export const GLYPH_OF_TAB = { Line: "route", Metro: "train", Dojo: "code", Me: "chart" };
 
-/* Platform's colours as the shell is drawn in them, for the light and the dark palette: the grounds, the ink, the text on
-   a line's bullet, lines 2 and 4 (Onsite Express and Day One Local) and the focus ring. A run with
-   REGRESS_CONTRAST=more draws every page in High contrast, so both palettes are High contrast's there. */
-const DAY = {
-  surface: "rgb(241, 240, 236)", raised: "rgb(255, 255, 255)", sunk: "rgb(229, 228, 222)", rule: "rgb(211, 210, 203)", border: "rgb(124, 123, 116)",
-  ink: "rgb(20, 20, 20)", inkMuted: "rgb(87, 86, 79)", onLine: "rgb(255, 255, 255)", line2: "rgb(29, 91, 198)", line4: "rgb(180, 80, 0)",
-  ring: "rgb(20, 20, 20) 0px 0px 0px 2px, rgb(255, 205, 0) 0px 0px 0px 5px",
-};
-const NIGHT = {
-  surface: "rgb(18, 19, 21)", raised: "rgb(28, 29, 33)", sunk: "rgb(11, 12, 13)", rule: "rgb(47, 48, 53)", border: "rgb(119, 120, 125)",
-  ink: "rgb(242, 242, 238)", inkMuted: "rgb(169, 169, 163)", onLine: "rgb(20, 20, 20)", line2: "rgb(91, 141, 239)", line4: "rgb(255, 138, 42)",
-  ring: "rgb(242, 242, 238) 0px 0px 0px 2px, rgb(255, 205, 0) 0px 0px 0px 5px",
-};
-const CONTRAST = {
-  surface: "rgb(0, 0, 0)", raised: "rgb(0, 0, 0)", sunk: "rgb(31, 31, 31)", rule: "rgb(166, 166, 166)", border: "rgb(166, 166, 166)",
-  ink: "rgb(255, 255, 255)", inkMuted: "rgb(194, 194, 194)", onLine: "rgb(0, 0, 0)", line2: "rgb(117, 147, 255)", line4: "rgb(242, 143, 41)",
-  ring: "rgb(0, 0, 0) 0px 0px 0px 2px, rgb(255, 255, 255) 0px 0px 0px 4px, rgb(255, 205, 0) 0px 0px 0px 7px",
-};
-export const PF = process.env.REGRESS_CONTRAST === "more" ? { light: CONTRAST, dark: CONTRAST } : { light: DAY, dark: NIGHT };
-
 export const planOf = (track) => (track === "aws" ? D.AWS_PLAN : track === "eng" ? D.ENG_PLAN : D.PLAN);
 export const unitOf = (track) => (track === "aws" ? "Stop" : track === "eng" ? "Build" : "Day");
 const allDone = (t, day) => day.probs.every((p) => t.done[p.id]);
@@ -83,11 +63,9 @@ export const edit = (blob, fn) => {
 
 /* ------------------------------ ranks and the header ------------------------------ */
 
-/** The bullet each line is drawn with: Onsite Express is Platform's line 2 (G), Day One Local line 4 (A), Engineering Works line 5 (E). */
-export const BULLET = { google: "G", aws: "A", eng: "E" };
-
 export function rankModel(track, xp) {
   const ranks = track === "aws" ? D.AWS_RANKS : D.RANKS;
+  const cols = track === "aws" ? D.AWS_RANKCOL : D.RANKCOL;
   let i = 0;
   ranks.forEach((r, k) => {
     if (xp >= r[1]) i = k;
@@ -96,6 +74,7 @@ export function rankModel(track, xp) {
   return {
     idx: i,
     name: ranks[i][0],
+    dot: cols[i],
     pct: next ? Math.min(100, Math.round(((xp - ranks[i][1]) / (next[1] - ranks[i][1])) * 100)) : 100,
     next: next ? `${next[1] - xp} XP to ${next[0]}` : "Terminus rank reached",
   };
@@ -108,7 +87,7 @@ export function hdrModel(blob) {
   const f = focusOf(blob);
   return {
     rank: r.name,
-    bullet: BULLET[blob.track],
+    dot: r.dot,
     streak: `Streak ${blob.streak.cur}/${blob.streak.cur}`,
     xp: String(t.xp),
     fill: r.pct + "%",
@@ -120,7 +99,7 @@ export function hdrModel(blob) {
 export const hdr = (page) =>
   page.locator("header.hdr").evaluate((h) => ({
     rank: h.querySelector(".rank-name").textContent,
-    bullet: h.querySelector(".rank-bullet").textContent,
+    dot: h.querySelector(".rank-dot").style.background,
     streak: h.querySelector(".hdr-stats > span").getAttribute("aria-label") + "/" + h.querySelector(".hdr-stats > span b").textContent,
     xp: h.querySelector(".hdr-stats > span:last-child b").textContent,
     fill: h.querySelector(".xp-fill").style.width,
@@ -170,7 +149,6 @@ export const rail = (page) =>
     }))
   );
 
-/** `seg` is the colour a station used to carry of its own (`--seg`): none now, the whole line is drawn in `var(--track)`. */
 export function railModel(blob, openIds, track = blob.track) {
   const t = blob.tracks[track];
   const focus = focusOf(blob, track);
@@ -180,7 +158,7 @@ export function railModel(blob, openIds, track = blob.track) {
     const cls = ["stn", isDone && "done", d.id === focus.id && !isDone && "now", openIds.includes(d.id) && "open"].filter(Boolean).join(" ");
     return {
       cls,
-      seg: "",
+      seg: d.color,
       title: d.name,
       eyebrow: `${unitOf(track)} ${d.d} · ${d.stn}`,
       expanded: String(openIds.includes(d.id)),
@@ -192,7 +170,7 @@ export function railModel(blob, openIds, track = blob.track) {
   });
   const T = TERMINUS[track];
   const cleared = clearedOf(blob, track);
-  days.push({ cls: "stn terminus", seg: "", title: T.title, eyebrow: null, expanded: null, prog: null, rows: 0, done: 0, tick: null });
+  days.push({ cls: "stn terminus", seg: "var(--line)", title: T.title, eyebrow: null, expanded: null, prog: null, rows: 0, done: 0, tick: null });
   return { days, terminusCopy: T.copy(cleared) };
 }
 
@@ -256,13 +234,13 @@ export function rowsModel(blob, dayId, track = blob.track) {
       link: inApp
         ? { tag: "BUTTON", cls: "golink code", label: `Solve ${p.n} in the editor`, title: "Open in the editor", href: null, target: null, rel: null, glyph: "code" }
         : p.url
-          ? { tag: "A", cls: "golink", label: `Open ${p.n}`, title: null, href: p.url, target: "_blank", rel: "noopener", glyph: "external" }
+          ? { tag: "A", cls: "golink", label: `Open ${p.n}`, title: null, href: p.url, target: "_blank", rel: "noopener", glyph: "arrow-up-right" }
           : null,
     };
   });
 }
 
-/** The ritual row of the station at `pos`, or null. `fill` is its check box's ground as drawn. */
+/** The ritual row of the station at `pos`, or null. */
 export const ritualAt = (page, pos) =>
   page
     .locator(".linewrap > .stn")
@@ -275,7 +253,7 @@ export const ritualAt = (page, pos) =>
           pressed: r.getAttribute("aria-pressed"),
           text: r.children[1].textContent,
           xp: r.querySelector(".xpv").textContent,
-          fill: getComputedStyle(r.querySelector(".pcheck")).backgroundColor,
+          fill: r.querySelector(".pcheck").style.background,
           tick: window.__glyph(r.querySelector("svg")),
         }
       );

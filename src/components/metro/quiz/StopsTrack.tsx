@@ -1,12 +1,9 @@
-import Icon from "../../shared/Icon";
 import "./StopsTrack.css";
 
 interface StopsTrackProps {
   ids: string[];
   /** One entry per answered stop; shorter than `ids` mid-run. */
   results: boolean[];
-  /** The stop the run is at, from 0. */
-  current: number;
 }
 
 function tickClass(result: boolean | undefined) {
@@ -14,15 +11,11 @@ function tickClass(result: boolean | undefined) {
   return result ? "ok" : "ko";
 }
 
-/** The run as a Route: a right answer's stop in go with a check, a wrong one's in stop with the stop pictogram, the
- *  current stop ringed, the rest ahead. */
-export default function StopsTrack({ ids, results, current }: StopsTrackProps) {
+export default function StopsTrack({ ids, results }: StopsTrackProps) {
   return (
     <div className="stops-track" aria-hidden="true">
       {ids.map((_, k) => (
-        <i key={k} className={tickClass(results[k])} data-now={k === current || undefined}>
-          {results[k] !== undefined && <Icon name={results[k] ? "check" : "stop"} size={16} />}
-        </i>
+        <i key={k} className={tickClass(results[k])} />
       ))}
     </div>
   );

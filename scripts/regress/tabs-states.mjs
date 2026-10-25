@@ -4,10 +4,9 @@
 // have the value written out.
 
 import { finish } from "./me-lib.mjs";
-import { F, PF } from "./tabs-kit.mjs";
-import { card, cardOf, MPF } from "./tabs-metro-kit.mjs";
-import { stn } from "./tabs-line.mjs";
-import { PFX } from "./tabs-fx.mjs";
+import { F } from "./tabs-kit.mjs";
+import { card, cardOf } from "./tabs-metro-kit.mjs";
+import { stn, RGB } from "./tabs-line.mjs";
 import { chooseDeck, boardIt, nextBtn, quitBtn, boardBtn, rowOf } from "./tabs-metro.mjs";
 
 const centre = (loc) => loc.evaluate((e) => e.scrollIntoView({ block: "center", behavior: "instant" }));
@@ -37,34 +36,29 @@ export default function register(scenario) {
     const lineStates = [
       ["a closed day's header", day(3).locator(".dayhead"), ["background-color"]],
       ["a problem row", day(2).locator(".prow").nth(2), ["background-color"]],
-      ["a pending check box", day(2).locator(".prow").nth(2).locator(".pcheck"), ["border-top-color", "color", "transform"]],
-      ["a done check box", day(2).locator(".prow").nth(0).locator(".pcheck"), ["border-top-color", "color", "transform"]],
+      ["a pending check circle", day(2).locator(".prow").nth(2).locator(".pcheck"), ["border-top-color", "color", "transform"]],
+      ["a done check circle", day(2).locator(".prow").nth(0).locator(".pcheck"), ["border-top-color", "color", "transform"]],
       ["the editor button", day(2).locator(".prow").nth(2).locator(".golink"), ["background-color", "color", "transform"]],
       ["a pending ritual row", day(2).locator(".ritual"), ["background-color"]],
-      ["the line pick that is off", page.locator(".linepick[data-track='aws']"), ["border-top-color", "background-color", "transform"]],
-      ["the line pick that is on", page.locator(".linepick[data-track='google']"), ["border-top-color", "background-color", "transform"]],
+      ["the line pill that is off", page.locator(".linepick[data-track='aws']"), ["border-top-color", "transform"]],
+      ["the line pill that is on", page.locator(".linepick[data-track='google']"), ["border-top-color", "transform"]],
     ];
     for (const [label, loc, props] of lineStates) {
       for (const mode of ["hover", "active"]) s.pin(`${label} under the pointer (${mode})`, await under(A, loc, props, mode));
     }
-    await s.expect("hovering a row fills it with the sunk ground; hovering a pending check box firms its edge to ink, and no tick shows until it is checked", async () => ({
+    await s.expect("hovering a row tints it like the sunken ground; hovering a pending circle darkens its ring and shows the tick faintly", async () => ({
       row: (await under(A, day(2).locator(".prow").nth(2), ["background-color"], "hover"))["background-color"],
       ring: (await under(A, day(2).locator(".prow").nth(2).locator(".pcheck"), ["border-top-color", "color"], "hover")),
-    }), { row: PF.light.sunk, ring: { "border-top-color": PF.light.ink, color: "rgba(0, 0, 0, 0)" } });
-    await s.expect("pressing: the check box stays put, as Platform's checkbox does; the editor button and a line pick press 1px down, as Platform's Button does", async () => ({
-      box: (await under(A, day(2).locator(".prow").nth(2).locator(".pcheck"), ["transform"], "active")).transform,
+    }), { row: "rgb(241, 243, 244)", ring: { "border-top-color": RGB.ink2, color: RGB.line } });
+    await s.expect("pressing a check circle squeezes it to 92%, the editor button to 94%, the line pill to 98%", async () => ({
+      circle: (await under(A, day(2).locator(".prow").nth(2).locator(".pcheck"), ["transform"], "active")).transform,
       link: (await under(A, day(2).locator(".prow").nth(2).locator(".golink"), ["transform"], "active")).transform,
-      pick: (await under(A, page.locator(".linepick[data-track='aws']"), ["transform"], "active")).transform,
-    }), { box: "none", link: "matrix(1, 0, 0, 1, 0, 1)", pick: "matrix(1, 0, 0, 1, 0, 1)" });
-    await s.expect("hovering an off line pick fills it with the sunk ground; the chosen one keeps the raised ground", async () => ({
-      off: (await under(A, page.locator(".linepick[data-track='aws']"), ["background-color"], "hover"))["background-color"],
-      on: (await under(A, page.locator(".linepick[data-track='google']"), ["background-color"], "hover"))["background-color"],
-    }), { off: PF.light.sunk, on: PF.light.raised });
-    await page.locator(".linewrap > .stn").nth(6).locator(".dayhead").click();
-    await s.expect("hovering the editor button, or a mock's arrow link, in a row that is hovered too lifts it to the raised ground over the row's sunk one; its pictogram stays ink", async () => ({
-      editor: await under(A, day(2).locator(".prow").nth(2).locator(".golink"), ["background-color", "color"], "hover"),
-      link: await under(A, day(6).locator("a.golink"), ["background-color", "color"], "hover"),
-    }), { editor: { "background-color": PF.light.raised, color: PF.light.ink }, link: { "background-color": PF.light.raised, color: PF.light.ink } });
+      pill: (await under(A, page.locator(".linepick[data-track='aws']"), ["transform"], "active")).transform,
+    }), { circle: "matrix(0.92, 0, 0, 0.92, 0, 0)", link: "matrix(0.94, 0, 0, 0.94, 0, 0)", pill: "matrix(0.98, 0, 0, 0.98, 0, 0)" });
+    await s.expect("hovering the editor button deepens its tint; the arrow link of a mock goes to the grey ground and dark ink", async () => {
+      await page.locator(".linewrap > .stn").nth(6).locator(".dayhead").click();
+      return (await under(A, day(6).locator("a.golink"), ["color"], "hover")).color;
+    }, RGB.ink);
     s.pin("the mock's arrow link on hover", await under(A, day(6).locator("a.golink"), ["background-color", "color"], "hover"));
     s.pin("the clock's buttons on hover and pressed", { hover: await under(A, day(6).locator(".timer .tbtn").first(), ["border-top-color"], "hover"), active: await under(A, day(6).locator(".timer .tbtn").first(), ["transform"], "active") });
     await s.expect("nothing was ticked by the pressing (every press was released off the control): day 3's rows are as seeded", async () => day(2).locator(".prow .pcheck").evaluateAll((els) => els.map((e) => e.getAttribute("aria-pressed"))), ["true", "true", "false", "false"]);
@@ -80,15 +74,10 @@ export default function register(scenario) {
     for (const [label, loc, props] of dojoStates) {
       for (const mode of ["hover", "active"]) s.pin(`${label} under the pointer (${mode})`, await under(A, loc, props, mode));
     }
-    await s.expect("pressing the reveal button and the log's button moves them 1px down, as every Platform Button does", async () => ({
+    await s.expect("pressing the reveal button and the log's button squeezes them to 97%", async () => ({
       veil: (await under(A, page.locator("#dojoArea .tcard").first().locator(".veil button"), ["transform"], "active")).transform,
       log: (await under(A, page.locator("#dojoArea .dojo-log button"), ["transform"], "active")).transform,
-    }), { veil: "matrix(1, 0, 0, 1, 0, 1)", log: "matrix(1, 0, 0, 1, 0, 1)" });
-    await s.expect("hovering a template's header or the reveal button fills it with the sunk ground; hovering Done deepens it to signal-deep", async () => ({
-      head: (await under(A, page.locator("#dojoArea .tcard").nth(1).locator(".thead"), ["background-color"], "hover"))["background-color"],
-      veil: (await under(A, page.locator("#dojoArea .tcard").first().locator(".veil button"), ["background-color"], "hover"))["background-color"],
-      log: (await under(A, page.locator("#dojoArea .dojo-log button"), ["background-color"], "hover"))["background-color"],
-    }), { head: PFX.light.sunk, veil: PFX.light.sunk, log: PFX.light.signalDeep });
+    }), { veil: "matrix(0.97, 0, 0, 0.97, 0, 0)", log: "matrix(0.97, 0, 0, 0.97, 0, 0)" });
 
     // ---- Metro
     const M = await s.device({ seed: F.redoOne, motion: true });
@@ -97,14 +86,14 @@ export default function register(scenario) {
     const mp = M.page;
     for (const [label, loc, props] of [
       ["an unchosen deck row", rowOf(mp, "graphs"), ["background-color"]],
-      ["the Board button", boardBtn(mp), ["background-color", "transform"]],
+      ["the Board button", boardBtn(mp), ["filter", "transform"]],
     ]) {
       for (const mode of ["hover", "active"]) s.pin(`${label} under the pointer (${mode})`, await under(M, loc, props, mode));
     }
-    await s.expect("hovering the Board button deepens it to signal-deep, as the primary Button does; pressing it moves it down 1px", async () => ({
-      hover: (await under(M, boardBtn(mp), ["background-color"], "hover"))["background-color"],
+    await s.expect("hovering the Board button brightens it by 6%; pressing it squeezes it to 98%", async () => ({
+      hover: (await under(M, boardBtn(mp), ["filter"], "hover")).filter,
       active: (await under(M, boardBtn(mp), ["transform"], "active")).transform,
-    }), { hover: MPF.light.signalDeep, active: "matrix(1, 0, 0, 1, 0, 1)" });
+    }), { hover: "brightness(1.06)", active: "matrix(0.98, 0, 0, 0.98, 0, 0)" });
     await chooseDeck(M, "redo");
     await boardIt(M, 111);
     const pre = await card(mp);
@@ -113,30 +102,28 @@ export default function register(scenario) {
     for (const [label, loc, props] of optStates) {
       for (const mode of ["hover", "active"]) s.pin(`${label} under the pointer (${mode})`, await under(M, loc, props, mode));
     }
-    await s.expect("hovering an option fills it with the sunken ground and inks its letter's ring; pressing it doesn't move it (Platform's choices never move)", async () => ({
+    await s.expect("hovering an option tints it with the sunken ground; pressing squeezes it to 98%", async () => ({
       hover: (await under(M, mp.locator("#quizArea .opt").nth(0), ["background-color"], "hover"))["background-color"],
-      ring: (await under(M, mp.locator("#quizArea .opt").nth(0).locator(".k"), ["border-top-color"], "hover"))["border-top-color"],
       active: (await under(M, mp.locator("#quizArea .opt").nth(0), ["transform"], "active")).transform,
-    }), { hover: MPF.light.sunk, ring: MPF.light.ink, active: "none" });
+    }), { hover: "rgb(241, 243, 244)", active: "matrix(0.98, 0, 0, 0.98, 0, 0)" });
     await M.press(mp.locator("#quizArea .opt").nth(pre.opts.findIndex((o) => o.text === q.o[q.a])));
     for (const [label, loc, props] of [
-      ["End run", quitBtn(mp), ["background-color", "color"]],
-      ["Next stop (Finish)", nextBtn(mp), ["background-color", "transform"]],
+      ["End run", quitBtn(mp), ["color"]],
+      ["Next stop (Finish)", nextBtn(mp), ["opacity", "transform"]],
     ]) {
       for (const mode of ["hover", "active"]) s.pin(`${label} under the pointer (${mode})`, await under(M, loc, props, mode));
     }
-    await s.expect("hovering End run fills it with the sunken ground, as a ghost Button; hovering Finish deepens it to signal-deep; pressing it moves it down 1px", async () => ({
-      quit: (await under(M, quitBtn(mp), ["background-color"], "hover"))["background-color"],
-      next: (await under(M, nextBtn(mp), ["background-color"], "hover"))["background-color"],
+    await s.expect("hovering End run darkens its label to ink; hovering Finish fades it to 88%; pressing it squeezes it to 97%", async () => ({
+      quit: (await under(M, quitBtn(mp), ["color"], "hover")).color,
+      next: (await under(M, nextBtn(mp), ["opacity"], "hover")).opacity,
       pressed: (await under(M, nextBtn(mp), ["transform"], "active")).transform,
-    }), { quit: MPF.light.sunk, next: MPF.light.signalDeep, pressed: "matrix(1, 0, 0, 1, 0, 1)" });
+    }), { quit: RGB.ink, next: "0.88", pressed: "matrix(0.97, 0, 0, 0.97, 0, 0)" });
     await M.press(nextBtn(mp));
     for (const mode of ["hover", "active"]) s.pin(`a result button under the pointer (${mode})`, await under(M, mp.locator("#quizArea .mbtn").first(), ["background-color", "border-top-color", "transform"], mode));
-    await s.expect("hovering the result's buttons: Run it again, the primary, deepens to signal-deep and Decks, the secondary, fills with the sunken ground; pressing moves a button down 1px, as every Platform Button does", async () => ({
-      again: (await under(M, mp.locator("#quizArea .mbtn").first(), ["background-color"], "hover"))["background-color"],
-      decks: (await under(M, mp.locator("#quizArea .mbtn").nth(1), ["background-color"], "hover"))["background-color"],
+    await s.expect("hovering a result button tints it; pressing squeezes it to 97%", async () => ({
+      hover: (await under(M, mp.locator("#quizArea .mbtn").first(), ["background-color"], "hover"))["background-color"],
       active: (await under(M, mp.locator("#quizArea .mbtn").first(), ["transform"], "active")).transform,
-    }), { again: MPF.light.signalDeep, decks: MPF.light.sunk, active: "matrix(1, 0, 0, 1, 0, 1)" });
+    }), { hover: "rgb(241, 243, 244)", active: "matrix(0.97, 0, 0, 0.97, 0, 0)" });
     finish(s);
   });
 }

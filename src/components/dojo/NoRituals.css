@@ -1,1 +1,1 @@
-.dojo-local { margin: 0; padding: var(--space-3) var(--space-4); border: var(--hairline) solid var(--rule); border-radius: var(--radius-md); background: var(--surface-raised); color: var(--ink-muted); }
+.dojo-local { font-size: 13px; color: var(--ink2); margin: 14px 0 0; padding: 10px 12px; border: 1.5px dashed var(--line); border-radius: 10px; }
